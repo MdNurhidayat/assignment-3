@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import camp.Camp;
+import enums.Role;
 import staff.Staff;
 
 public class NTUCampApplication 
@@ -11,8 +12,8 @@ public class NTUCampApplication
 	// Application Managers
 	static Scanner scan;
 	static SecurityManager authenticator;
-	static MENU_STATES menu;
-	static MENU_STATES prevMenu;
+	static MenuStates menu;
+	static MenuStates prevMenu;
 	
 	// Camp Managers
 	static ArrayList<Camp> campList;
@@ -24,7 +25,7 @@ public class NTUCampApplication
 		// Initialise variables through this method
 		initialise();
 		
-		while (menu != MENU_STATES.EXIT)
+		while (menu != MenuStates.EXIT)
 		{
 			switch (menu)
 			{
@@ -41,53 +42,62 @@ public class NTUCampApplication
 				logOutMenu();
 				break;
 			case VIEW_CAMPS:
-				// TODO Insert View Camps Method
+				viewCampsMenu();
 				break;
 			case CAMP_DETAILS:
-				// TODO Insert Camp Details Method
+				viewCampDetailsMenu();
 				break;
-			case SUBMIT_SUGGESTION:
-				// TODO Insert Submit Suggestion Method
-				break;
-			case SUBMIT_ENQUIRY:
-				// TODO Insert Submit Enquiry Method
-				break;
-			case APPROVE_SUGGESTION:
-				// TODO Indert Approve Suggestion Method
+			case VIEW_ENQUIRIES:
+				viewEnquiriesMenu();
 				break;
 			case REPLY_ENQUIRY:
-				// TODO Insert Reply Enquiry
+				replyEnquiryMenu();
 				break;
 			case REPORT_PARTICIPANT:
-				// TODO Insert Report Participant Method
+				generateReportParticipantsMenu();
 				break;
 			case STUDENT_MAIN_MENU:
-				// TODO Insert Student Main Menu Method
+				studentMainMenu();
+				break;
+			case SUBMIT_ENQUIRY:
+				submitEnquiryMenu();
+				break;
+			case CM_MAIN_MENU:
+				committeeMainMenu();
+				break;
+			case SUBMIT_SUGGESTION:
+				submitSuggestionMenu();
 				break;
 			case STAFF_MAIN_MENU:
 				staffMainMenu();
 				break;
 			case EDIT_CAMP:
-				// TODO Insert Edit Camp Method
+				editCampMenu();
 				break;
 			case CREATE_CAMP:
-				// TODO Insert Create Camp Method
+				createCampMenu();
 				break;
 			case DELETE_CAMP:
-				// TODO Insert Delete Camp Method
+				deleteCampMenu();
+				break;
+			case VIEW_SUGGESTIONS:
+				viewSuggestionsMenu();
+				break;
+			case APPROVE_SUGGESTION:
+				approveSuggestionMenu();
 				break;
 			case REPORT_PERFORMANCE:
-				// TODO Insert Report Performance Menu + Method
+				generateReportPerformanceMenu();
 				break;
 			default:
-				System.out.println("ERROR, CHOICE DONT EXIST");
+				System.out.println("ERROR, MENU DONT EXIST");
 				break;
 			}
 		}
 	}
 	
 	// Application Methods
-	static void setMenuState(MENU_STATES newState)
+	static void setMenuState(MenuStates newState)
 	{
 		prevMenu = menu;
 		menu = newState;
@@ -104,10 +114,11 @@ public class NTUCampApplication
 		scan = new Scanner(System.in);
 		authenticator = new SecurityManager();
 		campList = new ArrayList<Camp>();
-		prevMenu = menu = MENU_STATES.PRELOG_IN;
+		userList = new ArrayList<User>();
+		prevMenu = menu = MenuStates.PRELOG_IN;
 	}
 	
-	
+	// Application Menus
 	static void preLogInMenu()
 	{
 		System.out.println("***************************************");
@@ -121,46 +132,34 @@ public class NTUCampApplication
         int choice = scan.nextInt();
         
         if (choice == 1)
-        	setMenuState(MENU_STATES.LOG_IN);
+        	setMenuState(MenuStates.LOG_IN);
         else if (choice == 2)
-        	setMenuState(MENU_STATES.EXIT);
+        	setMenuState(MenuStates.EXIT);
         else
         	errorChoice();
 	}
 	
-	
 	static void logInMenu()
 	{
-		System.out.println("username : ");
-		String username = scan.nextLine();
-		System.out.println("password : ");
-		String password = scan.nextLine();
+		System.out.println("***************************************");
+        System.out.println("*           NTU CAMP LOG IN           *");
+        System.out.println("***************************************");
+
 		
-		if (username.equals("std") && password.equals("stdpassword"))
-			setMenuState(MENU_STATES.STUDENT_MAIN_MENU);
-		else if (username.equals("staff") && password.equals("staffpassword"))
-			setMenuState(MENU_STATES.STAFF_MAIN_MENU);
+		user = authenticator.logInAuthentication(scan);
 		
-		Boolean success = authenticator.logInAuthentication(username, password);
-		
-		if (!success)
-		{
-			System.out.println("WRONG USERNAME OR/AND PASSWORD");
-		}
+		if (user.getRoles().get(0) == Role.STUDENT)
+			setMenuState(MenuStates.STUDENT_MAIN_MENU);
+		else if (user.getRoles().get(0) == Role.COMMITTEE_MEMBER)
+			setMenuState(MenuStates.CM_MAIN_MENU);
 		else
-		{
-			// TODO: SET USER
-			
-			
-			setMenuState(MENU_STATES.STAFF_MAIN_MENU);
-			//menu = MENU_STATES.STUDENT_MAIN_MENU;
-		}
+			setMenuState(MenuStates.STAFF_MAIN_MENU);
 	}
 	
 	static void preLogOutMenu()
 	{
 		System.out.println("***************************************");
-        System.out.println("*         NTU CAMP APPLICATION        *");
+        System.out.println("*         CONFIRM LOG OUT?            *");
         System.out.println("***************************************");
         System.out.println("*            1. Logout                *");
         System.out.println("*            2. Back                  *");
@@ -169,7 +168,7 @@ public class NTUCampApplication
         int choice = scan.nextInt();
         
         if (choice == 1)
-        	setMenuState(MENU_STATES.LOG_OUT);
+        	setMenuState(MenuStates.LOG_OUT);
         else if (choice == 2)
         	setMenuState(prevMenu);
         else
@@ -179,11 +178,96 @@ public class NTUCampApplication
 	static void logOutMenu()
 	{
 		System.out.println("Sucessfully Logged Out! Thank you " + user.getName());
-		setMenuState(MENU_STATES.PRELOG_IN);
+		setMenuState(MenuStates.PRELOG_IN);
+	}
+	
+	
+	// Shared Menu Throughout All Roles
+	static void viewCampsMenu()
+	{
+		System.out.println("***************************************");
+        System.out.println("*              ALL CAMPS              *");
+        System.out.println("***************************************");
+		// TODO : Print all camp according to Student/CM Faculty
+		// Staff will print all camp
+		
+		// TODO Hid
+        // Do Logic for Menu
+	}
+	
+	static void viewCampDetailsMenu()//Camp camp)
+	{
+		System.out.println("***************************************");
+        System.out.println("*             CAMP DETAILS            *");
+        System.out.println("***************************************");
+	
+		// TODO Print Camp Details
+        // BIG LIST OF IF ELSE DEPENDING ON STUDENT, CM OR STAFF
+        
+        // TODO Hid
+        // Change Menu State according to logic above
+	}
+	
+	// Shared Menu Between CM & STAFF
+	static void viewEnquiriesMenu()
+	{
+		// TODO Print out Enquiries of their own camp
+		// BIG LIST OF IF ELSE DEPENING ON STUDENT, CM OR STAFF
+		
+		// TODO Hid
+		// Change Menu State according to logic above
+	}
+	
+	static void replyEnquiryMenu()
+	{
+		// TODO Call Method from each classes replyEnquiry
+		
+		// TODO Hid
+		// Change Menu State according to logic above
+		// if user -> CM, setMenuState(CM main menu)
+		// if user -> STAFF, setMenuState(STAFF MAIN MENU)
+	}
+	
+	static void generateReportParticipantsMenu()
+	{
+		// TODO Call CM / STAFF Method for generating Report Participants
+		// if user -> CM, setMenuState(CM main menu)
+		// if user -> STAFF, setMenuState(STAFF MAIN MENU)
+		
+		setMenuState(prevMenu);
+	}
+	
+	// STUDENT METHODS
+	static void studentMainMenu()
+	{
+		// TODO Hid Create STUDENT Menu
+		System.out.println("***************************************");
+        System.out.println("*        NTU STUDENT MAIN MENU        *");
+        System.out.println("***************************************");
+	}
+	
+	static void submitEnquiryMenu()
+	{
+		// TODO Call Students Submit Enquiry Method
+		setMenuState(MenuStates.STUDENT_MAIN_MENU);
+	}
+
+	// COMMITTEE METHODS
+	static void committeeMainMenu()
+	{
+		// TODO Hid Create COMMITTEE Main Menu
+		System.out.println("***************************************");
+        System.out.println("*       NTU COMMITTEE MAIN MENU       *");
+        System.out.println("***************************************");
+	}
+	
+	static void submitSuggestionMenu()
+	{
+		// TODO Call CM SubmitSuggestion Method
+		setMenuState(MenuStates.CM_MAIN_MENU);
 	}
 	
 	// STAFF METHODS
-	// STAFF MENUS
     static void staffMainMenu()
 	{
 		System.out.println("***************************************");
@@ -193,7 +277,7 @@ public class NTUCampApplication
         // if (((Staff)user).getCamp() == null)
         System.out.println("* 1. Create Camp                      *");
         // else
-        // System.out.println("* 1. View Camp                        *");
+        // System.out.println("* 1. View Camp Details                *");
         System.out.println("* 2. View Camps (School)              *");
         System.out.println("* 3. View Enquiries                   *");
         System.out.println("* 4. View Suggestions                 *");
@@ -212,36 +296,102 @@ public class NTUCampApplication
 		{
 		case 1:
 		{
-			// TODO: Add Create Camp Method here and later add Camp into Application
+			// TODO: If Staff has no camp created -> Go to CREATE_CAMP Menu
+			setMenuState(MenuStates.CREATE_CAMP);
 			
-			// TODO: Uncomment and add the class here
-			// Boolean success = campList.add( *ADD_CAMP_CLASS_HERE*);
-			// if (success)
-			// 		System.out.println("Camp " + camp.GetName() + " is successfull");
-			// 
+			// TODO: If Staff has camp created -> Go to CAMP_DETAILS Menu
 			break;
 		}
 		case 2:
 		{
-			menu = MENU_STATES.VIEW_CAMPS;
+			setMenuState(MenuStates.VIEW_CAMPS);
 			break;
 		}
 		case 3:
 		{
+			setMenuState(MenuStates.VIEW_ENQUIRIES);
 			break;
 		}
 		case 4:
 		{
+			setMenuState(MenuStates.VIEW_SUGGESTIONS);
 			break;
 		}
-		
+		case 5:
+		{
+			setMenuState(MenuStates.REPLY_ENQUIRY);
+			break;
+		}
+		case 6:
+		{
+			setMenuState(MenuStates.APPROVE_SUGGESTION);
+			break;
+		}
+		case 7:
+		{
+			setMenuState(MenuStates.REPORT_PARTICIPANT);
+			break;
+		}
+		case 8:
+		{
+			setMenuState(MenuStates.REPORT_PERFORMANCE);
+			break;
+		}
+		case 9:
+		{
+			setMenuState(MenuStates.REPORT_ENQUIRY);
+			break;
+		}
+		case 10:
+		{
+			setMenuState(MenuStates.PRELOG_OUT);
+			break;
+		}
+		default:
+		{
+			errorChoice();
+			break;
+		}
 		}
 	}
 	
-	
-	// STUDENT METHODS
-	static void studentMainMenu()
-	{
-		// TODO Fill in STUDENT MENUS
-	}
+    static void editCampMenu()
+    {
+    	// TODO Call STAFF Edit Camp Method
+    	setMenuState(prevMenu);
+    }
+    
+    static void createCampMenu()
+    {
+    	// TODO Call STAFF Create Camp Method
+    	setMenuState(prevMenu);
+    }
+    
+    static void deleteCampMenu()
+    {
+    	// TODO Call Staff DeleteCamp Method
+    	setMenuState(prevMenu);
+    }
+
+    static void viewSuggestionsMenu()
+    {
+    	// TODO Call Staff View Suggestion Method
+    	
+    	
+    	// TODO Hid
+    	// Call the necessary Menu
+    }
+    
+    static void approveSuggestionMenu()
+    {
+    	// TODO Call Staff Approve Suggestion Method
+    	setMenuState(MenuStates.STAFF_MAIN_MENU);
+    }
+
+    static void generateReportPerformanceMenu()
+    {
+    	// TODO Call Staff Report Performance Method
+    	setMenuState(prevMenu);
+    }
+
 }

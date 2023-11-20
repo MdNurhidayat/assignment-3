@@ -2,6 +2,7 @@ package application;
 import enums.Role;
 import enums.Faculty;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,28 +10,28 @@ public class User {
 
     private String userID;
     private String password; // Storing the plain text password (not recommended for production)
-    private Set<Role> roles; // Using a Set to allow multiple roles
+    private ArrayList<Role> roles; // Using a Set to allow multiple Roles
     private String name;
     private String email;
-    private Faculty faculty;
+    private Faculty Faculty;
     private boolean firstLogin;
     private boolean loggedIn; // Added field to track login status
 
     // Default constructor with default password
     public User() {
-        this.roles = new HashSet<>();
+        this.roles = new ArrayList<>();
         this.password = "password";
         this.firstLogin = true;
         this.loggedIn = false; // Default login status is false
     }
 
     // Parameterized constructor with dependency injection and default password
-    public User(String userID, String email, Set<Role> roles, String name, Faculty faculty) {
+    public User(String userID, String email, ArrayList<Role> Roles, String name, Faculty Faculty) {
         this.userID = userID; // Set the userID here
-        this.roles = roles;
+        this.roles = Roles;
         this.name = name;
         this.email = email;
-        this.faculty = faculty;
+        this.Faculty = Faculty;
         this.password = "password";
         this.firstLogin = true;
         this.loggedIn = false;
@@ -65,16 +66,16 @@ public class User {
         this.password = newPassword;
     }
 
-    public Set<Role> getRoles() {
+    public ArrayList<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRoles(ArrayList<Role> Roles) {
+        this.roles = Roles;
     }
 
-    public void addRole(Role role) {
-        this.roles.add(role);
+    public void addRole(Role Role) {
+        this.roles.add(Role);
     }
 
     public String getName() {
@@ -94,11 +95,11 @@ public class User {
     }
 
     public Faculty getFaculty() {
-        return faculty;
+        return Faculty;
     }
 
-    public void setFaculty(Faculty faculty) {
-        this.faculty = faculty;
+    public void setFaculty(Faculty Faculty) {
+        this.Faculty = Faculty;
     }
 
     public boolean isFirstLogin() {

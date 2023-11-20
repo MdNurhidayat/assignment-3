@@ -1,6 +1,6 @@
 package application;
 
-public enum MENU_STATES 
+public enum MenuStates
 {
 	// Application Exclusive Menus
 	PRELOG_IN("Prelogin"),
@@ -13,27 +13,33 @@ public enum MENU_STATES
 	// Shared Menu
 	VIEW_CAMPS("ViewCamps"),
 	CAMP_DETAILS("CampDetails"),
+	VIEW_ENQUIRIES("ViewEnquiries"),
 	
 	// Shared Menu (STAFF & COMMITTEE MEMBER)
-	SUBMIT_SUGGESTION("SubmitS"),
-	SUBMIT_ENQUIRY("SubmitE"),
-	APPROVE_SUGGESTION("ReplyS"),
-	REPLY_ENQUIRY("ReplyE"),
+	REPLY_ENQUIRY("ReplyEnquiries"),
 	REPORT_PARTICIPANT("ReportParticipant"),
+	REPORT_ENQUIRY("ReportEnquiry"),
 	
 	// STUDENT Exclusive Menus
 	STUDENT_MAIN_MENU("StudentMM"),
+	SUBMIT_ENQUIRY("SubmitE"),
+	
+	// COMMITTEE MEMBER Exclusive Menus
+	CM_MAIN_MENU("ComitteeMemberMM"),
+	SUBMIT_SUGGESTION("SubmitSuggestions"),
 	
 	// STAFF Exclusive Menus
 	STAFF_MAIN_MENU("StaffMM"),
 	EDIT_CAMP("EditCamp"),
 	CREATE_CAMP("CreateCamp"),
 	DELETE_CAMP("DeleteCamp"),
+	VIEW_SUGGESTIONS("ViewSuggestions"),
+	APPROVE_SUGGESTION("ApproveSuggestion"),
 	REPORT_PERFORMANCE("ReportPerformance");
 
 	public String label;
 	
-	MENU_STATES (String label)
+	MenuStates (String label)
 	{
 		this.label = label;
 	}
