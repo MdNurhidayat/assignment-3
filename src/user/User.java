@@ -1,4 +1,4 @@
-package application;
+package user;
 import enums.Role;
 import enums.Faculty;
 
@@ -10,7 +10,7 @@ public class User {
 
     private String userID;
     private String password; // Storing the plain text password (not recommended for production)
-    private ArrayList<Role> roles; // Using a Set to allow multiple Roles
+    private Role role;
     private String name;
     private String email;
     private Faculty Faculty;
@@ -19,16 +19,15 @@ public class User {
 
     // Default constructor with default password
     public User() {
-        this.roles = new ArrayList<>();
         this.password = "password";
         this.firstLogin = true;
         this.loggedIn = false; // Default login status is false
     }
 
     // Parameterized constructor with dependency injection and default password
-    public User(String userID, String email, ArrayList<Role> Roles, String name, Faculty Faculty) {
+    public User(String userID, String email, Role role, String name, Faculty Faculty) {
         this.userID = userID; // Set the userID here
-        this.roles = Roles;
+        this.role = role;
         this.name = name;
         this.email = email;
         this.Faculty = Faculty;
@@ -66,16 +65,12 @@ public class User {
         this.password = newPassword;
     }
 
-    public ArrayList<Role> getRoles() {
-        return roles;
+    public Role getRoles() {
+        return role;
     }
 
-    public void setRoles(ArrayList<Role> Roles) {
-        this.roles = Roles;
-    }
-
-    public void addRole(Role Role) {
-        this.roles.add(Role);
+    public void setRoles(Role role) {
+        this.role = role;
     }
 
     public String getName() {

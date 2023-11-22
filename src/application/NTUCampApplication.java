@@ -6,19 +6,20 @@ import java.util.Scanner;
 import camp.Camp;
 import enums.Role;
 import staff.Staff;
+import user.User;
 
 public class NTUCampApplication 
 {	
 	// Application Managers
 	static Scanner scan;
 	static SecurityManager authenticator;
+	static UserManager userManager;
 	static MenuStates menu;
 	static MenuStates prevMenu;
+	static User user;
 	
-	// Camp Managers
+	// Camp List
 	static ArrayList<Camp> campList;
-	static ArrayList<User> userList;
-	static User user; 
 	
 	public static void main(String[] args) 
 	{
@@ -113,8 +114,8 @@ public class NTUCampApplication
 	{
 		scan = new Scanner(System.in);
 		authenticator = new SecurityManager();
+		userManager = new UserManager();
 		campList = new ArrayList<Camp>();
-		userList = new ArrayList<User>();
 		prevMenu = menu = MenuStates.PRELOG_IN;
 	}
 	
@@ -146,11 +147,11 @@ public class NTUCampApplication
         System.out.println("***************************************");
 
 		
-		user = authenticator.logInAuthentication(scan);
+		user = authenticator.logInAuthentication(scan, userManager);
 		
-		if (user.getRoles().get(0) == Role.STUDENT)
+		if (user.getRoles() == Role.STUDENT)
 			setMenuState(MenuStates.STUDENT_MAIN_MENU);
-		else if (user.getRoles().get(0) == Role.COMMITTEE_MEMBER)
+		else if (user.getRoles() == Role.COMMITTEE_MEMBER)
 			setMenuState(MenuStates.CM_MAIN_MENU);
 		else
 			setMenuState(MenuStates.STAFF_MAIN_MENU);
