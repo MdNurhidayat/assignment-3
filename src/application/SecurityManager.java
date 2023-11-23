@@ -9,12 +9,13 @@ public class SecurityManager
 	public User logInAuthentication(Scanner scan, UserManager userManager)
 	{
 		User user;
+		String userID, password = "";
 		
         System.out.println("Enter your Username and Password");
-		System.out.println("username : ");
-		String userID = scan.nextLine();
-		System.out.println("password : ");
-		String password = scan.nextLine();
+		System.out.print("username : ");
+		userID = scan.next();
+		System.out.print("password : ");
+		password = scan.next();
 		
 		
 		// If UserID cannot be found in any Map
@@ -54,11 +55,12 @@ public class SecurityManager
 	public static void changePassword(User user, Scanner scan)
 	{
 		System.out.println("New Log In detected");
-		System.out.println("Please Enter New Password : ");
+		System.out.print("Please Enter New Password : ");
 		
-		String password = scan.nextLine();
-		user.changePassword(password);
+		String password = scan.next();
+		user.setPassword(password);
 		
 		System.out.println("Password Sucessfully Changed");
+		System.out.println("");
 	}
 }

@@ -24,9 +24,13 @@ import user.User;
 public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnquiry, ReplyEnquiry {
   private Camp createdCamp = null;
 
-  public Staff(String userID, String password, Role role, String name, String email, String faculty) {
-    super(userID, password, role, name, email, faculty);
+  public Staff(String userID, Role role, String name, String email, Faculty faculty) {
+    super(userID, role, name, email, faculty);
   }
+  
+  public Staff(String userID, String password, Role role, String name, String email, Faculty faculty) {
+	    super(userID, password, role, name, email, faculty);
+	  }
   
   public String getName() {
     return super.getName();
@@ -91,21 +95,19 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
       System.out.println("Please create a camp before trying to delete one");
     }
     else {
-      this.createdCamp.deleteCamp();
       this.createdCamp = null;
       System.out.println("Camp deleted successfully.");
     }
 
   }
 
-  public void viewAllCamps() {
-    ArrayList<Camp> results = Camp.getAllCamps();
-    for (Camp c: results) {
-      System.out.println(c.toString());
+  public void viewAllCamps(ArrayList<Camp> camps) {
+    for (Camp c: camps) {
+      c.detailedPrint();
     }
   }
 
-  public void viewCreatedCamps(String format) {
+  public void viewCreatedCamp() {
     this.createdCamp.toString();
   }
 
@@ -129,12 +131,10 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
 
   }
 
-  @Override
   public void viewSuggestions() {
     this.createdCamp.getSuggestions().toString();
   }
 
-  @Override
   public void approve(String suggestionID) {
     ArrayList<Suggestion> suggestions = this.createdCamp.getSuggestions();
     for (Suggestion s : suggestions) {
@@ -143,7 +143,6 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
       }
       else {
         s.setProcessed(true);
-        s.incrementPoint();
         System.out.println("Suggestion " + suggestionID + " approved.");
       }
     }
@@ -168,7 +167,6 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
     
   }
 
-  @Override
   public void generatePerformanceReport(String format) {
     ArrayList<CommitteeMember> committeeResult = this.createdCamp.getCommittee();
     
@@ -189,7 +187,6 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
 
   }
 
-  @Override
   public void generateEnquiryReport() {
     // TODO add methods to be called from Wang Jing side
 

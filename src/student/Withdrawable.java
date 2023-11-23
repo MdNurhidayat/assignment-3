@@ -1,4 +1,7 @@
 package student;
+
+import java.util.Scanner;
+
 public interface Withdrawable {
-    void withdraw();
+    void withdraw(Scanner scanner);
 }

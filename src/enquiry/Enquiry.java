@@ -28,12 +28,24 @@ public class Enquiry {
     this.dateCreated = LocalDate.now();
     this.campID = aCamp.getCampID();
     this.contents = Input.getStringInput("Enter the contents of your enquiry: ", sc);
-    this.replies = new ArrayList<>();
+    this.replies = new ArrayList<Reply>();
     this.isProcessed = false;
   }
+  
+  public Enquiry(String campID, LocalDate now, String enquiryID, String enquiryMessage) 
+  {
+	  idCount++;
+	  this.enquiryID = enquiryID;
+	  this.dateCreated = now;
+	  this.campID = campID;
+	  this.contents = enquiryMessage;
+	  this.replies = new ArrayList<Reply>();
+	  this.isProcessed = false;
+  }
+
 
   public String getEnquiryID() {
-    return enquiryID;
+      return enquiryID;
   }
   
   public String getCampID() {
@@ -89,7 +101,6 @@ public class Enquiry {
     System.out.println(test2.getReplies());
     System.out.println(test2.isProcessed());
   }
-
 
 }
 

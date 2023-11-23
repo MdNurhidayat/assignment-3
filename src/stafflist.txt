@@ -1,2 +1,0 @@
-name,userID,password,email,faculty
-Michael,S123456,password,S123456@staff.ntu.edu.sg,SCSE

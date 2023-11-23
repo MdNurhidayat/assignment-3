@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import camp.Camp;
+import committeeMember.CommitteeMember;
 import enums.Role;
-import staff.Staff;
 import user.User;
+import file.FileIO;
+import staff.Staff;
+import student.Student;
 
 public class NTUCampApplication 
 {	
@@ -14,6 +17,7 @@ public class NTUCampApplication
 	static Scanner scan;
 	static SecurityManager authenticator;
 	static UserManager userManager;
+	static FileIO fileEditor;
 	static MenuStates menu;
 	static MenuStates prevMenu;
 	static User user;
@@ -95,6 +99,8 @@ public class NTUCampApplication
 				break;
 			}
 		}
+		
+		System.out.println("END PROGRAMME");
 	}
 	
 	// Application Methods
@@ -114,6 +120,7 @@ public class NTUCampApplication
 	{
 		scan = new Scanner(System.in);
 		authenticator = new SecurityManager();
+		fileEditor = new FileIO();
 		userManager = new UserManager();
 		campList = new ArrayList<Camp>();
 		prevMenu = menu = MenuStates.PRELOG_IN;
@@ -122,12 +129,12 @@ public class NTUCampApplication
 	// Application Menus
 	static void preLogInMenu()
 	{
-		System.out.println("***************************************");
-        System.out.println("*         NTU CAMP APPLICATION        *");
-        System.out.println("***************************************");
-        System.out.println("*            1. Login                 *");
-        System.out.println("*            2. Exit                  *");
-        System.out.println("***************************************");
+		System.out.println("---------------------------------------");
+        System.out.println("|         NTU CAMP APPLICATION        |");
+        System.out.println("---------------------------------------");
+        System.out.println("|            1. Login                 |");
+        System.out.println("|            2. Exit                  |");
+        System.out.println("---------------------------------------");
 
         System.out.print("Enter your choice: ");
         int choice = scan.nextInt();
@@ -142,16 +149,19 @@ public class NTUCampApplication
 	
 	static void logInMenu()
 	{
-		System.out.println("***************************************");
-        System.out.println("*           NTU CAMP LOG IN           *");
-        System.out.println("***************************************");
+		System.out.println("---------------------------------------");
+        System.out.println("|           NTU CAMP LOG IN           |");
+        System.out.println("---------------------------------------");
 
 		
-		user = authenticator.logInAuthentication(scan, userManager);
+		user = authenticator.logInAuthentication(scan,userManager);
 		
-		if (user.getRoles() == Role.STUDENT)
+		if (user == null)
+			return;
+		
+		if (user.getRole() == Role.STUDENT)
 			setMenuState(MenuStates.STUDENT_MAIN_MENU);
-		else if (user.getRoles() == Role.COMMITTEE_MEMBER)
+		else if (user.getRole() == Role.COMMITTEE_MEMBER)
 			setMenuState(MenuStates.CM_MAIN_MENU);
 		else
 			setMenuState(MenuStates.STAFF_MAIN_MENU);
@@ -159,12 +169,12 @@ public class NTUCampApplication
 	
 	static void preLogOutMenu()
 	{
-		System.out.println("***************************************");
-        System.out.println("*         CONFIRM LOG OUT?            *");
-        System.out.println("***************************************");
-        System.out.println("*            1. Logout                *");
-        System.out.println("*            2. Back                  *");
-        System.out.println("***************************************");
+		System.out.println("---------------------------------------");
+        System.out.println("|         CONFIRM LOG OUT?            |");
+        System.out.println("---------------------------------------");
+        System.out.println("|            1. Logout                |");
+        System.out.println("|            2. Back                  |");
+        System.out.println("---------------------------------------");
         
         int choice = scan.nextInt();
         
@@ -186,27 +196,62 @@ public class NTUCampApplication
 	// Shared Menu Throughout All Roles
 	static void viewCampsMenu()
 	{
-		System.out.println("***************************************");
-        System.out.println("*              ALL CAMPS              *");
-        System.out.println("***************************************");
+		System.out.println("---------------------------------------");
+        System.out.println("|              ALL CAMPS              |");
+        System.out.println("---------------------------------------");
 		// TODO : Print all camp according to Student/CM Faculty
 		// Staff will print all camp
+        if (campList.size() == 0)
+        {
+        	System.out.println("There are no camps");
+            System.out.print("Enter 1 to return back to Menu : ");
+            while(scan.nextInt() != 1) {scan.nextLine();}
+            setMenuState(prevMenu);
+        }
+        else
+        {
+        	if (user instanceof Student || user instanceof CommitteeMember)
+        	{
+        		System.out.println("| 1. ");
+        		
+        	}
+        	else if (user instanceof Staff)
+        	{
+        		// TODO For instance of Staff
+        		//((user))
+        	}
+        }
 		
-		// TODO Hid
-        // Do Logic for Menu
 	}
 	
 	static void viewCampDetailsMenu()//Camp camp)
 	{
-		System.out.println("***************************************");
-        System.out.println("*             CAMP DETAILS            *");
-        System.out.println("***************************************");
-	
-		// TODO Print Camp Details
-        // BIG LIST OF IF ELSE DEPENDING ON STUDENT, CM OR STAFF
+		System.out.println("---------------------------------------");
+        System.out.println("|             CAMP DETAILS            |");
+        System.out.println("---------------------------------------");
+        if (user instanceof Student)
+        {
+        	ArrayList<Camp> camps = ((Student)user).getRegisteredFor();
+        	for (Camp c : camps)
+        	{
+        		c.print();
+        	}
+        }
+        else if (user instanceof CommitteeMember)
+        {
+        	((CommitteeMember)user).getOverseeingCamp().detailedPrint();
+        }
+        else // Staff Logics
+        {
+        	((Staff)user).getCreatedCamp().detailedPrint();
+        }
         
-        // TODO Hid
-        // Change Menu State according to logic above
+        System.out.print("Enter 1 to return back to Menu : ");
+        int choice = scan.nextInt();
+        scan.nextLine();
+        
+        if (choice == 1)
+        	setMenuState(prevMenu);
 	}
 	
 	// Shared Menu Between CM & STAFF
@@ -242,9 +287,11 @@ public class NTUCampApplication
 	static void studentMainMenu()
 	{
 		// TODO Hid Create STUDENT Menu
-		System.out.println("***************************************");
-        System.out.println("*        NTU STUDENT MAIN MENU        *");
-        System.out.println("***************************************");
+		System.out.println("---------------------------------------");
+        System.out.println("|        NTU STUDENT MAIN MENU        |");
+        System.out.println("---------------------------------------");
+        System.out.println("| 1. View Available Camps             |");
+        System.out.println("| 2. View Available Camps             |");
 	}
 	
 	static void submitEnquiryMenu()
@@ -257,9 +304,9 @@ public class NTUCampApplication
 	static void committeeMainMenu()
 	{
 		// TODO Hid Create COMMITTEE Main Menu
-		System.out.println("***************************************");
-        System.out.println("*       NTU COMMITTEE MAIN MENU       *");
-        System.out.println("***************************************");
+		System.out.println("---------------------------------------");
+        System.out.println("|       NTU COMMITTEE MAIN MENU       |");
+        System.out.println("---------------------------------------");
 	}
 	
 	static void submitSuggestionMenu()
@@ -271,36 +318,36 @@ public class NTUCampApplication
 	// STAFF METHODS
     static void staffMainMenu()
 	{
-		System.out.println("***************************************");
-        System.out.println("*         NTU STAFF MAIN MENU         *");
-        System.out.println("***************************************");
+    	System.out.println("---------------------------------------");
+        System.out.println("|         NTU STAFF MAIN MENU         |");
+        System.out.println("---------------------------------------");
         // TODO Create getCamp Method in Staff class and uncomment the next few lines
-        // if (((Staff)user).getCamp() == null)
-        System.out.println("* 1. Create Camp                      *");
-        // else
-        // System.out.println("* 1. View Camp Details                *");
-        System.out.println("* 2. View Camps (School)              *");
-        System.out.println("* 3. View Enquiries                   *");
-        System.out.println("* 4. View Suggestions                 *");
-        System.out.println("* 5. Reply Enquiries                  *");
-        System.out.println("* 6. Approve Suggestions              *");
-        System.out.println("* 7. Generate Participant (R)         *");
-        System.out.println("* 8. Generate Performance (R)         *");
-        System.out.println("* 9. Generate Enquiry (R)             *");
-        System.out.println("* 10. Log Out                         *");
-        System.out.println("***************************************");
-		System.out.println("Welcome " + user.getName());
+        if (((Staff)user).getCreatedCamp() == null)
+        System.out.println("| 1. Create Camp                      |");
+        else
+        System.out.println("| 1. View Camp Details                |");
+        System.out.println("| 2. View Camps (School)              |");
+        System.out.println("| 3. View Enquiries                   |");
+        System.out.println("| 4. View Suggestions                 |");
+        System.out.println("| 5. Reply Enquiries                  |");
+        System.out.println("| 6. Approve Suggestions              |");
+        System.out.println("| 7. Generate Participant (R)         |");
+        System.out.println("| 8. Generate Performance (R)         |");
+        System.out.println("| 9. Generate Enquiry (R)             |");
+        System.out.println("| 10.Log Out                          |");
+        System.out.println("---------------------------------------");
+		System.out.print("Welcome " + user.getName() + ". Please pick a menu : ");
 		
 		int choice = scan.nextInt();
-		
+		scan.nextLine();
 		switch (choice)
 		{
 		case 1:
 		{
-			// TODO: If Staff has no camp created -> Go to CREATE_CAMP Menu
-			setMenuState(MenuStates.CREATE_CAMP);
-			
-			// TODO: If Staff has camp created -> Go to CAMP_DETAILS Menu
+			if (((Staff)user).getCreatedCamp() == null)
+				setMenuState(MenuStates.CREATE_CAMP);
+			else
+				setMenuState(MenuStates.CAMP_DETAILS);
 			break;
 		}
 		case 2:
@@ -364,13 +411,19 @@ public class NTUCampApplication
     
     static void createCampMenu()
     {
-    	// TODO Call STAFF Create Camp Method
+		System.out.println("---------------------------------------");
+        System.out.println("|            CREATING CAMP            |");
+        System.out.println("---------------------------------------");
+        
+        ((Staff)user).createCamp(scan);
+        
     	setMenuState(prevMenu);
     }
     
     static void deleteCampMenu()
     {
     	// TODO Call Staff DeleteCamp Method
+    	((Staff)user).deleteCamp();
     	setMenuState(prevMenu);
     }
 

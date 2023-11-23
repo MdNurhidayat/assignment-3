@@ -1,0 +1,3 @@
+userID,password,name,email,faculty
+C220055,password,Hidayat,C220055@e.ntu.edu.sg,SCSE
+D123056,password,Bobby,D123056@e.ntu.edu.sg,EEE

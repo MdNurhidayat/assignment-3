@@ -4,6 +4,7 @@ import enums.Role;
 import file.FileIO;
 import user.User;
 import staff.Staff;
+import student.Student;
 import enums.Faculty;
 import java.util.*;
 
@@ -13,13 +14,13 @@ import java.util.*;
 public class UserManager {
     
     // List to store user objects
-    private HashMap<String, User> studentList;
-    private HashMap<String, Staff> staffList;
+    private HashMap<String, User> studentMap;
+    private HashMap<String, Staff> staffMap;
 
     // Constructor to initialize the list of users
     public UserManager() {
-    	studentList = new HashMap<>();
-    	staffList = new HashMap<>();
+    	studentMap = new HashMap<String, User>();
+    	staffMap = new HashMap<String, Staff>();
         
     	initialise();
     }
@@ -85,44 +86,60 @@ public class UserManager {
 
     // Method to get a user by their userID
     public User getStudentByID(String userID) {
-        if (studentList.containsKey(userID))
-        	return studentList.get(userID);
+        if (studentMap.containsKey(userID))
+        	return studentMap.get(userID);
         else
         	return null;
     }
     
     public Staff getStaffByID(String userID) {
-        if (staffList.containsKey(userID))
-        	return staffList.get(userID);
+        if (staffMap.containsKey(userID))
+        	return staffMap.get(userID);
         else
         	return null;
     }
 
     // Method to get the list of users
     public HashMap<String, User> getStudentList() {
-        return studentList;
+        return studentMap;
     }
     
     public HashMap<String, Staff> getStaffList() {
-        return staffList;
+        return staffMap;
     }
     
     // Method to add a user to the list
     public void addStudent(String userID, User user) {
-       studentList.put(userID, user);
+       studentMap.put(userID, user);
     }
     
     public void addStaff(String userID, Staff staff) {
-    	staffList.put(userID, staff);
+    	staffMap.put(userID, staff);
     }
     
-    static void initialise()
+    void initialise()
     {
-    	// TODO Update file to read from
     	ArrayList<String> studentList = FileIO.readFromFile("studentlist.txt");
     	ArrayList<String> staffList = FileIO.readFromFile("stafflist.txt");
     	
     	// TODO Insert each arraylist into HashMap<String, User / Staff>
+    	for(int index = 1; index < studentList.size(); index++)
+    	{
+    		String[] stdDetails = studentList.get(index).split(",");
+    		Faculty faculty = Faculty.search(stdDetails[4]);
+    		// [0] UserID, [1] password, [2] name, [3] email [4] Faculty
+    		Student std = new Student(stdDetails[0], stdDetails[1], Role.STUDENT, stdDetails[2], stdDetails[3], faculty);
+    		studentMap.put(stdDetails[0], std);
+    	}
+    	
+    	for(int index = 1; index < staffList.size(); index++)
+    	{
+    		String[] staffDetails = staffList.get(index).split(",");
+    		Faculty faculty = Faculty.search(staffDetails[4]);
+    		// [0] UserID, [1] password, [2] name, [3] email [4] Faculty
+    		Staff staff = new Staff(staffDetails[0], staffDetails[1], Role.STAFF, staffDetails[2], staffDetails[3], faculty);
+    		staffMap.put(staffDetails[0], staff);
+    	}
     	
     }
 }

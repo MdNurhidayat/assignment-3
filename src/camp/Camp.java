@@ -5,7 +5,6 @@ import java.util.Scanner;
 import committeeMember.CommitteeMember;
 import enquiry.Enquiry;
 import enums.Faculty;
-import enums.Role;
 import staff.Staff;
 import student.Student;
 import suggestion.Suggestion;
@@ -21,11 +20,6 @@ import file.Input;
  */
 public class Camp {
   /**
-   * Represents a list of all <code>camp</code> objects. Calls to the <code>camp</code> constructor
-   * method adds the newly created instance to this list.
-   */
-  private static ArrayList<Camp> allCamps = new ArrayList<>();
-  /**
    * Represents the count of camps created so far.
    */
   private static int idCount;
@@ -36,7 +30,7 @@ public class Camp {
   /**
    * Represents if this camp is currently visible.
    */
-  private boolean isVisible;
+  private boolean isVisible = false;
   /**
    * Represents the details of this camp.
    * 
@@ -46,27 +40,23 @@ public class Camp {
   /**
    * Represents the participants of this camp.
    */
-  private ArrayList<Student> participants;
+  private ArrayList<Student> participants = new ArrayList<>();
   /**
    * Represents the participants who has withdrawn after registering for this camp.
    */
-  private ArrayList<Student> previouslyWithdrawn;
+  private ArrayList<Student> previouslyWithdrawn = new ArrayList<>();
   /**
    * Represents the committee members of this camp.
    */
-  private ArrayList<CommitteeMember> committee;
+  private ArrayList<CommitteeMember> committee = new ArrayList<>();
   /**
    * Represents the enquiries submitted for this camp.
    */
-  private ArrayList<Enquiry> enquiries;
+  private ArrayList<Enquiry> enquiries = new ArrayList<>();
   /**
    * Represents the suggestions submitted for this camp.
    */
-  private ArrayList<Suggestion> suggestions;
-  
-  public static ArrayList<Camp> getAllCamps(){
-    return Camp.allCamps;
-  }
+  private ArrayList<Suggestion> suggestions = new ArrayList<>();
   
   public String getCampID() {
     return campID;
@@ -75,11 +65,11 @@ public class Camp {
   public boolean getisVisible() {
     return isVisible;
   }
-  
+
   public Detail getDetails() {
     return details;
   }
-  
+
   public ArrayList<Student> getParticipants() {
     return participants;
   }
@@ -99,10 +89,10 @@ public class Camp {
   public ArrayList<Suggestion> getSuggestions() {
     return suggestions;
   }
-  
-  
-  //non-default methods, to be reflected in UML
-  
+
+
+  // non-default methods, to be reflected in UML
+
   /**
    * Custom constructor method. Uses multiple set methods from this camp's <code>detail</code>
    * object, various get input methods from the <code>Input</code> class are injected to provide
@@ -114,17 +104,10 @@ public class Camp {
    */
   public Camp(Scanner sc, Staff aStaff) {
     idCount++;
-    this.campID = "CAMP" + idCount;
-    this.isVisible = false;
+    this.campID = aStaff.getUserID() + idCount;
     this.details = new Detail(sc, aStaff);
-    this.participants = new ArrayList<>();
-    this.previouslyWithdrawn = new ArrayList<>();
-    this.committee = new ArrayList<>();
-    this.enquiries = new ArrayList<>();
-    this.suggestions = new ArrayList<>();
-    allCamps.add(this);
   }
-  
+
   /**
    * Sets this camp to be visible.
    */
@@ -139,9 +122,9 @@ public class Camp {
   public void setVisibleOff() {
     if (this.hasNoCommittee() && this.hasNoParticipants()) {
       System.out.println(
-          "You cannot set this camp to not be visible once student(s) or committee member(s) have registered.");
+          "You cannot set this camp to not be visible once student(s) or committee member(s) have registered for it.");
     } else {
-      this.isVisible = true;
+      this.isVisible = false;
     }
   }
 
@@ -154,40 +137,15 @@ public class Camp {
    * @param sc Scanner object to be injected
    */
   public void setDetails(Scanner sc) {
-    String facultyAttribute = null;
     this.details.setName(Input.getStringInput("Enter the name of the camp: ", sc));
     this.details.setLocation(Input.getStringInput("Enter the location of the camp: ", sc));
     this.details
         .setDescription(Input.getStringInput("Enter the description of the camp: ", sc));
-    int inputValue;
-    do {
-      inputValue = Input.getIntInput(
-          "(1) Staff\n(2) Student \n(3) Committee Member\n Enter your selection: ", sc);
-      switch (inputValue) {
-        case 1: {
-          facultyAttribute = "STAFF";
-          break;
-        }
-        case 2: {
-          facultyAttribute = "STUDENT";
-          break;
-        }
-        case 3: {
-          facultyAttribute = "COMMITTEE_MEMBER";
-          break;
-        }
-        default: {
-          System.out.println("You have selected an invalid input please re-enter");
-          break;
-        }
-      }
-
-    } while (facultyAttribute == null);
-    this.details.setFaculty(enums.Faculty.getFacultyForAttribute(facultyAttribute));
-    this.details.setStartDate(Input.getDateFromInput("starting date", sc));
-    this.details.setEndDate(Input.getDateFromInput("ending date", sc));
+    this.details.setFaculty(Faculty.getFacultyFromStringInput(sc));
+    this.details.setStartDate(Input.getDateFromIntInputs("starting date", sc));
+    this.details.setEndDate(Input.getDateFromIntInputs("ending date", sc));
     this.details
-        .setRegistrationClosingDate(Input.getDateFromInput("registration deadline", sc));
+        .setRegistrationClosingDate(Input.getDateFromIntInputs("registration deadline", sc));
     this.details
         .setTotalSlots(Input.getIntInput("Enter the total slots for this camp: ", sc));
   }
@@ -201,7 +159,7 @@ public class Camp {
     this.participants.add(aStudent);
 
   }
-  
+
   /**
    * Return true if there are no participants in this camp.
    */
@@ -224,7 +182,7 @@ public class Camp {
   public void addWithdrawn(Student aStudent) {
     this.previouslyWithdrawn.add(aStudent);
   }
-  
+
   /**
    * Removes a student from this camp's <code>participants</code> list.
    * 
@@ -253,7 +211,7 @@ public class Camp {
   public int calculateRemainingSlots() {
     return this.details.getTotalSlots() - this.participants.size() - this.committee.size();
   }
-  
+
   /**
    * Calculates and returns the remaining number of slots for committee members for this camp.
    * 
@@ -261,52 +219,101 @@ public class Camp {
    *         of this camp's committee list.
    */
   public int calculateRemainingCommitteeSlots() {
-    return this.details.getCOMMITTEE_SLOTS() - this.committee.size();
+    return this.details.getCommitteeSlots() - this.committee.size();
+  }
+
+  public void addEnquiry(Enquiry enquiry)
+  {
+	  if (this.enquiries.contains(enquiry))
+		  System.out.println("Enquiry already present in this camp. Please double check and try again");
+	  else
+		  this.enquiries.add(enquiry);
   }
   
-  public void deleteCamp() {
-    Camp.allCamps.remove(this);
+  public void removeEnquiry(Enquiry enquiry)
+  {
+	  if (this.enquiries.contains(enquiry))
+		  this.enquiries.remove(enquiry);
+	  else
+		  System.out.println("Enquiry is not found. Please double check and try again.");
+  }
+  
+  public void addSuggestions(Suggestion suggestion)
+  {
+	  if (this.suggestions.contains(suggestion))
+		  System.out.println("Suggestion already present in this camp. Please double check and try again");
+	  else
+		  this.suggestions.add(suggestion);
+  }
+  
+  public void removeSuggestion(Suggestion suggestion)
+  {
+	  if (this.suggestions.contains(suggestion))
+		  this.suggestions.remove(suggestion);
+	  else
+		  System.out.println("Suggestion is not found. Please double check and try again.");
   }
   
   public String toString() {
-    String delimiter = " ";
-    return this.campID + delimiter 
-           + this.isVisible + delimiter
-           + this.details.toString();
-    }
-  
-  public String generateCSVHeaders() {
-    String delimiter = ", ";
-    return "campID" + delimiter 
-        + "isVisible" + delimiter
-        + this.details.generateCSVHeaders();
+    String delimiter = " | ";
+    return this.campID + delimiter + this.isVisible + delimiter + this.details.toString();
   }
-  
+
+  public static String generateCSVHeaders() {
+    String delimiter = ", ";
+    return "campID" + delimiter + "isVisible" + delimiter + Detail.generateCSVHeaders();
+  }
+
   public String toCSV() {
     generateCSVHeaders();
     String delimiter = ", ";
-    return this.campID + delimiter 
-           + this.isVisible + delimiter
-           + this.details.toCSV();
-    }
-  
+    return this.campID + delimiter + this.isVisible + delimiter + this.details.toCSV();
+  }
+
   public void print() {
-    System.out.println("StaffInCharge: " + this.details.getStaffInCharge());
-    System.out.println("Name: " + this.details.getName());
-    System.out.println("Location: " + this.details.getLocation());
-    System.out.println("Description: " + this.details.getDescription());
-    System.out.println("Faculty: " + this.details.getFaculty());
-    System.out.println("StaffInCharge: " + this.details.getStaffInCharge());
-    System.out.println("StartDate: " + this.details.getStartDate().getDayOfMonth()
-                       + "-" + this.details.getStartDate().getMonthValue() 
-                       + "-" + this.details.getStartDate().getYear());
-    System.out.println("EndDate: " + this.details.getEndDate().getDayOfMonth()
-                       + "-" + this.details.getEndDate().getMonthValue() 
-                       + "-" + this.details.getEndDate().getYear());
-    System.out.println("RegistrationClosingDate: " + this.details.getRegistrationClosingDate().getDayOfMonth()
-                       + "-" + this.details.getRegistrationClosingDate().getMonthValue() 
-                       + "-" + this.details.getRegistrationClosingDate().getYear());
-    System.out.println("TotalSlots: " + this.details.getTotalSlots());
-    System.out.println("CommitteeSlots: " + this.details.getCOMMITTEE_SLOTS());
+    String delimiter = "-";
+    String paddingParameters =
+        "| %-10s | %-20s | %-20s | %-20s | %-40s | %-10s | %-25s | %-25s | %-25s | %-15s | \n";
+    System.out.println(delimiter.repeat(240));
+    System.out.printf(paddingParameters, "CampID", "StaffInChargeName", "Name", "Location",
+        "Description", "Faculty", "Registration Closing Date", "Start Date", "Start Date",
+        "Remaining Slots");
+    System.out.println(delimiter.repeat(240));
+    System.out.printf(paddingParameters, this.campID, this.details.getStaffInChargeName(),
+        this.details.getName(), this.details.getLocation(), this.details.getDescription(),
+        this.details.getFaculty(),
+        this.details.getRegistrationClosingDate().getDayOfMonth() + "-"
+            + this.details.getRegistrationClosingDate().getMonthValue() + "-"
+            + this.details.getRegistrationClosingDate().getYear(),
+        this.details.getStartDate().getDayOfMonth() + "-"
+            + this.details.getStartDate().getMonthValue() + "-"
+            + this.details.getStartDate().getYear(),
+        this.details.getEndDate().getDayOfMonth() + "-" + this.details.getEndDate().getMonthValue()
+            + "-" + this.details.getEndDate().getYear(),
+        this.details.getTotalSlots());
+    System.out.println(delimiter.repeat(240));
+    System.out.println();
+  }
+
+  public void detailedPrint() {
+    String delimiter = "-";
+    String paddingParameters = "| %-10s | %-10s | %-15s | %-30s | %-10s | \n";
+    this.print();
+    System.out.println("Participants");
+    System.out.println(delimiter.repeat(91));
+    System.out.printf(paddingParameters, "UserID", "Role", "Name", "Email", "Faculty");
+    System.out.println(delimiter.repeat(91));
+    for (Student stu : this.getParticipants()) {
+      stu.toString();
+    }
+    System.out.println(delimiter.repeat(91));
+    System.out.println();
+    System.out.println("Committee");
+    System.out.printf(paddingParameters, "UserID", "Role", "Name", "Email", "Faculty");
+    for (CommitteeMember cm : this.getCommittee()) {
+      cm.toString();
+    }
+    System.out.println(delimiter.repeat(91));
+    System.out.println();
   }
 }

@@ -8,149 +8,95 @@ import java.util.Set;
 import java.util.Scanner;  // Import the Scanner class
 
 import enums.Role;
+import enums.Faculty;
 import student.Student;
 import camp.Camp;
-import 
 
-public class CommitteeMember {
-	 // Encapsulate attributes
-    private String name;
-    private Student student;
-    private String userID;
-    private String password; // Storing the plain text password (not recommended for production)
-    private Set<Role> roles; // Using a Set to allow multiple roles
-    private String email;
+public class CommitteeMember extends Student {
+	Camp overseeing;
+	int points;
     
      // Constructor to initialize attributes
-    public CommitteeMember(String userID, String email, Set<Role> roles, String name, String role, Student student) {
-        this.name = name;
-        this.role = role;
-        this.student = student;
-        this.camp = camp;
-        this.userID = userID; // Set the userID here
-        this.roles = roles;
-        this.name = name;
-        this.email = email;
+	public CommitteeMember(Student student) {
+		super(student.getUserID(), Role.COMMITTEE_MEMBER, student.getName(), student.getEmail(), student.getFaculty());
+	}
+	
+    public CommitteeMember(String userID, String name, String email, Faculty faculty) {
+        super(userID, Role.COMMITTEE_MEMBER, name, email, faculty);        
+    }
+    
+    public CommitteeMember(String userID, String password, String name, String email, Faculty faculty) {
+        super(userID, password, Role.COMMITTEE_MEMBER, name, email, faculty);
     }
 
     // Getter methods for attributes
+    public String getUserID() {
+    	return super.getUserID();
+    }
+    
+    public String getPassword() {
+    	return super.getPassword();
+    }
+
     public String getName() {
-        return name;
+        return super.getName();
     }
 
     public Role getRole() {
-        return role;
+        return super.getRole();
     }
 
-    public Student getStudent() {
-        return student;
+    public String getEmail() {
+    	return super.getEmail();
     }
 
-    public Camp getCamp() {
-        return camp;
+    public Faculty getFaculty() {
+    	return super.getFaculty();
+    }
+    
+    public Camp getOverseeingCamp() {
+        return overseeing;
+    }
+
+    public int getPoints() {
+    	return points;
+    }
+    
+    public ArrayList<String> getCommitteeInformation() {
+    	ArrayList<String> info = new ArrayList<String>();
+    	info.add(getName());
+    	info.add(getOverseeingCamp().getDetails().getName());
+    	info.add(Integer.toString(getPoints()));
     }
 
     // Setter methods for attributes
+    public void setUserID(String userID) {
+    	super.setUserID(userID);
+    }
+    
+    public void setPassword(String password) {
+    	super.setPassword(password);
+    }
+    
     public void setName(String name) {
-        this.name = name;
+        super.setName(name);;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public void setCamp(Camp camp) {
-        this.camp = camp;
-    }
-
-    // Method to print committee member information
-    public void printCommitteeMemberInfo() {
-        System.out.println("Committee Member Name: " + name);
-        System.out.println("Committee Member Role: " + role);
-        System.out.println("Student Assigned: " + student.getName());
-        System.out.println("Camp Assigned: " + camp.getName());
+    public void setOverseeingCamp(Camp camp) {
+        overseeing = camp;
     }
     
-    public void startMenu() {
-        System.out.println("---------- CommitteeMember Menu ----------");
-        System.out.println("1. Register for Camp");
-        System.out.println("2. Withdraw from Camp");
-        System.out.println("3. Reply to Enquiry");
-        System.out.println("4. Submit Suggestion");
-        System.out.println("5. View All Suggestions");
-        System.out.println("6. Edit Own Suggestion");
-        System.out.println("7. Delete Own Suggestion");
-        System.out.println("8. Generate Participant Report Card");
-        System.out.println("0. Exit");
-        System.out.println("--------------------------------------");
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter your choice: ");
-        int choice = scanner.nextInt();
-
-        switch (choice) {
-            case 1:
-                registerForCamp();
-                break;
-            case 2:
-                withdrawFromCamp();
-                break;
-            case 3:
-                replyToEnquiry();
-                break;
-            case 4:
-                submitSuggestion();
-                break;
-            case 5:
-                viewAllSuggestions();
-                break;
-            case 6:
-                editOwnSuggestion();
-                break;
-            case 7:
-                deleteOwnSuggestion();
-                break;
-            case 8:
-                generateParticipantReportCard();
-                break;
-            case 0:
-                System.exit(0);
-                break;
-            default:
-                System.out.println("Invalid choice. Please select a valid option.");
-        }
+    public void increasePoints() {
+    	points++;
     }
-    
-    public void registerCamp(Student student, Camp camp) {
-        // Check if the student is already registered for a camp
-        if (student.getRegisteredCamp() != null) {
-            System.out.println("Student " + student.getName() + " is already registered for camp " + student.getRegisteredCamp().getName());
-            return;
-        }
-
-        // Register the student for the specified camp
-        student.setRegisteredCamp(camp);
-        camp.addRegisteredStudent(student);
-        System.out.println("Student " + student.getName() + " successfully registered for camp " + camp.getName());
+   
+    public void registerCamp(Scanner scanner, ArrayList<Camp> campList) {
+        super.register(scanner, campList);
     }
 
     // Method to withdraw a student from a registered camp
-    public void withdrawCamp(Student student) {
-        // Check if the student is registered for a camp
-        if (student.getRegisteredCamp() == null) {
-            System.out.println("Student " + student.getName() + " is not registered for any camp");
-            return;
-        }
-
-        // Withdraw the student from the registered camp
-        Camp registeredCamp = student.getRegisteredCamp();
-        student.setRegisteredCamp(null);
-        registeredCamp.removeRegisteredStudent(student);
-        System.out.println("Student " + student.getName() + " successfully withdrawn from camp " + registeredCamp.getName());
+    public void withdrawCamp(Scanner scanner) {
+        super.withdraw(scanner);
     }
     
     public void replies(Enquiry enquiry) {
@@ -318,9 +264,4 @@ public class CommitteeMember {
         // Inform the user about the successful report card generation
         System.out.println("Participant report cards for camp " + campID + " have been generated successfully.");
     }
-
-    public int getPoints() {
-        return points;
-    }
-  
 }

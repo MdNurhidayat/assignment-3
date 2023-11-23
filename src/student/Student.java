@@ -1,16 +1,20 @@
+package student;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.time.LocalDate;
 import java.util.List;
 
-import user.User;
 import camp.Camp;
+import enquiry.BaseEnquiry;
+import enquiry.Enquiry;
+import user.User;
+import enums.Faculty;
 import enums.Role;
+import reply.Reply;
 
-public class Student extends User implements Registration, Withdrawable, StudentEnquiry, BaseEnquiry {
-    private static List<Student> allStudents = new ArrayList<>(); // Declaration and initialization
+public class Student extends User implements Withdrawable, StudentEnquiry, BaseEnquiry {
     private ArrayList<Camp> registeredFor;
-    private Role role;
     private ArrayList<Enquiry> enquiries;
     private int enquiryCounter; // New counter for generating unique enquiry IDs
 
@@ -20,7 +24,6 @@ public class Student extends User implements Registration, Withdrawable, Student
         this.registeredFor = new ArrayList<>(); // Initialize with an empty ArrayList
         this.enquiries = new ArrayList<>();
         this.enquiryCounter = 1; // Initialize counter to 1
-	allStudents.add(this); //maintain a list of students
     }
 
     // Getter method for registeredFor
@@ -53,22 +56,16 @@ public class Student extends User implements Registration, Withdrawable, Student
         enquiries.remove(enquiry);
     }
 
-    public static List<Student> getAllStudents() {
-        return allStudents;
-    }
-
     // Method to view available camps to join
-    public void viewAvailableCampsToJoin() {
+    public void viewAvailableCampsToJoin(ArrayList<Camp> allCamps) {
         System.out.println("---------------------------------------------------------------------------");
-        System.out.printf("| %-10s | %-30s | %-15s |\n", "CampID", "Details", "Remaining Slots");
+        System.out.printf("| %-10s | %-30s | %-15s | %-10s | %-10s | %-10s | %-25s | %-15s |\n", "CampID", "Name", "Location", "Description", "Start Date", "End Date", "Registration Closing Date", "Remaining Slots");
         System.out.println("---------------------------------------------------------------------------");
-
-        List<Camp> allCamps = Camp.getAllCamps();
 
         for (Camp camp : allCamps) {
-            if (camp.getIsVisible() && !camp.getPreviouslyWithdrawn().contains(this) && camp.getFaculty().contains(this.getFaculty())) {
+            if (camp.getisVisible() && !camp.getPreviouslyWithdrawn().contains(this) && camp.getDetails().getFaculty().equals(this.getFaculty())) {
                 
-		int remainingSlots = camp.getDetail.getTotalSlot() - camp.getParticipants().size();
+		int remainingSlots = camp.calculateRemainingSlots();
 
                 System.out.printf("| %-10s | %-30s | %-15s | %-10s | %-10s | %-10s | %-25s | %-15s |\n",
                 camp.getCampID(),
@@ -90,7 +87,7 @@ public class Student extends User implements Registration, Withdrawable, Student
         System.out.println("------------------------------------------------------------------------------------------------------------------");
 
         for (Camp camp : registeredFor) {
-            int remainingSlots = camp.getDetail.getTotalSlot() - camp.getParticipants().size();
+            int remainingSlots = camp.calculateRemainingSlots();
 
             System.out.printf("| %-10s | %-30s | %-15s | %-10s | %-10s | %-10s | %-25s | %-15s |\n",
                 camp.getCampID(),
@@ -107,13 +104,11 @@ public class Student extends User implements Registration, Withdrawable, Student
     }
     
 // Method to register for a camp
-public void register() {
-    Scanner scanner = new Scanner(System.in);
+public void register(Scanner scanner, ArrayList<Camp> allCamps) {
 
     System.out.println("Enter the CampID to register:");
     String campID = scanner.nextLine();
 
-    List<Camp> allCamps = Camp.getAllCamps();
     Camp selectedCamp = null;
 
     // Find the camp with the specified CampID
@@ -125,8 +120,8 @@ public void register() {
     }
 
     // Check if the camp is found and can be registered
-    if (selectedCamp != null && selectedCamp.getIsVisible() && !selectedCamp.getPreviouslyWithdrawn().contains(this)
-            && selectedCamp.getFaculty().contains(this.getFaculty())) {
+    if (selectedCamp != null && selectedCamp.getisVisible() && !selectedCamp.getPreviouslyWithdrawn().contains(this)
+            && selectedCamp.getDetails().getFaculty().equals(this.getFaculty())) {
         int remainingSlots = selectedCamp.getDetails().getTotalSlots() - selectedCamp.getParticipants().size();
 
         // Check if there are available slots and the current date is before the registration closing date
@@ -152,7 +147,7 @@ public void register() {
 
             if (!hasDateClash) {
                 // Add the student to the camp's participants
-                selectedCamp.addParticipants(this);
+                selectedCamp.addParticipant(this);
 
                 // Add the camp to the student's registeredFor list
                 addCampToRegisteredFor(selectedCamp);
@@ -218,8 +213,7 @@ public void register() {
     }
 
     // Method to submit an enquiry for a specific camp	
-    public void submitEnquiry() {
-        Scanner scanner = new Scanner(System.in);
+    public void submitEnquiry(Scanner scanner, ArrayList<Camp> allCamps) {
 
         System.out.println("Enter the CampID for the enquiry:");
         String campID = scanner.nextLine();
@@ -227,7 +221,6 @@ public void register() {
         System.out.println("Enter your enquiry message:");
         String enquiryMessage = scanner.nextLine();
 
-        List<Camp> allCamps = Camp.getAllCamps();
         Camp selectedCamp = null;
 
         // Find the camp with the specified CampID
@@ -241,13 +234,13 @@ public void register() {
         // Check if the camp is found
         if (selectedCamp != null) {
             String enquiryID = getUserID() + enquiryCounter++;
-            Enquiry newEnquiry = new Enquiry(campID, LocalDate.now(), enquiryID, new ArrayList<>(), enquiryMessage);
+            Enquiry newEnquiry = new Enquiry(scanner, selectedCamp);
 
             // Add the enquiry to the student's enquiries list
             enquiries.add(newEnquiry);
 
             // Add the enquiry to the camp's enquiries list
-            selectedCamp.addEnquires(newEnquiry);
+            selectedCamp.addEnquiry(newEnquiry);
 
             System.out.println("Enquiry submitted successfully!");
         } else {
@@ -265,7 +258,7 @@ public void register() {
             System.out.printf("| %-11s | %-13s | %-17s | %-8s |\n",
                     enquiry.getEnquiryID(),
                     enquiry.getDateCreated(),
-                    enquiry.getEnquiryMessage(),
+                    enquiry.getContents(),
                     enquiry.getReplies().size());
 
             // Iterate over replies and print each one
@@ -278,26 +271,25 @@ public void register() {
     }
 
 // Method to edit a student-specific enquiry by EnquiryID
-public void editEnquiries() {
-    Scanner scanner = new Scanner(System.in);
+public void editEnquiries(Scanner scanner) {
 
     System.out.println("Enter the Enquiry ID you want to edit:");
     String enquiryID = scanner.nextLine();
 
     for (Enquiry enquiry : enquiries) {
-        if (enquiry.getEnquiryID().equals(enquiryID) && !enquiry.getIsProcessed()) {
+        if (enquiry.getEnquiryID().equals(enquiryID) && !enquiry.isProcessed()) {
             // Display the current enquiry details
-            System.out.println("Current Enquiry Details:");
+            System.out.println("Current Enquiry Details");
             System.out.println("Enquiry ID: " + enquiry.getEnquiryID());
             System.out.println("Date Created: " + enquiry.getDateCreated());
-            System.out.println("Current Message: " + enquiry.getEnquiryMessage());
+            System.out.println("Current Message: " + enquiry.getContents());
 
             // Prompt the user for a new enquiry message
-            System.out.println("Enter the new enquiry message:");
+            System.out.print("Enter the new enquiry message:");
             String newEnquiryMessage = scanner.nextLine();
 
             // Update the enquiry message using setEnquiryMessage() method
-            enquiry.setEnquiryMessage(newEnquiryMessage);
+            enquiry.setContents(newEnquiryMessage);
 
             System.out.println("Enquiry updated successfully!");
             return; // No need to continue searching once found
@@ -309,19 +301,18 @@ public void editEnquiries() {
 
 
     // Method to delete a student-specific enquiry by EnquiryID
-    public void deleteEnquiries() {
-        Scanner scanner = new Scanner(System.in);
+    public void deleteEnquiries(Scanner scanner, ArrayList<Camp> allCamps) {
 
         System.out.println("Enter the Enquiry ID you want to delete:");
         String enquiryID = scanner.nextLine();
 
         for (Enquiry enquiry : enquiries) {
-            if (enquiry.getEnquiryID().equals(enquiryID) && !enquiry.getIsProcessed()) {
+            if (enquiry.getEnquiryID().equals(enquiryID) && !enquiry.isProcessed()) {
                 // Display the enquiry details
                 System.out.println("Enquiry to delete:");
                 System.out.println("Enquiry ID: " + enquiry.getEnquiryID());
                 System.out.println("Date Created: " + enquiry.getDateCreated());
-                System.out.println("Messages: " + enquiry.getEnquiryMessage());
+                System.out.println("Messages: " + enquiry.getContents());
 
                 // Verify if the user wants to delete the enquiry
                 System.out.println("Do you want to delete this enquiry? (yes/no)");
@@ -331,15 +322,11 @@ public void editEnquiries() {
                     // Remove the Enquiry object from the student's enquiries list
                     enquiries.remove(enquiry);
 
-                    // Remove the Enquiry object from List<Enquiry> allEnquiries
-                    Enquiry.removeEnquiry(enquiry);
-
                     // Find the associated camp and remove the Enquiry object from the camp's enquiries list
-                    List<Camp> allCamps = Camp.getAllCamps();
                     for (Camp camp : allCamps) {
                         for (Enquiry campEnquiry : camp.getEnquiries()) {
                             if (campEnquiry.getEnquiryID().equals(enquiryID)) {
-                                camp.getEnquiries().remove(campEnquiry);
+                                camp.removeEnquiry(campEnquiry);
                                 break;
                             }
                         }
@@ -356,14 +343,18 @@ public void editEnquiries() {
 
         System.out.println("Enquiry not found or already processed. Deletion failed.");
     }
+
 // Method to register as Committee Member for a camp
-public void registerAsCM() {
-    Scanner scanner = new Scanner(System.in);
+public void registerAsCM(Scanner scanner, ArrayList<Camp> allCamps) {
+    // Check if the role is STUDENT
+    if (this.getRole() != Role.STUDENT) {
+        System.out.println("Only students are eligible to register as Committee Members.");
+        return;
+    }
 
     System.out.println("Enter the CampID to register as Committee Member:");
     String campID = scanner.nextLine();
 
-    List<Camp> allCamps = Camp.getAllCamps();
     Camp selectedCamp = null;
 
     // Find the camp with the specified CampID
@@ -375,32 +366,72 @@ public void registerAsCM() {
     }
 
     // Check if the camp is found and can be registered as Committee Member
-    if (selectedCamp != null && selectedCamp.getIsVisible() && !selectedCamp.getPreviouslyWithdrawn().contains(this)
-            && selectedCamp.getFaculty().contains(this.getFaculty()) && this.getRole() == Role.STUDENT) {
-
-        // Check if the role is STUDENT
-        int remainingSlots = selectedCamp.getDetails().getCOMMITTEE_SLOTS() - selectedCamp.getCommittee().size();
+    if (selectedCamp != null && selectedCamp.getisVisible() && !selectedCamp.getPreviouslyWithdrawn().contains(this)
+            && selectedCamp.getDetail.getFaculty().contains(this.getFaculty())) {
 
         // Check if there are available committee slots and the current date is before the registration closing date
-        if (remainingSlots > 0 && selectedCamp.getDetails().getRegistrationClosingDate().isAfter(LocalDate.now())) {
+        int remainingSlots = selectedCamp.getDetails().getCommitteeSlots() - selectedCamp.getCommittee().size();
 
+        if (remainingSlots > 0 && selectedCamp.getDetails().getRegistrationClosingDate().isAfter(LocalDate.now())) {
             // Add the student to the camp's committee
             selectedCamp.addCommittee(this);
 
             // Set the object's role from STUDENT to COMMITTEE_MEMBER
             this.setRole(Role.COMMITTEE_MEMBER);
 
-	    // Set the overseeingCamp attribute to the selected camp
-	    this.setOverseeing(selectedCamp);
+            // Set the overseeingCamp attribute to the selected camp
+            this.setOverseeing(selectedCamp);
 
             System.out.println("Registration as Committee Member successful! Your menu will be changed.");
         } else {
             System.out.println("Cannot register as Committee Member for the camp. Check available committee slots and registration closing date.");
         }
     } else {
-        System.out.println("Camp not found, cannot be registered as Committee Member, or role is not STUDENT.");
+        System.out.println("Camp not found or cannot be registered as Committee Member.");
     }
 }
+    @Override
+    public String toString() {
+        String delimiter = " | ";
+        return this.userID + delimiter + this.role + delimiter + this.name + delimiter
+                + this.email + delimiter + this.faculty;
+    }
+
+    public static String generateCSVHeaders() {
+        String delimiter = ", ";
+        return "UserID" + delimiter + "Role" + delimiter + "Name" + delimiter
+                + "Email" + delimiter + "Faculty";
+    }
+
+    public String toCSV() {
+        String delimiter = ", ";
+        return this.userID + delimiter + this.role + delimiter + this.name + delimiter
+                + this.email + delimiter + this.faculty;
+    }
+
+	@Override
+	public void submitEnquiry(Scanner scanner) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void editEnquiry(Scanner scanner) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteEnquiry(Scanner scanner) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void withdraw(Scanner scanner) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
 
