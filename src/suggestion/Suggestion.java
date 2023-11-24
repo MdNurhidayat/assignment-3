@@ -1,31 +1,24 @@
 package suggestion;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Scanner;
-import camp.Camp;
 import committeeMember.CommitteeMember;
-import file.Input;
 
 public class Suggestion {
   private static int idCount;
   private String suggestionID;
-  private String campID;
   private LocalDate dateCreated;
-  private String creatorName;
+  private CommitteeMember createdBy;
   private String content;
   private boolean isProcessed;
-  private boolean isApproved;
 
-  public Suggestion(Scanner sc, CommitteeMember aCM, Camp aCamp) {
+  public Suggestion(Scanner sc, CommitteeMember aCM) {
     idCount++;
     this.suggestionID = "SUG" + (idCount);
-    this.campID = aCamp.getCampID();
     this.dateCreated = LocalDate.now();
-    this.creatorName = aCM.getName();
-    this.content = Input.getStringInput("Enter your suggestions: ", sc);
+    this.createdBy = aCM;
+    this.content = file.Input.getStringInput("Enter your suggestions: ", sc);
     this.isProcessed = false;
-    this.isApproved = false;
   }
 
   public String getSuggestionID() {
@@ -37,11 +30,7 @@ public class Suggestion {
   }
 
   public String getCampID() {
-    return campID;
-  }
-
-  public void setCampID(String campID) {
-    this.campID = campID;
+    return createdBy.getOverseeingCamp().getCampID();
   }
 
   public LocalDate getDateCreated() {
@@ -52,18 +41,22 @@ public class Suggestion {
     this.dateCreated = dateCreated;
   }
 
-  public String getCreatorName() {
-    return creatorName;
+  public CommitteeMember getCreatedBy() {
+    return createdBy;
   }
 
-  public void setCreatorName(String creatorName) {
-    this.creatorName = creatorName;
+  public void setCreatedBy(CommitteeMember createdBy) {
+    this.createdBy = createdBy;
+  }
+
+  public String getCreatorName() {
+    return createdBy.getName();
   }
 
   public String getContent() {
     return content;
   }
-  
+
   public void setContent(String content) {
     this.content = content;
   }
@@ -75,15 +68,9 @@ public class Suggestion {
   public void setProcessed(boolean isProcessed) {
     this.isProcessed = isProcessed;
   }
-  
-  public boolean isApproved()
-  {
-	  return this.isApproved;
+
+  public void incrementPoint() {
+    this.createdBy.incrementPoint();
   }
 
-  public void setApproved(boolean approveStatus)
-  {
-	  this.isProcessed = true;
-	  this.isApproved = approveStatus;
-  }
 }

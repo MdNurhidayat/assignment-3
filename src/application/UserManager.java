@@ -109,18 +109,23 @@ public class UserManager {
     }
     
     // Method to add a user to the list
-    public void addStudent(String userID, User user) {
-       studentMap.put(userID, user);
+    public void addUser(User user) {
+       studentMap.put(user.getUserID(), user);
     }
     
-    public void addStaff(String userID, Staff staff) {
-    	staffMap.put(userID, staff);
+    public void addStaff(Staff staff) {
+    	staffMap.put(staff.getUserID(), staff);
+    }
+    
+    public void removeUser(User user)
+    {
+    	studentMap.remove(user.getUserID());
     }
     
     void initialise()
     {
-    	ArrayList<String> studentList = FileIO.readFromFile("studentlist.txt");
-    	ArrayList<String> staffList = FileIO.readFromFile("stafflist.txt");
+    	ArrayList<String> studentList = FileIO.readFromCSV("studentlist");
+    	ArrayList<String> staffList = FileIO.readFromCSV("stafflist");
     	
     	// TODO Insert each arraylist into HashMap<String, User / Staff>
     	for(int index = 1; index < studentList.size(); index++)

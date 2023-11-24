@@ -46,6 +46,9 @@ public class NTUCampApplication
 			case LOG_OUT:
 				logOutMenu();
 				break;
+			case PROFILE:
+				viewProfileMenu();
+				break;
 			case VIEW_CAMPS:
 				viewCampsMenu();
 				break;
@@ -113,7 +116,7 @@ public class NTUCampApplication
 	static void errorChoice()
 	{
 		System.out.println("Invalid Choice!");
-		System.out.println("Choose Again");
+		System.out.print("Choose Again : ");
 	}
 	
 	static void initialise()
@@ -192,6 +195,21 @@ public class NTUCampApplication
 		setMenuState(MenuStates.PRELOG_IN);
 	}
 	
+	static void viewProfileMenu()
+	{
+		System.out.println("---------------------------------------");
+        System.out.println("|           YOUR PROFILE              |");
+        System.out.println("---------------------------------------");
+        System.out.println("Name : " + user.getName());
+        System.out.println("UserID : " + user.getUserID());
+        System.out.println("Email : " + user.getEmail());
+        System.out.println("Faculty : " + user.getFaculty().toString());
+        System.out.println("Role : " + user.getRole().toString());
+        System.out.println();
+        System.out.print("Enter 1 to return back to Menu : ");
+        while(scan.nextInt() != 1) {scan.nextLine();}
+        setMenuState(prevMenu);
+	}
 	
 	// Shared Menu Throughout All Roles
 	static void viewCampsMenu()
@@ -201,6 +219,8 @@ public class NTUCampApplication
         System.out.println("---------------------------------------");
 		// TODO : Print all camp according to Student/CM Faculty
 		// Staff will print all camp
+     
+        int choice;
         if (campList.size() == 0)
         {
         	System.out.println("There are no camps");
@@ -210,15 +230,68 @@ public class NTUCampApplication
         }
         else
         {
-        	if (user instanceof Student || user instanceof CommitteeMember)
+        	if (user.getRole() == Role.STUDENT || user.getRole() == Role.COMMITTEE_MEMBER)
         	{
-        		System.out.println("| 1. ");
+        		System.out.println("| 1. Join Camp              |");
+        		System.out.println("| 2. Withdraw Camp          |");
+        		if (user.getRole() == Role.STUDENT)
+        			System.out.println("| 3. Sign up as Committee Member      |");
+        		System.out.println("---------------------------------------");
+        		System.out.print("Please pick a menu: ");
         		
+        		choice = scan.nextInt();
+        		scan.nextLine();
+        		
+        		switch (choice)
+        		{
+        		case 1:
+        		{
+        			((Student)user).register(scan, campList);
+        			setMenuState(MenuStates.STUDENT_MAIN_MENU);
+        			break;
+        		}
+        		case 2:
+        		{
+        			((Student)user).withdraw(scan);
+        			setMenuState(MenuStates.STUDENT_MAIN_MENU);
+        			break;
+        		}
+        		case 3:
+        		{
+        			if (user.getRole() == Role.COMMITTEE_MEMBER)
+        			{
+        				System.out.println("Already a Committee Member of Camp " + ((CommitteeMember)user).getOverseeingCamp().getDetails().getName());
+        			}
+        			else
+        			{
+        				CommitteeMember cm = ((Student)user).registerAsCM(scan, campList, (Student)user);
+        				
+        				userManager.removeUser(user);
+        				
+        				// Change current student to become CM
+        				user = cm;
+        				userManager.addUser(user);
+        				setMenuState(MenuStates.CM_MAIN_MENU);
+        			}
+        			break;
+        		}
+        		}
         	}
-        	else if (user instanceof Staff)
+        	else
         	{
-        		// TODO For instance of Staff
-        		//((user))
+        		for (Camp c : campList)
+        			c.detailedPrint();
+        		System.out.print("Enter 1 to return back to Menu : ");
+        		
+        		do
+        		{
+        			choice = scan.nextInt();
+        			scan.nextLine();
+        			if (choice != 1)
+        				errorChoice();
+        		}
+        		while (choice != 1);
+        		setMenuState(prevMenu);
         	}
         }
 		
@@ -229,22 +302,17 @@ public class NTUCampApplication
 		System.out.println("---------------------------------------");
         System.out.println("|             CAMP DETAILS            |");
         System.out.println("---------------------------------------");
-        if (user instanceof Student)
+        
+        if (user instanceof CommitteeMember)
+        	((CommitteeMember)user).getOverseeingCamp().detailedPrint();
+        else if (user instanceof Student)
         {
         	ArrayList<Camp> camps = ((Student)user).getRegisteredFor();
         	for (Camp c : camps)
-        	{
         		c.print();
-        	}
-        }
-        else if (user instanceof CommitteeMember)
-        {
-        	((CommitteeMember)user).getOverseeingCamp().detailedPrint();
         }
         else // Staff Logics
-        {
         	((Staff)user).getCreatedCamp().detailedPrint();
-        }
         
         System.out.print("Enter 1 to return back to Menu : ");
         int choice = scan.nextInt();
@@ -259,6 +327,19 @@ public class NTUCampApplication
 	{
 		// TODO Print out Enquiries of their own camp
 		// BIG LIST OF IF ELSE DEPENING ON STUDENT, CM OR STAFF
+		
+		if (user.getRole() == Role.STUDENT)
+		{
+			
+		}
+		else if (user.getRole() == Role.COMMITTEE_MEMBER)
+		{
+			
+		}
+		else
+		{
+			((Staff)user).getCreatedCamp().getEnquiries();
+		}
 		
 		// TODO Hid
 		// Change Menu State according to logic above
@@ -286,17 +367,54 @@ public class NTUCampApplication
 	// STUDENT METHODS
 	static void studentMainMenu()
 	{
-		// TODO Hid Create STUDENT Menu
 		System.out.println("---------------------------------------");
         System.out.println("|        NTU STUDENT MAIN MENU        |");
         System.out.println("---------------------------------------");
         System.out.println("| 1. View Available Camps             |");
-        System.out.println("| 2. View Available Camps             |");
+        System.out.println("| 2. View Enquiries                   |");
+        System.out.println("| 3. See Profile                      |");
+        System.out.println("| 4. Log Out                          |");
+        System.out.println("---------------------------------------");
+        System.out.print("Welcome " + user.getRole().toString() + " " + user.getName() + ". Please pick a menu : ");
+        
+        int choice = scan.nextInt();
+        scan.nextLine();
+        
+        switch(choice)
+        {
+        case 1:
+        {
+        	setMenuState(MenuStates.VIEW_CAMPS);
+        	break;
+        }
+        case 2:
+        {
+        	setMenuState(MenuStates.VIEW_ENQUIRIES);
+        	break;
+        }
+        case 3:
+        {
+        	setMenuState(MenuStates.PROFILE);
+        	break;
+        }
+        case 4:
+        {
+        	setMenuState(MenuStates.PRELOG_OUT);
+        	break;
+        }
+        default:
+        	errorChoice();
+        	break;
+        }
+        
+        
 	}
 	
 	static void submitEnquiryMenu()
 	{
 		// TODO Call Students Submit Enquiry Method
+		((Student)user).submitEnquiry(scan, campList);
+		
 		setMenuState(MenuStates.STUDENT_MAIN_MENU);
 	}
 
@@ -307,6 +425,42 @@ public class NTUCampApplication
 		System.out.println("---------------------------------------");
         System.out.println("|       NTU COMMITTEE MAIN MENU       |");
         System.out.println("---------------------------------------");
+        System.out.println("| 1. View Available Camps             |");
+        System.out.println("| 2. View Enquiries                   |");
+        System.out.println("| 3. Submit Suggestions               |");
+        System.out.println("| 4. View Suggestions                 |");
+        System.out.println("| 5. View Profile                     |");
+        System.out.println("| 6. Log Out                          |");
+        System.out.println("---------------------------------------");
+        System.out.print("Welcome " + user.getRole().toString() + " " + user.getName() + ". Please pick a menu : ");
+        
+        int choice = scan.nextInt();
+        scan.nextLine();
+        
+        switch(choice)
+        {
+        case 1:
+        	setMenuState(MenuStates.VIEW_CAMPS);
+        	break;
+        case 2:
+        	setMenuState(MenuStates.VIEW_ENQUIRIES);
+        	break;
+        case 3:
+        	setMenuState(MenuStates.SUBMIT_SUGGESTION);
+        	break;
+        case 4:
+        	setMenuState(MenuStates.VIEW_SUGGESTIONS);
+        	break;
+        case 5:
+        	setMenuState(MenuStates.PROFILE);
+        	break;
+        case 6:
+        	setMenuState(MenuStates.PRELOG_OUT);
+        	break;
+        default:
+        	errorChoice();
+        	break;
+        }
 	}
 	
 	static void submitSuggestionMenu()
@@ -321,7 +475,6 @@ public class NTUCampApplication
     	System.out.println("---------------------------------------");
         System.out.println("|         NTU STAFF MAIN MENU         |");
         System.out.println("---------------------------------------");
-        // TODO Create getCamp Method in Staff class and uncomment the next few lines
         if (((Staff)user).getCreatedCamp() == null)
         System.out.println("| 1. Create Camp                      |");
         else
@@ -333,10 +486,10 @@ public class NTUCampApplication
         System.out.println("| 6. Approve Suggestions              |");
         System.out.println("| 7. Generate Participant (R)         |");
         System.out.println("| 8. Generate Performance (R)         |");
-        System.out.println("| 9. Generate Enquiry (R)             |");
+        System.out.println("| 9. View Profile                     |");
         System.out.println("| 10.Log Out                          |");
         System.out.println("---------------------------------------");
-		System.out.print("Welcome " + user.getName() + ". Please pick a menu : ");
+        System.out.print("Welcome " + user.getRole().toString() + " " + user.getName() + ". Please pick a menu : ");
 		
 		int choice = scan.nextInt();
 		scan.nextLine();
@@ -387,7 +540,7 @@ public class NTUCampApplication
 		}
 		case 9:
 		{
-			setMenuState(MenuStates.REPORT_ENQUIRY);
+			setMenuState(MenuStates.PROFILE);
 			break;
 		}
 		case 10:
@@ -416,6 +569,7 @@ public class NTUCampApplication
         System.out.println("---------------------------------------");
         
         ((Staff)user).createCamp(scan);
+        campList.add(((Staff)user).getCreatedCamp());
         
     	setMenuState(prevMenu);
     }

@@ -108,7 +108,6 @@ public class Input {
    * @return The input of the client as an float.
    * 
    */
-
   public static float getFloatInput(String message, Scanner sc) {
     System.out.print(message);
     float input = sc.nextFloat();
@@ -122,7 +121,6 @@ public class Input {
    * @param sc A scanner object used for methods to request for input (dependency).
    * @return The input of the client as a double.
    */
-
   public static double getDoubleInput(String message, Scanner sc) {
     System.out.print(message);
     double input = sc.nextDouble();
@@ -163,7 +161,8 @@ public class Input {
       if (betweenMinAndMax)
         return day;
       else
-        System.out.print("You have entered an invalid day value. Please re-enter. Valid values: (1-31).");
+        System.out
+            .print("You have entered an invalid day value. Please re-enter. Valid values: (1-31).");
     } while (outOfRange);
     return -1;
   }
@@ -189,7 +188,8 @@ public class Input {
       if (betweenMinAndMax)
         return month;
       else
-        System.out.print("You have entered an invalid month value. Please re-enter. Valid values: (1-12).");
+        System.out.print(
+            "You have entered an invalid month value. Please re-enter. Valid values: (1-12).");
     } while (outOfRange);
     return -1;
   }
@@ -212,7 +212,8 @@ public class Input {
       if (betweenMinAndMax)
         return year;
       else
-        System.out.print("You have entered an invalid year value. Please re-enter. Valid values: (0000-9999).");
+        System.out.print(
+            "You have entered an invalid year value. Please re-enter. Valid values: (0000-9999).");
     } while (outOfRange);
     return -1;
   }
@@ -231,4 +232,5 @@ public class Input {
     int year = getYearFromIntInput(message, sc);
     return LocalDate.of(year, month, day);
   }
+
 }

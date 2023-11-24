@@ -3,30 +3,42 @@ package committeeMember;
 import java.util.HashSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.Scanner;  // Import the Scanner class
 
 import enums.Role;
+import enums.RoleFilter;
+import file.Input;
+import reply.Reply;
+import report.BaseReport;
 import enums.Faculty;
+import enums.Format;
 import student.Student;
+import suggestion.BaseSuggestion;
+import suggestion.Suggestion;
 import camp.Camp;
+import enquiry.BaseEnquiry;
+import enquiry.Enquiry;
+import enquiry.ReplyEnquiry;
 
-public class CommitteeMember extends Student {
+public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquiry, BaseReport, CommitteeMemberReport {
 	Camp overseeing;
 	int points;
+	HashMap<String, Suggestion> suggestionList;
     
      // Constructor to initialize attributes
-	public CommitteeMember(Student student) {
-		super(student.getUserID(), Role.COMMITTEE_MEMBER, student.getName(), student.getEmail(), student.getFaculty());
+	public CommitteeMember(Student student, Camp camp) {
+		super(student.getUserID(), student.getPassword(), Role.COMMITTEE_MEMBER, student.getName(), student.getEmail(), student.getFaculty());
+		overseeing = camp;
+		points = 0;
 	}
-	
-    public CommitteeMember(String userID, String name, String email, Faculty faculty) {
-        super(userID, Role.COMMITTEE_MEMBER, name, email, faculty);        
-    }
     
     public CommitteeMember(String userID, String password, String name, String email, Faculty faculty) {
         super(userID, password, Role.COMMITTEE_MEMBER, name, email, faculty);
+        overseeing = null;
+        points = 0;
     }
 
     // Getter methods for attributes
@@ -58,15 +70,12 @@ public class CommitteeMember extends Student {
         return overseeing;
     }
 
+    public void incrementPoint() {
+    	this.points++;
+	}
+    
     public int getPoints() {
     	return points;
-    }
-    
-    public ArrayList<String> getCommitteeInformation() {
-    	ArrayList<String> info = new ArrayList<String>();
-    	info.add(getName());
-    	info.add(getOverseeingCamp().getDetails().getName());
-    	info.add(Integer.toString(getPoints()));
     }
 
     // Setter methods for attributes
@@ -99,169 +108,244 @@ public class CommitteeMember extends Student {
         super.withdraw(scanner);
     }
     
-    public void replies(Enquiry enquiry) {
-        // Check if the enquiry has already been processed
-    	if (enquiry.isProcessed()) {
-            return;
-        }
-        // Check if the current object is either a CommitteeMember or Staff instance
-        if (!(this instanceof CommitteeMember || this instanceof Staff)) {
-            return;
-        }
-        // Check if the current object is either a CommitteeMember or Staff instance
-        if (this instanceof CommitteeMember || this instanceof Staff) {
-            // Create a Scanner object to read user input
-            Scanner scanner = new Scanner(System.in);
-
-            // Prompt the user to enter their reply message
-            System.out.println("Enter your reply message: ");
-            String replyMessage = scanner.nextLine();
-
-            // Mark the enquiry as processed
-            enquiry.setProcessed(true);
-
-            // Create a Reply object with the user-provided reply message and current date and time
-            Reply reply = new Reply();
-            reply.setReplyMessage(replyMessage);
-            reply.setCreateDate(LocalDate.now());
-            reply.setTimeCreated(LocalTime.now());
-
-            // Link the reply to the CommitteeMember or Staff using has-a relationship
-            reply.setSentBy(this);
-
-            // Validate the reply message length (max 250 characters)
-            if (replyMessage.length() > 250) {
-                System.out.println("Reply message exceeds the maximum character limit of 250.");
-                return;
-            }
-
-            // Add the reply to the enquiry's replies list
-            enquiry.addReply(reply);
-
-            // Send a notification to the enquirer
-            System.out.println("Enquiry " + enquiry.getEnquiryID() + " has been responded to with a reply.");
-        } else {
-            System.out.println("Only CommitteeMember and Staff instances can reply to enquiries.");
-        }
-    }
-
-    public void viewSuggestion() {
-        // Implement code to view suggestions
-        System.out.println("Viewing suggestions...");
-        
-        public void viewSuggestion(String suggestionID) {
-            if (!suggestionID.isEmpty()) {
-                // Search for the corresponding suggestion based on the ID
-                List<Suggestion> suggestions = retrieveSuggestions();
-                for (Suggestion suggestion : suggestions) {
-                    if (suggestion.getSuggestionID().equals(suggestionID)) {
-                        // Display the specific suggestion details
-                        displaySuggestionDetails(suggestion);
-                        break;
-                    }
-                }
-            } else {
-                // View a list of all suggestions
-                List<Suggestion> suggestions = retrieveSuggestions();
-                System.out.println("--------------- Suggestion List ----------------");
-                for (Suggestion suggestion : suggestions) {
-                    displaySuggestionSummary(suggestion);
-                }
-                System.out.println("--------------- End of Suggestion List --------------");
-            }
-        }
-    }
-
-        // Retrieve suggestions from the database or designated repository
-        private List<Suggestion> retrieveSuggestions() {
-            // Implement database or repository interaction to retrieve suggestions
-            return null;
-        }
-
-        // Display detailed information for a specific suggestion
-        private void displaySuggestionDetails(Suggestion suggestion) {
-            System.out.println("Suggestion ID: " + suggestion.getSuggestionID());
-            System.out.println("Submitted by: " + suggestion.getSubmittedBy());
-            System.out.println("Submitted on: " + suggestion.getSubmissionDate());
-            System.out.println("Suggestion content: " + suggestion.getSuggestionContent());
-            System.out.println("Suggested camps or activities: " + suggestion.getSuggestedCampsOrActivities());
-            System.out.println("Status: " + suggestion.getStatus());
-        }
-
-        // Display a summary of a suggestion
-        private void displaySuggestionSummary(Suggestion suggestion) {
-            System.out.println(suggestion.getSuggestionID() + " - " + suggestion.getSubmittedBy());
-        }
-    }
-
     @Override
-    public void submitSuggestion(String suggestion) {
-        // Implement code to submit a suggestion
-        System.out.println("Submitting suggestion: " + suggestion);
+    public void replyEnquiry(String replyMessage, Scanner sc) {
+      viewEnquiries();
+      ArrayList<Enquiry> enquiries = this.overseeing.getEnquiries();
+      String enquiryID = Input.getStringInput("Enter enquiryID of enquiry to edit: ", sc);
+      for (Enquiry e : enquiries) {
+        if (!e.getEnquiryID().equals(enquiryID))
+          System.out.println("EnquiryID  " + enquiryID
+              + "provided not found in this camp's list of enquiries, please try again.");
+        else
+          // TODO @hid, add Derrick's method call for creating reply
+          // TODO @hid, implementation should be very similar to that of CM,
+          // align either one to the other. If role of replier is CM remember to increment point.
+        	increasePoints();
+          System.out.println("Enquiry " + enquiryID + " replied.");
+      }
     }
 
-    private void editOwnSuggestion() {
-        // Retrieve all suggestions submitted by the current committee member
-        List<Suggestion> suggestions = retrieveOwnSuggestions();
-
-        // Prompt the user to select a suggestion to edit
-        System.out.println("Please select the suggestion ID you want to edit:");
-        for (Suggestion suggestion : suggestions) {
-            System.out.println(suggestion.getSuggestionID() + " - " + suggestion.getSubmittedBy());
+    public void viewSuggestionLists() {
+        // View a list of all suggestions
+        System.out.println("------------------ Suggestion List ------------------");
+        for (Map.Entry<String, Suggestion> suggestionMap : suggestionList.entrySet()) {
+            System.out.println(suggestionMap.getValue().getSuggestionID() + " - " + suggestionMap.getValue().getCreatorName());
         }
-        Scanner scanner = new Scanner(System.in);
-        String suggestionID = scanner.nextLine();
-
-        // Retrieve the selected suggestion details
-        Suggestion suggestion = retrieveSuggestion(suggestionID);
-
-        // Allow the user to edit the suggestion details
-        System.out.println("Enter the updated suggestion content:");
-        String updatedContent = scanner.nextLine();
-        suggestion.setSuggestionContent(updatedContent);
-
-        // Update the suggestion in the database or designated repository
-        updateSuggestion(suggestion);
-
-        // Inform the user about the successful update
-        System.out.println("Suggestion " + suggestionID + " has been updated successfully.");
-    }
-
-    @Override
-    public void deleteSuggestion(int suggestionId) {
-        // Implement code to delete a suggestion
-        List<Suggestion> suggestions = retrieveOwnSuggestions();
-
-        // Prompt the user to select a suggestion to delete
-        System.out.println("Please select the suggestion ID you want to delete:");
-        for (Suggestion suggestion : suggestions) {
-            System.out.println(suggestion.getSuggestionID() + " - " + suggestion.getSubmittedBy());
-        }
-        Scanner scanner = new Scanner(System.in);
-        String suggestionID = scanner.nextLine();
-
-        // Delete the selected suggestion from the database or designated repository
-        deleteSuggestion(suggestionID);
-
-        // Inform the user about the successful deletion
-        System.out.println("Suggestion " + suggestionID + " has been deleted successfully.");
+        System.out.println("--------------- End of Suggestion List --------------");
     }
     
-    private void generateParticipantReportCard() {
-        // Prompt the user to enter the camp ID for which they want to generate report cards
-        System.out.println("Enter the camp ID for which you want to generate report cards:");
-        Scanner scanner = new Scanner(System.in);
-        String campID = scanner.nextLine();
-
-        // Retrieve the list of participants for the specified camp
-        List<Participant> participants = retrieveParticipants(campID);
-
-        // Generate report cards for each participant
-        for (Participant participant : participants) {
-            generateReportCard(participant);
-        }
-
-        // Inform the user about the successful report card generation
-        System.out.println("Participant report cards for camp " + campID + " have been generated successfully.");
+    public void viewSuggestion(String suggestionID) {
+        if (suggestionList.containsKey(suggestionID))
+            displaySuggestionDetails(suggestionList.get(suggestionID));
     }
+
+    // Display detailed information for a specific suggestion
+    private void displaySuggestionDetails(Suggestion suggestion) {
+        System.out.println("Suggestion ID: " + suggestion.getSuggestionID());
+        System.out.println("Submitted by: " + suggestion.getCreatorName());
+        System.out.println("Submitted on: " + suggestion.getDateCreated());
+        System.out.println("Suggestion content: " + suggestion.getContent());
+        System.out.println("Suggested in Camp " + suggestion.getCampID());
+        System.out.println("Status: " + suggestion.isProcessed());
+    }
+
+
+    public void submitSuggestion(Scanner scanner) {
+        Suggestion suggestion = new Suggestion(scanner, this);
+        suggestionList.put(suggestion.getSuggestionID(), suggestion);
+        increasePoints();
+        
+        System.out.println("Suggestion successfully implemented!");
+    }
+
+    private void editOwnSuggestion(Scanner scanner) {
+
+        // Prompt the user to select a suggestion to edit
+        System.out.print("Please select the suggestion ID you want to edit:");
+        String suggestionID = scanner.nextLine();
+        
+        if (this.suggestionList.containsKey(suggestionID)){
+            // Allow the user to edit the suggestion details
+            System.out.print("Enter the updated suggestion content:");
+            String updatedContent = scanner.nextLine();
+            this.suggestionList.get(suggestionID).setContent(updatedContent);
+
+            // Inform the user about the successful update
+            System.out.println("Suggestion " + suggestionID + " has been updated successfully.");
+        }
+        else
+        	System.out.println("Suggestion " + suggestionID + " do not exist. Try Again.");
+    }
+
+    public void deleteSuggestion(Scanner scanner) {
+
+        // Prompt the user to select a suggestion to delete
+        System.out.print("Please select the suggestion ID you want to delete: ");
+        String suggestionID = scanner.nextLine();
+        
+        if (this.suggestionList.containsKey(suggestionID)){        
+	        suggestionList.remove(suggestionID);
+	        
+	        // Inform the user about the successful deletion
+	        System.out.println("Suggestion " + suggestionID + " has been deleted successfully.");
+        }
+        else
+        	System.out.println("Suggestion " + suggestionID + " do not exist. Try Again.");
+    }
+
+    /**
+     * Generates a report of participants with filters based on role belonging to the camp created by this staff. Option to save given after report generation.
+     * 
+     * @param sc Scanner object to be injected.
+     */
+    @Override
+    public void generateParticipantReport(Scanner sc) {
+      // early exit if no camp created
+      if (overseeing == null)
+        System.out.println(
+            "You are not a camp Committee Member yet. Please join a camp as Committee Member before generating report.");
+      else {
+        ArrayList<Student> students = overseeing.getParticipants();
+        ArrayList<CommitteeMember> committee = overseeing.getCommittee();
+        // prompt for filter
+        String filterYesOrNo = file.Input
+            .getStringInput("Do you wish to filter the report by role?: (y/n) ", sc).toLowerCase();
+        RoleFilter filterSelection = enums.RoleFilter.getRoleFilterFromStringInput(sc);
+        // prompt for format
+        Format formatSelection = enums.Format.getFormatFromStringInput(sc);
+        if (filterYesOrNo == "y") {
+          // generate report with filters base on format selection
+          switch (filterSelection) {
+            case STUDENT: {
+              if (formatSelection == Format.CSV) {
+                for (Student s : students) {
+                  s.toCSV();
+                }
+              } else {
+                for (Student s : students) {
+                  s.toString();
+                }
+              }
+            }
+            case COMMITTEE_MEMBER: {
+              if (formatSelection == Format.CSV) {
+                for (CommitteeMember cm : committee) {
+                  cm.toCSV();
+                }
+              } else {
+                for (CommitteeMember cm : committee) {
+                  cm.toString();
+                }
+              }
+            }
+            default:
+              if (formatSelection == Format.CSV) {
+                for (Student s : students) {
+                  s.toCSV();
+                }
+                for (CommitteeMember cm : committee) {
+                  cm.toCSV();
+                }
+              } else {
+                for (Student s : students) {
+                  s.toString();
+                }
+                for (CommitteeMember cm : committee) {
+                  cm.toString();
+                }
+              }
+          }
+          // prompt if user wishes to save the report
+          String saveYesOrNo = file.Input
+              .getStringInput("Do you wish to save the report as a file?: (y/n) ", sc).toLowerCase();
+          if (saveYesOrNo == "y") {
+            if (filterYesOrNo == "y") {
+              switch (filterSelection) {
+                case STUDENT: {
+                  if (formatSelection == Format.CSV) { // save as .csv
+                    String fileName = file.Input.getStringInput(
+                        "Please enter the name of the output file (do not include file extension): ",
+                        sc);
+                    ArrayList<String> toSave = new ArrayList<>();
+                    toSave.add(student.Student.generateCSVHeaders());
+                    for (Student s : students) {
+                      toSave.add(s.toCSV());
+                    }
+                    file.FileIO.writeToFile(formatSelection, fileName, toSave);
+                    System.out.println("File saved.");
+                  } else { // save as .txt
+                    String fileName = file.Input.getStringInput(
+                        "Please enter the name of the output file (do not include file extension): ",
+                        sc);
+                    ArrayList<String> toSave = new ArrayList<>();
+                    for (Student s : students) {
+                      toSave.add(s.toString());
+                    }
+                    file.FileIO.writeToFile(formatSelection, fileName, toSave);
+                    System.out.println("File saved.");
+                  }
+                }
+                case COMMITTEE_MEMBER: {
+                  if (formatSelection == Format.CSV) { // save as .csv
+                    String fileName = file.Input.getStringInput(
+                        "Please enter the name of the output file (do not include file extension): ",
+                        sc);
+                    ArrayList<String> toSave = new ArrayList<>();
+                    toSave.add(committeeMember.CommitteeMember.generateCSVHeaders());
+                    for (CommitteeMember cm : committee) {
+                      toSave.add(cm.toCSV());
+                    }
+                    file.FileIO.writeToFile(formatSelection, fileName, toSave);
+                    System.out.println("File saved.");
+                  } else { // save as .txt
+                    String fileName = file.Input.getStringInput(
+                        "Please enter the name of the output file (do not include file extension): ",
+                        sc);
+                    ArrayList<String> toSave = new ArrayList<>();
+                    for (CommitteeMember cm : committee) {
+                      toSave.add(cm.toString());
+                    }
+                    file.FileIO.writeToFile(formatSelection, fileName, toSave);
+                    System.out.println("File saved.");
+                  }
+                }
+                default: {
+                  if (formatSelection == Format.CSV) { // save as .csv
+                    String fileName = file.Input.getStringInput(
+                        "Please enter the name of the output file (do not include file extension): ",
+                        sc);
+                    ArrayList<String> toSave = new ArrayList<>();
+                    toSave.add(committeeMember.CommitteeMember.generateCSVHeaders());
+                    for (CommitteeMember cm : committee) {
+                      toSave.add(cm.toCSV());
+                    }
+                    for (Student s : students) {
+                      toSave.add(s.toCSV());
+                    }
+                    file.FileIO.writeToFile(formatSelection, fileName, toSave);
+                    System.out.println("File saved.");
+                  } else {
+                    String fileName = file.Input.getStringInput(
+                        "Please enter the name of the output file (do not include file extension): ",
+                        sc);
+                    ArrayList<String> toSave = new ArrayList<>();
+                    for (CommitteeMember cm : committee) {
+                      toSave.add(cm.toCSV());
+                    }
+                    for (Student s : students) {
+                      toSave.add(s.toCSV());
+                    }
+                    file.FileIO.writeToFile(formatSelection, fileName, toSave);
+                    System.out.println("File saved.");
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+
 }

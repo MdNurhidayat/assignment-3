@@ -5,14 +5,13 @@ import java.util.Scanner;
 import enums.Faculty;
 import enums.Role;
 import staff.Staff;
-import file.Input;
 
 /**
- * Represents details of this <code>camp</code>. Can only be modified by a <code>Staff</code>.
- * Created at the same time when a <code>camp</code> is created.
+ * Represents details of a <code>camp</code>. Can only be modified by a <code>Staff</code>. Created
+ * at the same time when a <code>camp</code> is created.
  * 
  * @author Nah Wei Jie
- * @version 1.04
+ * @version 1.1
  * @see <code>Staff</code>, <code>Camp</code>
  */
 public class Detail {
@@ -84,7 +83,7 @@ public class Detail {
    */
   private final int COMMITTEE_SLOTS_CAPACITY = 10;
 
-  // default methods
+  // default methods, Javadoc skipped as methods are self-explanatory
   public String getName() {
     return name;
   }
@@ -179,15 +178,15 @@ public class Detail {
   public Detail(Scanner sc, Staff aStaff) {
     staffInCharge = aStaff;
     staffInChargeName = aStaff.getName();
-    name = Input.getStringInput("Enter the name of this camp: ", sc);
-    location = Input.getStringInput("Enter the location of this camp: ", sc);
-    description = Input.getStringInput("Enter the description of this camp: ", sc);
+    name = file.Input.getStringInput("Enter the name of this camp: ", sc);
+    location = file.Input.getStringInput("Enter the location of this camp: ", sc);
+    description = file.Input.getStringInput("Enter the description of this camp: ", sc);
     faculty = Faculty.getFacultyFromStringInput(sc);
-    startDate = Input.getDateFromIntInputs("start date: ", sc);
+    startDate = file.Input.getDateFromIntInputs("start date: ", sc);
 
     LocalDate registrationclosingdate;
     do {
-      registrationclosingdate = Input.getDateFromIntInputs("registration deadline: ", sc);
+      registrationclosingdate = file.Input.getDateFromIntInputs("registration deadline: ", sc);
       if (registrationclosingdate.isAfter(startDate))
         System.out
             .println("Registration closing date cannot be later than start date. Please re-enter.");
@@ -197,19 +196,19 @@ public class Detail {
 
     LocalDate endDate;
     do {
-      endDate = Input.getDateFromIntInputs("end date: ", sc);
+      endDate = file.Input.getDateFromIntInputs("end date: ", sc);
       if (endDate.isBefore(startDate))
         System.out.println("End date cannot be earlier than start date. Please re-enter.");
       else
         this.endDate = endDate;
     } while (endDate.isBefore(startDate));
 
-    this.totalSlots = Input.getIntInput("Enter the combined total slots for this camp: ", sc);
+    this.totalSlots = file.Input.getIntInput("Enter the combined total slots for this camp: ", sc);
 
     int committeeSlots;
     do {
       committeeSlots =
-          Input.getIntInput("Enter the total committee slots for this camp: ", sc);
+          file.Input.getIntInput("Enter the total committee slots for this camp: ", sc);
       if (committeeSlots > COMMITTEE_SLOTS_CAPACITY)
         System.out.println("Committee member slots cannot be higher than the maximum capacity of "
             + COMMITTEE_SLOTS_CAPACITY + ". Please re-enter.");
@@ -218,6 +217,14 @@ public class Detail {
     } while (committeeSlots > COMMITTEE_SLOTS_CAPACITY);
   }
 
+  /**
+   * Overriden toString method for <code>Detail</code> class. Generates and returns the attribute
+   * values as a string with the " | " character as a delimiter.
+   * 
+   * @return string result of all of this detail's attribute values with the exception of
+   *         <code> StaffInCharge </code>
+   */
+  @Override
   public String toString() {
     String delimiter = " | ";
     return this.staffInChargeName + delimiter + this.name + delimiter + this.location + delimiter
@@ -225,8 +232,13 @@ public class Detail {
         + this.endDate + delimiter + this.registrationClosingDate + delimiter + this.totalSlots
         + delimiter + this.committeeSlots;
   }
-  
 
+  /**
+   * Generates and returns the attribute names for use as CSV headers as a string with the ","
+   * character as a delimiter.
+   * 
+   * @return string result of all of this detail's attribute names.
+   */
   public static String generateCSVHeaders() {
     String delimiter = ", ";
     return "staffInChargeName" + delimiter + "name" + delimiter + "location" + delimiter
@@ -235,6 +247,13 @@ public class Detail {
         + "committeeSlots";
   }
 
+  /**
+   * Generates and returns the attribute values in CSV format as a string with the "," character as
+   * a delimiter.
+   * 
+   * @return string result of all of this detail's attribute values with the exception of
+   *         <code> StaffInCharge </code>
+   */
   public String toCSV() {
     String delimiter = ", ";
     return this.staffInChargeName + delimiter + this.name + delimiter + this.location + delimiter
@@ -242,25 +261,25 @@ public class Detail {
         + this.endDate + delimiter + this.registrationClosingDate + delimiter + this.totalSlots
         + delimiter + this.committeeSlots;
   }
-  
 
+  /**
+   * Prints a <code>Camp</code> object in a format suitable for CLI. Displays all attributes except
+   * <code>StaffInCharge</code>.
+   */
   public void print() {
     String delimiter = "-";
     String paddingParameters =
         "| %-20s | %-20s | %-20s | %-40s | %-10s | %-25s | %-25s | %-25s | %-15s | \n";
-    System.out.println(delimiter.repeat(228));
-    System.out.printf(paddingParameters, "StaffInChargeName", "Name", "Location", "Description",
-        "Faculty", "Registration Closing Date", "Start Date", "Start Date", "Remaining Slots");
-    System.out.println(delimiter.repeat(228));
     System.out.printf(paddingParameters, this.getStaffInChargeName(), this.getName(),
         this.getLocation(), this.getDescription(), this.getFaculty(),
-        this.getRegistrationClosingDate().getDayOfMonth() + "-"
-            + this.getRegistrationClosingDate().getMonthValue() + "-"
+        this.getRegistrationClosingDate().getDayOfMonth() + delimiter
+            + this.getRegistrationClosingDate().getMonthValue() + delimiter
             + this.getRegistrationClosingDate().getYear(),
-        this.getStartDate().getDayOfMonth() + "-" + this.getStartDate().getMonthValue() + "-"
-            + this.getStartDate().getYear(),
-        this.getEndDate().getDayOfMonth() + "-" + this.getEndDate().getMonthValue() + "-"
-            + this.getEndDate().getYear(),
+        this.getStartDate().getDayOfMonth() + delimiter + this.getStartDate().getMonthValue()
+            + delimiter + this.getStartDate().getYear(),
+        this.getEndDate().getDayOfMonth() + delimiter + this.getEndDate().getMonthValue()
+            + delimiter + this.getEndDate().getYear(),
         this.getTotalSlots());
   }
+
 }

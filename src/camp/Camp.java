@@ -157,7 +157,6 @@ public class Camp {
    */
   public void addParticipant(Student aStudent) {
     this.participants.add(aStudent);
-
   }
 
   /**

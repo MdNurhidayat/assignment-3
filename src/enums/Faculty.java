@@ -2,8 +2,13 @@ package enums;
 
 import java.util.Scanner;
 
-import file.Input;
-
+/**
+ * Represents the Faculty types.
+ * 
+ * @author Nah Wei Jie
+ * @version 1.1
+ * @see <code>Staff</code>
+ */
 public enum Faculty {
   SCSE,
   ADM,
@@ -12,6 +17,10 @@ public enum Faculty {
   SSS,
   NTU;
 
+  /**
+   * Prints all Faculty enumerated values in the console.
+   * 
+   */
   public static void printAll() {
     Faculty[] facultyList = Faculty.values();
     System.out.println("List of faculties:");
@@ -20,6 +29,11 @@ public enum Faculty {
     }
   }
   
+  /**
+   * Searches against all Faculty enumerated values and returns the <code>Faculty</code> if
+   * there is a match, or null is there is not.
+   * 
+   */
   public static Faculty search(String str) {
     Faculty[] facultyList = Faculty.values();
     for (Faculty f: facultyList) {
@@ -30,11 +44,16 @@ public enum Faculty {
     return null;
   }
   
+  /**
+   * Gets a string input from the user, and matches it against all Faculty enumerated values and
+   * returns the Faculty is there is a match, re-prompts the user to enter the input again if the
+   * input is not found.
+   */
   public static Faculty getFacultyFromStringInput(Scanner sc) {
     printAll();
     Faculty result = null;
     do {
-      String userInput = Input.getStringInput("Enter your selection: ", sc);
+      String userInput = file.Input.getStringInput("Enter your selection: ", sc);
       result = search(userInput.toUpperCase());
       if (result != null) {
         return result;
@@ -44,9 +63,4 @@ public enum Faculty {
     return result; // Logically, this line will never be reached. Included to keep the compiler from showing error of not returning.
   }
   
-  //TODO for testing, remove before submission or demo-ing
-  public static void main(String[] args) {
-    Scanner sc = new Scanner(System.in);
-    getFacultyFromStringInput(sc);
-  }
 }

@@ -6,54 +6,75 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
+import camp.Camp;
+import enums.Format;
+import enums.Role;
+import staff.Staff;
 
+/**
+ * The <code>FileIO</code> class contains various methods to provide support for reading and writing
+ * to files of differrent format. Assists users of this class to avoid repetition of boilerplate
+ * code by presenting it in a more concise manner (one liners), and allows injection of
+ * <code>ArrayLists</code> of various classes to facilitate ease of use.
+ * 
+ * @author Nah Wei Jie
+ * @version 1.0
+ */
 public class FileIO {
-  
-  public static void writeToFile(String fileName, ArrayList<String> anArray) {
-    
+
+  /**
+   * Writes the content of an injected <code>ArrayList</code> of strings to a text file of either .csv or .txt
+   * format with the provided filename.
+   * 
+   * @param format The format of the output file
+   * @param fileName The name of the output file
+   * @param anArray An ArrayList<string> of strings which holds the content for writing to the file
+   * 
+   */
+  public static void writeToFile(Format format,String fileName, ArrayList<String> anArray) {
+    String fileExtension = format.toString();
+    if (fileExtension == Format.CSV.toString())
+      fileExtension = ".csv";
+    else
+      fileExtension = ".txt";
     try {
-      BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+      BufferedWriter writer = new BufferedWriter(new FileWriter(fileName + fileExtension));
       for (String line : anArray) {
         writer.write(line + "\n");
       }
       writer.close();
-      //System.out.println("Successfully read from " + fileName);
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
   
-  public static ArrayList<String> readFromFile(String filePath) {
-    ArrayList<String> resultArr = new ArrayList<String>();  
+  /**
+   * Reads the content of a text file of .csv format, and stores it into an <code>ArrayList</code>
+   * of strings.
+   * 
+   * @param fileName The name of the file to be read.
+   * @return An <code>ArrayList</code> of strings with the content
+   * 
+   */
+  public static ArrayList<String> readFromCSV(String fileName) {
+    String format = ".csv";
+    ArrayList<String> resultArr = new ArrayList<>();
     try {
-      BufferedReader reader = new BufferedReader(new FileReader(filePath));
+      BufferedReader reader = new BufferedReader(new FileReader(fileName + format));
 
       String line;
-      while((line = reader.readLine()) != null){
+      while ((line = reader.readLine()) != null) {
         resultArr.add(line);
-        //System.out.println(line);
       }
-      //System.out.println("Successfully read from " + filePath);
       reader.close();
 
     } catch (IOException e) {
-      
+      e.printStackTrace();
     }
     return resultArr;
   }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

@@ -7,9 +7,9 @@ import camp.Camp;
 import camp.Detail;
 import enums.Role;
 import reply.Reply;
+import staff.Staff;
 import suggestion.Suggestion;
 import user.User;
-import file.Input;
 
 public class Enquiry {
   private static int idCount;
@@ -27,25 +27,13 @@ public class Enquiry {
     this.enquiryID = "ENQ" + (idCount);
     this.dateCreated = LocalDate.now();
     this.campID = aCamp.getCampID();
-    this.contents = Input.getStringInput("Enter the contents of your enquiry: ", sc);
-    this.replies = new ArrayList<Reply>();
+    this.contents = file.Input.getStringInput("Enter the contents of your enquiry: ", sc);
+    this.replies = new ArrayList<>();
     this.isProcessed = false;
   }
-  
-  public Enquiry(String campID, LocalDate now, String enquiryID, String enquiryMessage) 
-  {
-	  idCount++;
-	  this.enquiryID = enquiryID;
-	  this.dateCreated = now;
-	  this.campID = campID;
-	  this.contents = enquiryMessage;
-	  this.replies = new ArrayList<Reply>();
-	  this.isProcessed = false;
-  }
-
 
   public String getEnquiryID() {
-      return enquiryID;
+    return enquiryID;
   }
   
   public String getCampID() {
@@ -73,8 +61,8 @@ public class Enquiry {
     }
   }
 
-  public void addReply(Role role, String content, User aUser) {
-    this.replies.add(new Reply(role, content, aUser));
+  public void addReply(Reply reply) {
+    this.replies.add(reply);
   }
   
   public boolean isProcessed() {
@@ -84,23 +72,18 @@ public class Enquiry {
   public void setProcessed(boolean isProcessed) {
     this.isProcessed = isProcessed;
   }
-
-
-  public static void main(String[] args) {
-    Scanner sc = new Scanner(System.in);
-    Enquiry test = new Enquiry(sc, null);
-    System.out.println(test.getEnquiryID());
-    System.out.println(test.getDateCreated());
-    System.out.println(test.getContents());
-    System.out.println(test.getReplies());
-    System.out.println(test.isProcessed());
-    Enquiry test2 = new Enquiry(sc, null);
-    System.out.println(test2.getEnquiryID());
-    System.out.println(test2.getDateCreated());
-    System.out.println(test2.getContents());
-    System.out.println(test2.getReplies());
-    System.out.println(test2.isProcessed());
+  public String toCSV() {
+    return null;
+    // TODO Auto-generated method stub
+    
   }
+
+  public static String generateCSVHeaders() {
+    return null;
+    // TODO Auto-generated method stub
+    
+  }
+
 
 }
 

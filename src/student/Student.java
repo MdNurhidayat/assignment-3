@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import camp.Camp;
+import committeeMember.CommitteeMember;
 import enquiry.BaseEnquiry;
 import enquiry.Enquiry;
 import user.User;
@@ -16,14 +17,12 @@ import reply.Reply;
 public class Student extends User implements Withdrawable, StudentEnquiry, BaseEnquiry {
     private ArrayList<Camp> registeredFor;
     private ArrayList<Enquiry> enquiries;
-    private int enquiryCounter; // New counter for generating unique enquiry IDs
 
     // constructor
     public Student(String UserID, String Password, Role role, String name, String email, Faculty faculty) {
         super(UserID, Password, role, name, email, faculty);
         this.registeredFor = new ArrayList<>(); // Initialize with an empty ArrayList
         this.enquiries = new ArrayList<>();
-        this.enquiryCounter = 1; // Initialize counter to 1
     }
 
     // Getter method for registeredFor
@@ -166,8 +165,8 @@ public void register(Scanner scanner, ArrayList<Camp> allCamps) {
    
 
     // Method to withdraw from a camp with user verification
-    public void withdraw() {
-        Scanner scanner = new Scanner(System.in);
+	@Override
+    public void withdraw(Scanner scanner) {
 
         System.out.println("Enter the CampID to withdraw from:");
         String campID = scanner.nextLine();
@@ -201,7 +200,7 @@ public void register(Scanner scanner, ArrayList<Camp> allCamps) {
                 removeCampFromRegisteredFor(selectedCamp);
 
                 // Add the student to the camp's previouslyWithdrawn list
-                selectedCamp.addPreviouslyWithdrawn(this);
+                selectedCamp.addWithdrawn(this);
 
                 System.out.println("Withdrawal successful!");
             } else {
@@ -213,13 +212,11 @@ public void register(Scanner scanner, ArrayList<Camp> allCamps) {
     }
 
     // Method to submit an enquiry for a specific camp	
+	@Override
     public void submitEnquiry(Scanner scanner, ArrayList<Camp> allCamps) {
 
         System.out.println("Enter the CampID for the enquiry:");
         String campID = scanner.nextLine();
-
-        System.out.println("Enter your enquiry message:");
-        String enquiryMessage = scanner.nextLine();
 
         Camp selectedCamp = null;
 
@@ -233,7 +230,6 @@ public void register(Scanner scanner, ArrayList<Camp> allCamps) {
 
         // Check if the camp is found
         if (selectedCamp != null) {
-            String enquiryID = getUserID() + enquiryCounter++;
             Enquiry newEnquiry = new Enquiry(scanner, selectedCamp);
 
             // Add the enquiry to the student's enquiries list
@@ -249,6 +245,7 @@ public void register(Scanner scanner, ArrayList<Camp> allCamps) {
     }
 
     // Method to view enquiries
+	@Override
     public void viewEnquiries() {
         System.out.println("------------------------------------------------------------");
         System.out.println("| Enquiry ID | Date Created | Messages          | Replies  |");
@@ -263,45 +260,46 @@ public void register(Scanner scanner, ArrayList<Camp> allCamps) {
 
             // Iterate over replies and print each one
             for (Reply reply : enquiry.getReplies()) {
-                System.out.println("|   Reply: " + reply.getMessage());
+                System.out.println("|   Reply: " + reply.getContents());
             }
 
             System.out.println("------------------------------------------------------------");
         }
     }
 
-// Method to edit a student-specific enquiry by EnquiryID
-public void editEnquiries(Scanner scanner) {
-
-    System.out.println("Enter the Enquiry ID you want to edit:");
-    String enquiryID = scanner.nextLine();
-
-    for (Enquiry enquiry : enquiries) {
-        if (enquiry.getEnquiryID().equals(enquiryID) && !enquiry.isProcessed()) {
-            // Display the current enquiry details
-            System.out.println("Current Enquiry Details");
-            System.out.println("Enquiry ID: " + enquiry.getEnquiryID());
-            System.out.println("Date Created: " + enquiry.getDateCreated());
-            System.out.println("Current Message: " + enquiry.getContents());
-
-            // Prompt the user for a new enquiry message
-            System.out.print("Enter the new enquiry message:");
-            String newEnquiryMessage = scanner.nextLine();
-
-            // Update the enquiry message using setEnquiryMessage() method
-            enquiry.setContents(newEnquiryMessage);
-
-            System.out.println("Enquiry updated successfully!");
-            return; // No need to continue searching once found
-        }
-    }
-
-    System.out.println("Enquiry not found or already processed. Editing failed.");
-}
+	// Method to edit a student-specific enquiry by EnquiryID
+	@Override
+	public void editEnquiry(Scanner scanner) {
+	
+	    System.out.println("Enter the Enquiry ID you want to edit:");
+	    String enquiryID = scanner.nextLine();
+	
+	    for (Enquiry enquiry : enquiries) {
+	        if (enquiry.getEnquiryID().equals(enquiryID) && !enquiry.isProcessed()) {
+	            // Display the current enquiry details
+	            System.out.println("Current Enquiry Details");
+	            System.out.println("Enquiry ID: " + enquiry.getEnquiryID());
+	            System.out.println("Date Created: " + enquiry.getDateCreated());
+	            System.out.println("Current Message: " + enquiry.getContents());
+	
+	            // Prompt the user for a new enquiry message
+	            System.out.print("Enter the new enquiry message:");
+	            String newEnquiryMessage = scanner.nextLine();
+	
+	            // Update the enquiry message using setEnquiryMessage() method
+	            enquiry.setContents(newEnquiryMessage);
+	
+	            System.out.println("Enquiry updated successfully!");
+	            return; // No need to continue searching once found
+	        }
+	    }
+	
+	    System.out.println("Enquiry not found or already processed. Editing failed.");
+	}
 
 
     // Method to delete a student-specific enquiry by EnquiryID
-    public void deleteEnquiries(Scanner scanner, ArrayList<Camp> allCamps) {
+    public void deleteEnquiry(Scanner scanner, ArrayList<Camp> allCamps) {
 
         System.out.println("Enter the Enquiry ID you want to delete:");
         String enquiryID = scanner.nextLine();
@@ -344,57 +342,55 @@ public void editEnquiries(Scanner scanner) {
         System.out.println("Enquiry not found or already processed. Deletion failed.");
     }
 
-// Method to register as Committee Member for a camp
-public void registerAsCM(Scanner scanner, ArrayList<Camp> allCamps) {
-    // Check if the role is STUDENT
-    if (this.getRole() != Role.STUDENT) {
-        System.out.println("Only students are eligible to register as Committee Members.");
-        return;
-    }
-
-    System.out.println("Enter the CampID to register as Committee Member:");
-    String campID = scanner.nextLine();
-
-    Camp selectedCamp = null;
-
-    // Find the camp with the specified CampID
-    for (Camp camp : allCamps) {
-        if (camp.getCampID().equals(campID)) {
-            selectedCamp = camp;
-            break;
-        }
-    }
-
-    // Check if the camp is found and can be registered as Committee Member
-    if (selectedCamp != null && selectedCamp.getisVisible() && !selectedCamp.getPreviouslyWithdrawn().contains(this)
-            && selectedCamp.getDetail.getFaculty().contains(this.getFaculty())) {
-
-        // Check if there are available committee slots and the current date is before the registration closing date
-        int remainingSlots = selectedCamp.getDetails().getCommitteeSlots() - selectedCamp.getCommittee().size();
-
-        if (remainingSlots > 0 && selectedCamp.getDetails().getRegistrationClosingDate().isAfter(LocalDate.now())) {
-            // Add the student to the camp's committee
-            selectedCamp.addCommittee(this);
-
-            // Set the object's role from STUDENT to COMMITTEE_MEMBER
-            this.setRole(Role.COMMITTEE_MEMBER);
-
-            // Set the overseeingCamp attribute to the selected camp
-            this.setOverseeing(selectedCamp);
-
-            System.out.println("Registration as Committee Member successful! Your menu will be changed.");
-        } else {
-            System.out.println("Cannot register as Committee Member for the camp. Check available committee slots and registration closing date.");
-        }
-    } else {
-        System.out.println("Camp not found or cannot be registered as Committee Member.");
-    }
-}
+	// Method to register as Committee Member for a camp
+	public CommitteeMember registerAsCM(Scanner scanner, ArrayList<Camp> allCamps, Student student) {
+	    // Check if the role is STUDENT
+	    if (this.getRole() != Role.STUDENT) {
+	        System.out.println("Only students are eligible to register as Committee Members.");
+	        return null;
+	    }
+	
+	    System.out.println("Enter the CampID to register as Committee Member:");
+	    String campID = scanner.nextLine();
+	
+	    Camp selectedCamp = null;
+	
+	    // Find the camp with the specified CampID
+	    for (Camp camp : allCamps) {
+	        if (camp.getCampID().equals(campID)) {
+	            selectedCamp = camp;
+	            break;
+	        }
+	    }
+	
+	    // Check if the camp is found and can be registered as Committee Member
+	    if (selectedCamp != null && selectedCamp.getisVisible() && !selectedCamp.getPreviouslyWithdrawn().contains(this)
+	            && selectedCamp.getDetails().getFaculty().equals(this.getFaculty())) {
+	    	
+	        // Check if there are available committee slots and the current date is before the registration closing date
+	        int remainingSlots = selectedCamp.getDetails().getCommitteeSlots() - selectedCamp.getCommittee().size();
+	
+	        if (remainingSlots > 0 && selectedCamp.getDetails().getRegistrationClosingDate().isAfter(LocalDate.now())) {
+	        	CommitteeMember cm = new CommitteeMember(student, selectedCamp);
+	            // Add the student to the camp's committee
+	            selectedCamp.addCommittee(cm);
+	
+	            System.out.println("Registration as Committee Member successful! Your menu will be changed.");
+	            return cm;
+	        } else {
+	            System.out.println("Cannot register as Committee Member for the camp. Check available committee slots and registration closing date.");
+	            return null;
+	        }
+	    } else {
+	        System.out.println("Camp not found or cannot be registered as Committee Member.");
+	        return null;
+	    }
+	}
     @Override
     public String toString() {
         String delimiter = " | ";
-        return this.userID + delimiter + this.role + delimiter + this.name + delimiter
-                + this.email + delimiter + this.faculty;
+        return this.getUserID() + delimiter + this.getRole() + delimiter + this.getName() + delimiter
+                + this.getEmail() + delimiter + this.getFaculty();
     }
 
     public static String generateCSVHeaders() {
@@ -405,33 +401,10 @@ public void registerAsCM(Scanner scanner, ArrayList<Camp> allCamps) {
 
     public String toCSV() {
         String delimiter = ", ";
-        return this.userID + delimiter + this.role + delimiter + this.name + delimiter
-                + this.email + delimiter + this.faculty;
+        return this.getUserID() + delimiter + this.getRole() + delimiter + this.getName() + delimiter
+                + this.getEmail() + delimiter + this.getFaculty();
     }
 
-	@Override
-	public void submitEnquiry(Scanner scanner) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void editEnquiry(Scanner scanner) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void deleteEnquiry(Scanner scanner) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void withdraw(Scanner scanner) {
-		// TODO Auto-generated method stub
-		
-	}
 
 }
 
