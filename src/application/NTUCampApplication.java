@@ -32,6 +32,7 @@ public class NTUCampApplication
 		
 		while (menu != MenuStates.EXIT)
 		{
+			System.out.println();
 			switch (menu)
 			{
 			case PRELOG_IN:
@@ -109,8 +110,7 @@ public class NTUCampApplication
 	
 	static void errorChoice()
 	{
-		System.out.println("Invalid Choice!");
-		System.out.print("Choose Again : ");
+		System.out.println("Invalid Choice! Choose Again");
 	}
 	
 	static void initialise()
@@ -135,6 +135,7 @@ public class NTUCampApplication
 
         System.out.print("Enter your choice: ");
         int choice = scan.nextInt();
+        scan.nextLine();
         
         if (choice == 1)
         	setMenuState(MenuStates.LOG_IN);

@@ -13,9 +13,9 @@ public class SecurityManager
 		
         System.out.println("Enter your Username and Password");
 		System.out.print("username : ");
-		userID = scan.next();
+		userID = scan.nextLine();
 		System.out.print("password : ");
-		password = scan.next();
+		password = scan.nextLine();
 		
 		
 		// If UserID cannot be found in any Map
@@ -48,19 +48,24 @@ public class SecurityManager
 		
 		// If password is default, prompt user to change
 		if (password.equals("password"))
-			changePassword(user, scan);
+			changePassword(user, scan, userManager);
+		System.out.println();
 		return user;
 	}
 	
-	public static void changePassword(User user, Scanner scan)
+	public void changePassword(User user, Scanner scan, UserManager userManager)
 	{
 		System.out.println("New Log In detected");
 		System.out.print("Please Enter New Password : ");
 		
-		String password = scan.next();
+		String password = scan.nextLine();
 		user.setPassword(password);
 		
 		System.out.println("Password Sucessfully Changed");
-		System.out.println("");
+		System.out.println("Kindly re enter your username with new password");
+		System.out.println();
+		user = logInAuthentication(scan, userManager);
+		
+		System.out.println();
 	}
 }

@@ -10,6 +10,7 @@ public class User {
     private String name;
     private String email;
     private Faculty Faculty;
+    private boolean firstTime;
 
     // Default constructor with default password
     public User() {
@@ -24,6 +25,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.Faculty = Faculty;
+        this.firstTime = true;
     }
     
     public User(String userID, String password, Role role, String name, String email, Faculty Faculty) {
@@ -33,6 +35,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.Faculty = Faculty;
+        this.firstTime = false;
     }
 
    
@@ -84,5 +87,19 @@ public class User {
     public void setFaculty(Faculty Faculty) {
         this.Faculty = Faculty;
     }
-
+    
+    public void setFirstTime(boolean bool)
+    {
+    	this.firstTime = bool;
+    }
+    
+    public void loggedIn()
+    {
+    	this.firstTime = false;
+    }
+    
+    public boolean getFirstTime()
+    {
+    	return this.firstTime;
+    }
 }

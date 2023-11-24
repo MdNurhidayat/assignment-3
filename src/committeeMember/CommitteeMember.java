@@ -19,7 +19,7 @@ import report.BaseReport;
 import student.Student;
 import suggestion.Suggestion;
 
-public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquiry, BaseReport, CommitteeMemberReport {
+public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquiry, BaseReport {
 	Camp overseeing;
 	int points;
 	HashMap<String, Suggestion> suggestionList;
