@@ -295,20 +295,32 @@ public class NTUCampApplication
         System.out.println("|             CAMP DETAILS            |");
         System.out.println("---------------------------------------");
         
+        int choice;
 
         if (user.getRole() == Role.STUDENT)
         {
         	System.out.println("| 1. Back                             |");
             System.out.println("---------------------------------------");
         	ArrayList<Camp> camps = ((Student)user).getRegisteredFor();
+        	System.out.print("Pick a menu : ");
+        	
         	for (Camp c : camps)
         		c.print();
+        	
+        	choice = scan.nextInt();
+        	if (choice == 1)
+        		setMenuState(prevMenu);
         } 
         else if (user.getRole() == Role.COMMITTEE_MEMBER)
         {
         	System.out.println("| 1. Back                             |");
             System.out.println("---------------------------------------");
         	((CommitteeMember)user).getOverseeingCamp().detailedPrint();
+        	System.out.print("Pick a menu : ");
+        	
+        	choice = scan.nextInt();
+        	if (choice == 1)
+        		setMenuState(prevMenu);
         	
         }
         else // Staff Logics
@@ -317,16 +329,24 @@ public class NTUCampApplication
             System.out.println("| 2. Back                             |");
             System.out.println("---------------------------------------");
             ((Staff)user).getCreatedCamp().detailedPrint();
-        }
-        	
-        
-        System.out.print("Enter 1 to return back to Menu : ");
-        int choice = scan.nextInt();
+            
+            System.out.print("Pick a menu : ");
+            choice = scan.nextInt();
+            
+            switch (choice)
+            {
+            case 1:
+            	setMenuState(MenuStates.EDIT_CAMP);
+            	break;
+            case 2:
+            	setMenuState(prevMenu);
+            	break;
+            default:
+            	errorChoice();
+            	break;
+            }
+        } 
         scan.nextLine();
-        
-        if (choice == 1)
-        	setMenuState(prevMenu);
-        
         System.out.println();
 	}
 	
@@ -642,10 +662,10 @@ public class NTUCampApplication
         System.out.println("---------------------------------------");
         ((Staff)user).editCamp(scan);
         
+        System.out.print("Set camp to visible? Enter 1 to set visible, otherwise camp will be invisible");
         int choice = scan.nextInt();
         scan.nextLine();
         
-        System.out.print("Set camp to visible? Enter 1 to set visible, otherwise camp will be invisible");
         if (choice == 1)
         	((Staff)user).getCreatedCamp().setVisibleOn();
         else
@@ -714,9 +734,9 @@ public class NTUCampApplication
         	System.out.println("| 2. Edit Suggestion                  |");
         	System.out.println("| 3. Back                             |");
         	System.out.println("---------------------------------------");
-        	
         	((CommitteeMember)user).viewSuggestionLists();
         	
+        	System.out.print("Pick a Menu : ");
         	choice = scan.nextInt();
         	scan.nextLine();
         	
@@ -740,9 +760,9 @@ public class NTUCampApplication
         	System.out.println("| 1. Approve Suggestion               |");
         	System.out.println("| 2. Back                             |");
         	System.out.println("---------------------------------------");
-        	
         	((Staff)user).viewSuggestions();
         	
+        	System.out.println("Pick a Menu : ");
         	choice = scan.nextInt();
         	scan.nextLine();
         	

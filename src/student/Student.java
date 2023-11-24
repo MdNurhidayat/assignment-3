@@ -45,37 +45,65 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         return enquiries;
     }
 
+    /**
+     * Set a new EnquiryCounter
+     *
+     * @param enquiryCounter The new value to be assigned
+     */
     public void setEnquiryCounter(int enquiryCounter)
     {
     	this.enquiryCounter = enquiryCounter;
     }
     
+    /**
+     * Get enquiryCounter
+     */
     public int getEnquiryCounter()
     {
     	return enquiryCounter;
     }
     
-    // Setter method for registeredFor (add camp)
+    /**
+     * Adds a camp to the list of registered camp for this student.
+     *
+     * @param camp The camp to be added.
+     */
     public void addCampToRegisteredFor(Camp camp) {
         registeredFor.add(camp);
     }
 
-    // Setter method for registeredFor (remove camp)
+    /**
+     * Removes a camp from the list of registered camp for this student.
+     *
+     * @param camp The camp to be removed.
+     */
     public void removeCampFromRegisteredFor(Camp camp) {
         registeredFor.remove(camp);
     }
 
-    // Setter method for enquiries (add enquiry)
+    /**
+     * Adds a enquiry to the list of enquiries for this student.
+     *
+     * @param enquiry The enquiry to be added.
+     */
     public void addEnquiry(Enquiry enquiry) {
         enquiries.add(enquiry);
     }
 
-    // Setter method for enquiries (remove enquiry)
+    /**
+     * Removes a enquiry from the list of enquiries for this student.
+     *
+     * @param enquiry The enquiry to be removed.
+     */
     public void removeEnquiry(Enquiry enquiry) {
         enquiries.remove(enquiry);
     }
 
-    // Method to view available camps to join
+    /**
+     * Method to view available camps to join.
+     * It prints details of camps that are visible, not previously withdrawn,
+     * and belong to the student's faculty.
+     */
     public void viewAvailableCampsToJoin(ArrayList<Camp> allCamps) {
         System.out.println("---------------------------------------------------------------------------");
         System.out.printf("| %-10s | %-30s | %-15s | %-10s | %-10s | %-10s | %-25s | %-15s |\n", "CampID", "Name", "Location", "Description", "Start Date", "End Date", "Registration Closing Date", "Remaining Slots");
@@ -99,7 +127,10 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         }
     }
 
-    // Method to view registered camps
+    /**
+     * Method to view registered camps.
+     * Display the detials of the camps
+     */
     public void viewRegisteredCamps() {
         System.out.println("------------------------------------------------------------------------------------------------------------------");
         System.out.printf("| %-10s | %-30s | %-15s | %-10s | %-10s | %-10s | %-25s | %-15s |\n", "CampID", "Name", "Location", "Description", "Start Date", "End Date", "Registration Closing Date", "Remaining Slots");
@@ -122,7 +153,10 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         System.out.println("------------------------------------------------------------------------------------------------------------------");
     }
     
-// Method to register for a camp
+    /**
+     * Method to register a camp as participant.
+     * Student would choose a camp and the method would check if the camp is available for registration.
+     */  
     public void register(Scanner scanner, ArrayList<Camp> allCamps) {
 
     System.out.println("Enter the CampID to register:");
@@ -184,7 +218,10 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
 }
    
 
-    // Method to withdraw from a camp with user verification
+    /**
+     * Method to withdraw from a camp with user verification
+     * Check if the student is indeed registered to the camp in the first place.
+     */  
 	@Override
     public void withdraw(Scanner scanner) {
 
@@ -231,7 +268,9 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         }
     }
 
-    // Method to submit an enquiry for a specific camp	
+	/**
+     * Method to submit an enquiry for a specific camp
+     */  	
 	@Override
     public void submitEnquiry(Scanner scanner, ArrayList<Camp> allCamps) {
 
@@ -264,7 +303,9 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         }
     }
 
-    // Method to view enquiries
+	/**
+     * Method to list all enquires submiited by the student 
+     */  
 	@Override
     public void viewEnquiries() {
         System.out.println("------------------------------------------------------------");
@@ -289,7 +330,9 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         }
     }
 
-	// Method to edit a student-specific enquiry by EnquiryID
+	/**
+     * Method to edit a unprocessed enquiry by EnquiryID. 
+     */  
 	@Override
 	public void editEnquiry(Scanner scanner) {
 	
@@ -318,7 +361,9 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
 	    System.out.println("Enquiry not found or already processed. Editing failed.");
 	}
 
-    // Method to delete a student-specific enquiry by EnquiryID
+	/**
+     *Method to delete a student-specific enquiry by EnquiryID
+     */  
     public void deleteEnquiry(Scanner scanner, ArrayList<Camp> allCamps) {
 
         System.out.println("Enter the Enquiry ID you want to delete:");
@@ -362,7 +407,12 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         System.out.println("Enquiry not found or already processed. Deletion failed.");
     }
 
-	// Method to register as Committee Member for a camp
+    /**
+     *Method to register as Committee Member for a camp 
+     *Check if the student has not been register as committee member before
+     *Check that the camp is available, add student to camp committee member
+     *Change student's role to committee member, set student overseeing camp
+     */  
 	public CommitteeMember registerAsCM(Scanner scanner, ArrayList<Camp> allCamps, Student student) {
 	    // Check if the role is STUDENT
 	    if (this.getRole() != Role.STUDENT) {
@@ -409,24 +459,37 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
 	}
    
 	@Override
+    /**
+     * Converts the Student object to a TXT format string.
+     *
+     * @return A string containing TXT-formatted student information.
+     */
     public String toString() {
         String delimiter = " | ";
-        return this.getUserID() + delimiter + this.getRole() + delimiter + this.getName() + delimiter
-                + this.getEmail() + delimiter + this.getFaculty();
+        return super.getUserID() + delimiter + super.getRole() + delimiter + super.getName() + delimiter
+                + super.getEmail() + delimiter + super.getFaculty();
     }
 
+    /**
+     * Generates CSV headers for the Student class.
+     *
+     * @return A string containing CSV headers.
+     */
     public static String generateCSVHeaders() {
         String delimiter = ", ";
         return "UserID" + delimiter + "Role" + delimiter + "Name" + delimiter
                 + "Email" + delimiter + "Faculty";
     }
 
+    /**
+     * Converts the Student object to a CSV format string.
+     *
+     * @return A string containing CSV-formatted student information.
+     */
     public String toCSV() {
         String delimiter = ", ";
-        return this.getUserID() + delimiter + this.getRole() + delimiter + this.getName() + delimiter
-                + this.getEmail() + delimiter + this.getFaculty();
+        return super.getUserID() + delimiter + super.getRole() + delimiter + super.getName() + delimiter
+                + super.getEmail() + delimiter + super.getFaculty();
     }
-
-
 }
 
