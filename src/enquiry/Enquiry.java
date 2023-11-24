@@ -4,12 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 import camp.Camp;
-import camp.Detail;
-import enums.Role;
 import reply.Reply;
-import staff.Staff;
-import suggestion.Suggestion;
-import user.User;
 
 public class Enquiry {
   private static int idCount;

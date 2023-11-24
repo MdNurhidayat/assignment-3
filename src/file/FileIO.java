@@ -6,11 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
-import camp.Camp;
 import enums.Format;
-import enums.Role;
-import staff.Staff;
 
 /**
  * The <code>FileIO</code> class contains various methods to provide support for reading and writing

@@ -3,7 +3,6 @@ package student;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.time.LocalDate;
-import java.util.List;
 
 import camp.Camp;
 import committeeMember.CommitteeMember;
@@ -103,7 +102,7 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
     }
     
 // Method to register for a camp
-public void register(Scanner scanner, ArrayList<Camp> allCamps) {
+    public void register(Scanner scanner, ArrayList<Camp> allCamps) {
 
     System.out.println("Enter the CampID to register:");
     String campID = scanner.nextLine();
@@ -248,6 +247,8 @@ public void register(Scanner scanner, ArrayList<Camp> allCamps) {
 	@Override
     public void viewEnquiries() {
         System.out.println("------------------------------------------------------------");
+        System.out.println("| Your Enquries                                            |");
+        System.out.println("------------------------------------------------------------");
         System.out.println("| Enquiry ID | Date Created | Messages          | Replies  |");
         System.out.println("------------------------------------------------------------");
 
@@ -275,7 +276,7 @@ public void register(Scanner scanner, ArrayList<Camp> allCamps) {
 	    String enquiryID = scanner.nextLine();
 	
 	    for (Enquiry enquiry : enquiries) {
-	        if (enquiry.getEnquiryID().equals(enquiryID) && !enquiry.isProcessed()) {
+	    	if (enquiry.getEnquiryID().equals(enquiryID) && !enquiry.isProcessed()) {
 	            // Display the current enquiry details
 	            System.out.println("Current Enquiry Details");
 	            System.out.println("Enquiry ID: " + enquiry.getEnquiryID());
@@ -293,10 +294,8 @@ public void register(Scanner scanner, ArrayList<Camp> allCamps) {
 	            return; // No need to continue searching once found
 	        }
 	    }
-	
 	    System.out.println("Enquiry not found or already processed. Editing failed.");
 	}
-
 
     // Method to delete a student-specific enquiry by EnquiryID
     public void deleteEnquiry(Scanner scanner, ArrayList<Camp> allCamps) {
@@ -373,7 +372,8 @@ public void register(Scanner scanner, ArrayList<Camp> allCamps) {
 	        if (remainingSlots > 0 && selectedCamp.getDetails().getRegistrationClosingDate().isAfter(LocalDate.now())) {
 	        	CommitteeMember cm = new CommitteeMember(student, selectedCamp);
 	            // Add the student to the camp's committee
-	            selectedCamp.addCommittee(cm);
+	            selectedCamp.removeParticipant(this);
+	        	selectedCamp.addCommittee(cm);
 	
 	            System.out.println("Registration as Committee Member successful! Your menu will be changed.");
 	            return cm;

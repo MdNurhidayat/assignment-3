@@ -17,7 +17,7 @@ public enum MenuStates
 	VIEW_ENQUIRIES("ViewEnquiries"),
 	
 	// Shared Menu (STAFF & COMMITTEE MEMBER)
-	REPLY_ENQUIRY("ReplyEnquiries"),
+	//REPLY_ENQUIRY("ReplyEnquiries"),
 	REPORT_PARTICIPANT("ReportParticipant"),
 	REPORT_ENQUIRY("ReportEnquiry"),
 	
@@ -35,7 +35,7 @@ public enum MenuStates
 	CREATE_CAMP("CreateCamp"),
 	DELETE_CAMP("DeleteCamp"),
 	VIEW_SUGGESTIONS("ViewSuggestions"),
-	APPROVE_SUGGESTION("ApproveSuggestion"),
+	//APPROVE_SUGGESTION("ApproveSuggestion"),
 	REPORT_PERFORMANCE("ReportPerformance");
 
 	public String label;

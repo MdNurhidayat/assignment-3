@@ -1,27 +1,23 @@
 package committeeMember;
 
-import java.util.HashSet;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;  // Import the Scanner class
 
-import enums.Role;
-import enums.RoleFilter;
-import file.Input;
-import reply.Reply;
-import report.BaseReport;
-import enums.Faculty;
-import enums.Format;
-import student.Student;
-import suggestion.BaseSuggestion;
-import suggestion.Suggestion;
 import camp.Camp;
 import enquiry.BaseEnquiry;
 import enquiry.Enquiry;
 import enquiry.ReplyEnquiry;
+import enums.Role;
+import enums.RoleFilter;
+import enums.Faculty;
+import enums.Format;
+import file.Input;
+import reply.Reply;
+import report.BaseReport;
+import student.Student;
+import suggestion.Suggestion;
 
 public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquiry, BaseReport, CommitteeMemberReport {
 	Camp overseeing;
@@ -33,12 +29,14 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
 		super(student.getUserID(), student.getPassword(), Role.COMMITTEE_MEMBER, student.getName(), student.getEmail(), student.getFaculty());
 		overseeing = camp;
 		points = 0;
+		suggestionList = new HashMap<String, Suggestion>();
 	}
     
     public CommitteeMember(String userID, String password, String name, String email, Faculty faculty) {
         super(userID, password, Role.COMMITTEE_MEMBER, name, email, faculty);
         overseeing = null;
         points = 0;
+        suggestionList = new HashMap<String, Suggestion>();
     }
 
     // Getter methods for attributes
@@ -109,21 +107,52 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
     }
     
     @Override
-    public void replyEnquiry(String replyMessage, Scanner sc) {
-      viewEnquiries();
+    public void viewEnquiries()
+    {
+    	if (overseeing == null)
+    	      System.out.println("Please join a camp as a committee member first.");
+    	else {
+    	      ArrayList<Enquiry> results = overseeing.getEnquiries();
+    	      if (!results.isEmpty()) {
+    	    	  String delimiter = "-";
+    	    	  String paddingParameters = "| %-10s | %-25s | %-20s | %-10s | %-40s | %-10s | \n";
+    	    	  System.out.println("Your Camp's Enquiries");
+    	    	  System.out.println(delimiter.repeat(130));
+    	    	  System.out.printf(paddingParameters, "CampID", "Date Created", "EnquirerName", "EnquiryID",
+    	    			  "EnquiryMessage", "IsProcessed");
+    	    	  System.out.println(delimiter.repeat(130));
+    	    	  
+    	    	  for (Enquiry e : results) { e.toString(); }
+    	    	  
+    	    	  System.out.println(delimiter.repeat(130));
+    	    	  System.out.println();
+    	      }
+    	      else
+    	    	  System.out.println("Current camp has no enquiries to show. Check back later.");
+    	    }
+    	super.viewEnquiries();
+    }
+    
+    @Override
+    public void editEnquiry(Scanner sc)
+    {
+    	super.editEnquiry(sc);
+    }
+    
+    @Override
+    public void replyEnquiry(Scanner sc) {
       ArrayList<Enquiry> enquiries = this.overseeing.getEnquiries();
       String enquiryID = Input.getStringInput("Enter enquiryID of enquiry to edit: ", sc);
       for (Enquiry e : enquiries) {
-        if (!e.getEnquiryID().equals(enquiryID))
-          System.out.println("EnquiryID  " + enquiryID
-              + "provided not found in this camp's list of enquiries, please try again.");
-        else
-          // TODO @hid, add Derrick's method call for creating reply
-          // TODO @hid, implementation should be very similar to that of CM,
-          // align either one to the other. If role of replier is CM remember to increment point.
-        	increasePoints();
-          System.out.println("Enquiry " + enquiryID + " replied.");
+        if (e.getEnquiryID().equals(enquiryID))
+        {
+        	Reply reply = new Reply(sc, e, this);
+        	e.addReply(reply);
+            increasePoints();
+            System.out.println("Enquiry " + enquiryID + " replied.");
+        }
       }
+      System.out.println("EnquiryID  " + enquiryID + " provided not found in this camp's list of enquiries, please try again.");
     }
 
     public void viewSuggestionLists() {
@@ -150,7 +179,6 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
         System.out.println("Status: " + suggestion.isProcessed());
     }
 
-
     public void submitSuggestion(Scanner scanner) {
         Suggestion suggestion = new Suggestion(scanner, this);
         suggestionList.put(suggestion.getSuggestionID(), suggestion);
@@ -159,13 +187,13 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
         System.out.println("Suggestion successfully implemented!");
     }
 
-    private void editOwnSuggestion(Scanner scanner) {
+    public void editOwnSuggestion(Scanner scanner) {
 
         // Prompt the user to select a suggestion to edit
         System.out.print("Please select the suggestion ID you want to edit:");
         String suggestionID = scanner.nextLine();
         
-        if (this.suggestionList.containsKey(suggestionID)){
+        if (this.suggestionList.containsKey(suggestionID) && !this.suggestionList.get(suggestionID).isProcessed()){
             // Allow the user to edit the suggestion details
             System.out.print("Enter the updated suggestion content:");
             String updatedContent = scanner.nextLine();
@@ -175,7 +203,7 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
             System.out.println("Suggestion " + suggestionID + " has been updated successfully.");
         }
         else
-        	System.out.println("Suggestion " + suggestionID + " do not exist. Try Again.");
+        	System.out.println("Suggestion " + suggestionID + " do not exist / already processed. Try Again.");
     }
 
     public void deleteSuggestion(Scanner scanner) {

@@ -1,11 +1,8 @@
 package staff;
 
-import java.nio.file.DirectoryStream.Filter;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Stream;
 import camp.Camp;
 import committeeMember.CommitteeMember;
 import enquiry.BaseEnquiry;
@@ -20,6 +17,7 @@ import student.Student;
 import suggestion.Suggestion;
 import user.User;
 import file.*;
+import reply.Reply;
 
 /**
  * Represents a <code>Staff</code>. Child/Sub/Derived class from the <code>User</code> class.
@@ -156,7 +154,7 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
       if (!results.isEmpty()) {
         String delimiter = "-";
         String paddingParameters = "| %-10s | %-25s | %-20s | %-10s | %-40s | %-10s | \n";
-        System.out.println("Enquiries");
+        System.out.println("Your Camp's Enquiries");
         System.out.println(delimiter.repeat(130));
         System.out.printf(paddingParameters, "CampID", "Date Created", "EnquirerName", "EnquiryID",
             "EnquiryMessage", "IsProcessed");
@@ -167,7 +165,8 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
         System.out.println(delimiter.repeat(130));
         System.out.println();
       }
-      System.out.println("Current camp has no enquiries to show. Check back later.");
+      else
+    	  System.out.println("Current camp has no enquiries to show. Check back later.");
     }
   }
 
@@ -178,20 +177,18 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
    * @param sc Scanner object to be injected.
    */
   @Override
-  public void replyEnquiry(String replyMessage, Scanner sc) {
-    viewEnquiries();
-    ArrayList<Enquiry> enquiries = this.createdCamp.getEnquiries();
-    String enquiryID = Input.getStringInput("Enter enquiryID of enquiry to edit: ", sc);
-    for (Enquiry e : enquiries) {
-      if (!e.getEnquiryID().equals(enquiryID))
-        System.out.println("EnquiryID  " + enquiryID
-            + "provided not found in this camp's list of enquiries, please try again.");
-      else
-        // TODO @hid, add Derrick's method call for creating reply
-        // TODO @hid, implementation should be very similar to that of CM,
-        // align either one to the other. If role of replier is CM remember to increment point.
-        System.out.println("Enquiry " + enquiryID + " replied.");
-    }
+  public void replyEnquiry(Scanner sc) {
+      ArrayList<Enquiry> enquiries = this.createdCamp.getEnquiries();
+      String enquiryID = Input.getStringInput("Enter enquiryID of enquiry to edit: ", sc);
+      for (Enquiry e : enquiries) {
+        if (e.getEnquiryID().equals(enquiryID))
+        {
+        	Reply reply = new Reply(sc, e, this);
+        	e.addReply(reply);
+          System.out.println("Enquiry " + enquiryID + " replied.");
+        }
+      }
+      System.out.println("EnquiryID  " + enquiryID + " provided not found in this camp's list of enquiries, please try again.");
   }
 
   /**
@@ -228,7 +225,6 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
    */
   @Override
   public void approve(Scanner sc) {
-    viewSuggestions();
     String suggestionID = file.Input.getStringInput("Enter the suggestionID to approve: ", sc);
     ArrayList<Suggestion> results = this.createdCamp.getSuggestions();
     if (results.isEmpty())
@@ -236,17 +232,16 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
           + " provided not found in this camp's list of suggestions, please try again.");
     else {
       for (Suggestion s : results) {
-        if (!s.getSuggestionID().equals(suggestionID)) {
-          System.out.println("SuggestionID " + suggestionID
-              + " provided not found in this camp's list of suggestions, please try again.");
-        } else {
-          // TODO @hid double check if suggestion and CM implementation from Derrick matches logic
-          // here. Methods name might not be the same. Implementation based on assumption.
+        if (s.getSuggestionID().equals(suggestionID)) {
+          
           s.setProcessed(true);
           s.getCreatedBy().incrementPoint();
           System.out.println("Suggestion " + suggestionID + " approved.");
+          return;
         }
       }
+      System.out.println("SuggestionID " + suggestionID
+              + " provided not found in this camp's list of suggestions, please try again.");
     }
   }
 

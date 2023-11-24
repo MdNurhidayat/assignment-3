@@ -3,7 +3,6 @@ package camp;
 import java.time.LocalDate;
 import java.util.Scanner;
 import enums.Faculty;
-import enums.Role;
 import staff.Staff;
 
 /**

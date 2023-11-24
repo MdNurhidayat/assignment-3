@@ -15,5 +15,5 @@ public interface ReplyEnquiry {
    * 
    * @see <code>Enquiry</code>
    */
-  void replyEnquiry(String replyMessage, Scanner sc);
+  void replyEnquiry(Scanner sc);
 }
