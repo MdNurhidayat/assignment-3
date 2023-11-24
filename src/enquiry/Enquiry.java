@@ -5,24 +5,32 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import camp.Camp;
 import reply.Reply;
+import student.Student;
 
+/**
+ * The Enquiry class represents a user's inquiry about a specific camp.
+ * It contains information about the enquirer, the creation date, and any replies.
+ * @author Wang Jing
+ * @version 1.4
+ * @since 2023-11-13
+ */
 public class Enquiry {
-  private static int idCount;
   private String enquiryID;
   private String campID;
+  private String enquirerName;
   private LocalDate dateCreated;
-  private String contents;
+  private String enquiryMessage;
   private ArrayList<Reply> replies;
   private boolean isProcessed = false;
   
   //TODO override equals method to compare enquiryID only
 
-  public Enquiry(Scanner sc, Camp aCamp) {
-    idCount++;
-    this.enquiryID = "ENQ" + (idCount);
+  public Enquiry(Scanner sc, Camp aCamp, Student std) {
+    this.enquiryID = std.getUserID() + (std.getEnquiryCounter() + 1);
+    std.setEnquiryCounter(std.getEnquiryCounter() + 1);
     this.dateCreated = LocalDate.now();
     this.campID = aCamp.getCampID();
-    this.contents = file.Input.getStringInput("Enter the contents of your enquiry: ", sc);
+    this.enquiryMessage = file.Input.getStringInput("Enter the contents of your enquiry: ", sc);
     this.replies = new ArrayList<>();
     this.isProcessed = false;
   }
@@ -40,11 +48,11 @@ public class Enquiry {
   }
 
   public String getContents() {
-    return contents;
+    return enquiryMessage;
   }
 
   public void setContents(String contents) {
-    this.contents = contents;
+    this.enquiryMessage = contents;
   }
 
   public ArrayList<Reply> getReplies() {
@@ -67,18 +75,38 @@ public class Enquiry {
   public void setProcessed(boolean isProcessed) {
     this.isProcessed = isProcessed;
   }
-  public String toCSV() {
-    return null;
-    // TODO Auto-generated method stub
-    
+  
+  /**
+   * Converts the Enquiry object to a TXT format string.
+   *
+   * @return A string containing TXT-formatted enquiry information.
+   */
+  public String toString() {
+      String delimiter = " | ";
+      return this.campID + delimiter + this.dateCreated + delimiter + this.enquirerName + delimiter
+              + this.enquiryID + delimiter + this.enquiryMessage + delimiter + this.isProcessed;
   }
 
+  /**
+   * Generates CSV headers for the Enquiry class.
+   *
+   * @return A string containing CSV headers.
+   */
   public static String generateCSVHeaders() {
-    return null;
-    // TODO Auto-generated method stub
-    
+      String delimiter = ", ";
+      return "CampID" + delimiter + "DateCreated" + delimiter + "EnquirerName" + delimiter
+              + "EnquiryID" + delimiter + "EnquiryMessage" + delimiter + "IsProcessed";
   }
 
-
+  /**
+   * Converts the Enquiry object to a CSV format string.
+   *
+   * @return A string containing CSV-formatted enquiry information.
+   */
+  public String toCSV() {
+      String delimiter = ", ";
+      return this.campID + delimiter + this.dateCreated + delimiter + this.enquirerName + delimiter
+              + this.enquiryID + delimiter + this.enquiryMessage + delimiter + this.isProcessed;
+  }
 }
 

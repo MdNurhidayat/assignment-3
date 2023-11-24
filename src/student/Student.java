@@ -16,12 +16,23 @@ import reply.Reply;
 public class Student extends User implements Withdrawable, StudentEnquiry, BaseEnquiry {
     private ArrayList<Camp> registeredFor;
     private ArrayList<Enquiry> enquiries;
+    private int enquiryCounter;
 
-    // constructor
+    /**
+     * Constructs a new Student object with the given parameters.
+     *
+     * @param userID   The user ID of the student.
+     * @param password The password of the student.
+     * @param role     The role of the student.
+     * @param name     The name of the student.
+     * @param email    The email of the student.
+     * @param faculty  The faculty of the student.
+     */
     public Student(String UserID, String Password, Role role, String name, String email, Faculty faculty) {
         super(UserID, Password, role, name, email, faculty);
         this.registeredFor = new ArrayList<>(); // Initialize with an empty ArrayList
         this.enquiries = new ArrayList<>();
+        enquiryCounter = 1;
     }
 
     // Getter method for registeredFor
@@ -34,6 +45,16 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         return enquiries;
     }
 
+    public void setEnquiryCounter(int enquiryCounter)
+    {
+    	this.enquiryCounter = enquiryCounter;
+    }
+    
+    public int getEnquiryCounter()
+    {
+    	return enquiryCounter;
+    }
+    
     // Setter method for registeredFor (add camp)
     public void addCampToRegisteredFor(Camp camp) {
         registeredFor.add(camp);
@@ -229,7 +250,7 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
 
         // Check if the camp is found
         if (selectedCamp != null) {
-            Enquiry newEnquiry = new Enquiry(scanner, selectedCamp);
+            Enquiry newEnquiry = new Enquiry(scanner, selectedCamp, this);
 
             // Add the enquiry to the student's enquiries list
             enquiries.add(newEnquiry);
@@ -386,7 +407,8 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
 	        return null;
 	    }
 	}
-    @Override
+   
+	@Override
     public String toString() {
         String delimiter = " | ";
         return this.getUserID() + delimiter + this.getRole() + delimiter + this.getName() + delimiter
