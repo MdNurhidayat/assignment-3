@@ -30,6 +30,8 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
 		overseeing = camp;
 		points = 0;
 		suggestionList = new HashMap<String, Suggestion>();
+		for (int i = 0; i < student.getRegisteredFor().size(); i++) { super.addCampToRegisteredFor(student.getRegisteredFor().get(i)); }
+		for (int i = 0; i < student.getEnquiries().size(); i++) { super.addEnquiry(student.getEnquiries().get(i)); }
 	}
     
     public CommitteeMember(String userID, String password, String name, String email, Faculty faculty) {
