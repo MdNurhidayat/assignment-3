@@ -62,6 +62,9 @@ public class NTUCampApplication
 			case REPORT_PARTICIPANT:
 				generateReportParticipantsMenu();
 				break;
+			case REPORT_ENQUIRY:
+				generateReportEnquiryMenu();
+				break;
 			case STUDENT_MAIN_MENU:
 				studentMainMenu();
 				break;
@@ -590,8 +593,9 @@ public class NTUCampApplication
         System.out.println("| 5. View Suggestions                 |");
         System.out.println("| 6. Generate Participant (R)         |");
         System.out.println("| 7. Generate Performance (R)         |");
-        System.out.println("| 8. View Profile                     |");
-        System.out.println("| 9. Log Out                          |");
+        System.out.println("| 8. Generate Equiry (R)              |");
+        System.out.println("| 9. View Profile                     |");
+        System.out.println("| 10. Log Out                         |");
         System.out.println("---------------------------------------");
         System.out.print("Welcome " + user.getRole().toString() + " " + user.getName() + ". Please pick a menu : ");
 		
@@ -639,10 +643,15 @@ public class NTUCampApplication
 		}
 		case 8:
 		{
-			setMenuState(MenuStates.PROFILE);
+			setMenuState(MenuStates.REPORT_ENQUIRY);
 			break;
 		}
 		case 9:
+		{
+			setMenuState(MenuStates.PROFILE);
+			break;
+		}
+		case 10:
 		{
 			setMenuState(MenuStates.PRELOG_OUT);
 			break;
@@ -734,7 +743,7 @@ public class NTUCampApplication
         	System.out.println("| 2. Edit Suggestion                  |");
         	System.out.println("| 3. Back                             |");
         	System.out.println("---------------------------------------");
-        	((CommitteeMember)user).viewSuggestionLists();
+        	((CommitteeMember)user).viewSuggestions();
         	
         	System.out.print("Pick a Menu : ");
         	choice = scan.nextInt();
@@ -793,5 +802,17 @@ public class NTUCampApplication
     	((Staff)user).generatePerformanceReport(scan);
     	setMenuState(prevMenu);
     }
+
+	static void generateReportEnquiryMenu() {
+		System.out.println("---------------------------------------");
+        System.out.println("|          GENERATING REPORT          |");
+        System.out.println("---------------------------------------");
+		
+        if (user.getRole() == Role.COMMITTEE_MEMBER)
+        	((CommitteeMember)user).generateEnquiryReport(scan);
+        else
+	        ((Staff)user).generateEnquiryReport(scan);
+        setMenuState(prevMenu);
+	}
 
 }

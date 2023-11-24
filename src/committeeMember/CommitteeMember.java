@@ -1,5 +1,6 @@
 package committeeMember;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,15 +12,15 @@ import enquiry.Enquiry;
 import enquiry.ReplyEnquiry;
 import enums.Role;
 import enums.RoleFilter;
+import enums.DateFilter;
 import enums.Faculty;
 import enums.Format;
 import file.Input;
 import reply.Reply;
-import report.BaseReport;
 import student.Student;
-import suggestion.Suggestion;
+import suggestion.*;
 
-public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquiry, BaseReport {
+public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquiry, BaseSuggestion, CommitteeMemberReport {
 	Camp overseeing;
 	int points;
 	HashMap<String, Suggestion> suggestionList;
@@ -157,11 +158,14 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
       System.out.println("EnquiryID  " + enquiryID + " provided not found in this camp's list of enquiries, please try again.");
     }
 
-    public void viewSuggestionLists() {
+    @Override
+    public void viewSuggestions() {
         // View a list of all suggestions
         System.out.println("------------------ Suggestion List ------------------");
         for (Map.Entry<String, Suggestion> suggestionMap : suggestionList.entrySet()) {
             System.out.println(suggestionMap.getValue().getSuggestionID() + " - " + suggestionMap.getValue().getCreatorName());
+            System.out.println("Suggestion contents : " + suggestionMap.getValue().getContent());
+            System.out.println();
         }
         System.out.println("--------------- End of Suggestion List --------------");
     }
@@ -377,5 +381,127 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
       }
     }
 
+    /**
+     * Generates a report of enquiries with filters based on date belonging to the camp created by this staff. Option to save given after report generation.
+     * 
+     * @param sc Scanner object to be injected.
+     */
+    @Override
+    public void generateEnquiryReport(Scanner sc) {
+      // early exit if no camp created
+      if (overseeing == null)
+        System.out.println(
+            "You have not joined a camp as a Committee Member. Please join a camp as one before generating report.");
+      else {
+        ArrayList<Enquiry> unfilteredResult = overseeing.getEnquiries();
+        ArrayList<Enquiry> filteredResult = new ArrayList<>();
+        // prompt for filter
+        DateFilter filterSelection = enums.DateFilter.getDateFilterFromStringInput(sc);
+        String filterYesOrNo = file.Input
+            .getStringInput("Do you wish to filter the report by date?: (y/n) ", sc).toLowerCase();
+        // prompt for format
+        Format formatSelection = enums.Format.getFormatFromStringInput(sc);
+        if (filterYesOrNo == "y") {
+          // generate report with filters base on format selection
+          switch (filterSelection) {
+            case ON: {
+              LocalDate dateQuery = file.Input.getDateFromIntInputs("your filter: ", sc);
+              for (Enquiry e : unfilteredResult) {
+                if (dateQuery == e.getDateCreated())
+                  filteredResult.add(e);
+              }
+            }
+            case BEFORE: {
+              LocalDate dateQuery = file.Input.getDateFromIntInputs("your filter: ", sc);
+              for (Enquiry e : unfilteredResult) {
+                if (e.getDateCreated().isBefore(dateQuery))
+                  filteredResult.add(e);
+              }
+            }
+            case AFTER: {
+              LocalDate dateQuery = file.Input.getDateFromIntInputs("your filter: ", sc);
+              for (Enquiry e : unfilteredResult) {
+                if (e.getDateCreated().isAfter(dateQuery))
+                  filteredResult.add(e);
+              }
+            }
+            default:
+              break;
+          }
+          if (formatSelection == Format.CSV) {
+            enquiry.Enquiry.generateCSVHeaders();
+            for (Enquiry e : filteredResult) {
+              e.toCSV();
+            }
 
+          } else {
+            for (Enquiry e : filteredResult) {
+              e.toString();
+            }
+          }
+        } else {
+          // generate report without filters based on format selection
+          if (formatSelection == Format.CSV) {
+            committeeMember.CommitteeMember.generateCSVHeaders();
+            for (Enquiry e : unfilteredResult) {
+              e.toCSV();
+            }
+          } else {
+            for (Enquiry e : unfilteredResult) {
+              e.toString();
+            }
+          }
+        }
+
+        // prompt if user wishes to save the report
+        String saveYesOrNo = file.Input
+            .getStringInput("Do you wish to save the report as a file?: (y/n) ", sc).toLowerCase();
+        if (saveYesOrNo == "y") {
+          if (filterYesOrNo == "y") {
+            if (formatSelection == Format.CSV) { // save as .csv
+              String fileName = file.Input.getStringInput(
+                  "Please enter the name of the output file (do not include file extension): ", sc);
+              ArrayList<String> toSave = new ArrayList<>();
+              toSave.add(enquiry.Enquiry.generateCSVHeaders());
+              for (Enquiry e : filteredResult) {
+                toSave.add(e.toCSV());
+              }
+              file.FileIO.writeToFile(formatSelection, fileName, toSave);
+              System.out.println("File saved.");
+            } else { // save as .txt
+              String fileName = file.Input.getStringInput(
+                  "Please enter the name of the output file (do not include file extension): ", sc);
+              ArrayList<String> toSave = new ArrayList<>();
+              for (Enquiry e : filteredResult) {
+                toSave.add(e.toString());
+              }
+              file.FileIO.writeToFile(formatSelection, fileName, toSave);
+              System.out.println("File saved.");
+            }
+          } else {
+            if (formatSelection == Format.CSV) { // save as .csv
+              String fileName = file.Input.getStringInput(
+                  "Please enter the name of the output file (do not include file extension): ", sc);
+              ArrayList<String> toSave = new ArrayList<>();
+              toSave.add(enquiry.Enquiry.generateCSVHeaders());
+              for (Enquiry e : unfilteredResult) {
+                toSave.add(e.toCSV());
+              }
+              file.FileIO.writeToFile(formatSelection, fileName, toSave);
+              System.out.println("File saved.");
+            } else { // save as .txt
+              String fileName = file.Input.getStringInput(
+                  "Please enter the name of the output file (do not include file extension): ", sc);
+              ArrayList<String> toSave = new ArrayList<>();
+              for (Enquiry e : unfilteredResult) {
+                toSave.add(e.toString());
+              }
+              file.FileIO.writeToFile(formatSelection, fileName, toSave);
+              System.out.println("File saved.");
+            }
+          }
+        }
+      }
+    }
+    
 }
