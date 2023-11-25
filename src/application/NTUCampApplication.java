@@ -294,9 +294,17 @@ public class NTUCampApplication
         	if (user.getRole() == Role.STUDENT || user.getRole() == Role.COMMITTEE_MEMBER)
         	{
         		System.out.println("| 1. Join Camp                        |");
-        		System.out.println("| 2. Withdraw Camp                    |");
+        		System.out.println("| 2. See Joined Camps                 |");
+        		System.out.println("| 3. Withdraw Camp                    |");
         		if (user.getRole() == Role.STUDENT)
-        			System.out.println("| 3. Sign up as Committee Member      |");
+        		{
+        			System.out.println("| 4. Sign up as Committee Member      |");
+        			System.out.println("| 5. Back                             |");
+        		}
+        		else
+        		{
+        			System.out.println("| 4. Back                             |");
+        		}
         		System.out.println("---------------------------------------");
         		System.out.print("Please pick a menu: ");
         		
@@ -305,40 +313,79 @@ public class NTUCampApplication
         		
         		((Student)user).viewAvailableCampsToJoin(campList);
         		
-        		switch (choice)
-        		{
-        		case 1:
-        		{
-        			((Student)user).register(scan, campList);
-        			setMenuState(prevMenu);
-        			break;
+        		if (user.getRole() == Role.STUDENT) {
+        			switch (choice)
+            		{
+            		case 1:
+            		{
+            			((Student)user).register(scan, campList);
+            			setMenuState(prevMenu);
+            			break;
+            		}
+            		case 2:
+            		{
+            			((Student)user).viewRegisteredCamps();
+            			setMenuState(prevMenu);
+            		}
+            		case 3:
+            		{
+            			((Student)user).withdraw(scan);
+            			setMenuState(prevMenu);
+            			break;
+            		}
+            		case 4:
+            		{
+            			CommitteeMember cm = ((Student)user).registerAsCM(scan, campList, (Student)user); 
+            			if (cm == null)
+            			{
+            				System.out.println("Returning to previous Menu");
+            				setMenuState(prevMenu);
+            			}
+            			else
+            			{
+            				userManager.removeUser(user);
+            				
+            				// Change current student to become CM
+            				user = cm;
+            				userManager.addUser(user);
+            				setMenuState(MenuStates.CM_MAIN_MENU);
+            			}
+            			break;
+            		}
+            		case 5:
+            			setMenuState(prevMenu);
+            			break;
+            		}
         		}
-        		case 2:
+        		else
         		{
-        			((Student)user).withdraw(scan);
-        			setMenuState(prevMenu);
-        			break;
+        			switch (choice)
+            		{
+            		case 1:
+            		{
+            			((Student)user).register(scan, campList);
+            			setMenuState(prevMenu);
+            			break;
+            		}
+            		case 2:
+            		{
+            			((Student)user).viewRegisteredCamps();
+            			setMenuState(prevMenu);
+            		}
+            		case 3:
+            		{
+            			((CommitteeMember)user).withdraw(scan);
+            			setMenuState(prevMenu);
+            			break;
+            		}
+            		case 4:
+            		{
+            			setMenuState(prevMenu);
+            			break;
+            		}
+            		}
         		}
-        		case 3:
-        		{
-        			CommitteeMember cm = ((Student)user).registerAsCM(scan, campList, (Student)user); 
-        			if (cm == null)
-        			{
-        				System.out.println("Returning to previous Menu");
-        				setMenuState(prevMenu);
-        			}
-        			else
-        			{
-        				userManager.removeUser(user);
-        				
-        				// Change current student to become CM
-        				user = cm;
-        				userManager.addUser(user);
-        				setMenuState(MenuStates.CM_MAIN_MENU);
-        			}
-        			break;
-        		}
-        		}
+        		
         	}
         	else
         	{
@@ -544,7 +591,7 @@ public class NTUCampApplication
 		System.out.println("---------------------------------------");
         System.out.println("|        NTU STUDENT MAIN MENU        |");
         System.out.println("---------------------------------------");
-        System.out.println("| 1. View Available Camps             |");
+        System.out.println("| 1. View Camps                       |");
         System.out.println("| 2. View Enquiries                   |");
         System.out.println("| 3. See Profile                      |");
         System.out.println("| 4. Log Out                          |");

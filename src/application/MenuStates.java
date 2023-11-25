@@ -13,6 +13,7 @@ public enum MenuStates
 	// Shared Menu
 	PROFILE("Profile"),
 	VIEW_CAMPS("ViewCamps"),
+	VIEW_JOINED("ViewJoined"),
 	CAMP_DETAILS("CampDetails"),
 	VIEW_ENQUIRIES("ViewEnquiries"),
 	

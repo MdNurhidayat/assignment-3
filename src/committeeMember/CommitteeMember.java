@@ -138,6 +138,59 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
     }
     
     @Override
+    public void withdraw(Scanner scanner)
+    {
+    	System.out.println("Enter the CampID to withdraw from:");
+        String campID = scanner.nextLine();
+        
+        Camp selectedCamp = null;
+        
+        for (Camp camp : super.getRegisteredFor())
+        {
+        	if (camp.getCampID().equals(campID))
+        	{
+        		selectedCamp = camp;
+        		break;
+        	}
+        }
+        
+        // Check if the camp is found in the registeredFor list
+        if (selectedCamp != null) {
+        	if (selectedCamp.equals(overseeing))
+        	{
+        		System.out.println("Cannot withdraw from camp " + selectedCamp.getCampID() + " as you are a Committee Member for this camp. Withdrawal cancelled");
+        		return;
+        	}
+        	
+            // Display camp details for verification
+            System.out.println("Camp Details:");
+            System.out.println("Camp ID: " + selectedCamp.getCampID());
+            System.out.println("Camp Name: " + selectedCamp.getDetails().getName());
+
+            // Verify if the user wants to withdraw from the camp
+            System.out.println("Do you want to withdraw from this camp? (yes/no)");
+            String withdrawalChoice = scanner.nextLine();
+
+            if (withdrawalChoice.equalsIgnoreCase("yes")) {
+                // Remove the student from the camp's participants
+                selectedCamp.removeParticipant(this);
+
+                // Remove the camp from the student's registeredFor list
+                removeCampFromRegisteredFor(selectedCamp);
+
+                // Add the student to the camp's previouslyWithdrawn list
+                selectedCamp.addWithdrawn(this);
+
+                System.out.println("Withdrawal successful!");
+            } else {
+                System.out.println("Withdrawal cancelled.");
+            }
+        } else {
+            System.out.println("Camp not found in the registered list. Cannot withdraw.");
+        }
+    }
+    
+    @Override
     public void editEnquiry(Scanner sc)
     {
     	super.editEnquiry(sc);

@@ -209,17 +209,18 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
         String delimiter = "-";
         String paddingParameters = "| %-10s | %-25s | %-20s | %-10s | %-40s | %-10s | \n";
         System.out.println("Suggestion");
-        System.out.println(delimiter.repeat(130));
+        System.out.println(delimiter.repeat(135));
         System.out.printf(paddingParameters, "CampID", "Date Created", "SuggestorName",
             "SuggestionID", "SuggestionMessage", "IsProcessed");
-        System.out.println(delimiter.repeat(130));
+        System.out.println(delimiter.repeat(135));
         for (Suggestion s : results) {
           s.toString();
         }
-        System.out.println(delimiter.repeat(130));
+        System.out.println(delimiter.repeat(135));
         System.out.println();
       }
-      System.out.println("Current camp has no suggestions to show. Check back later.");
+      else
+    	  System.out.println("Current camp has no suggestions to show. Check back later.");
     }
   }
 
@@ -476,12 +477,12 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
       ArrayList<Enquiry> unfilteredResult = this.createdCamp.getEnquiries();
       ArrayList<Enquiry> filteredResult = new ArrayList<>();
       // prompt for filter
-      DateFilter filterSelection = enums.DateFilter.getDateFilterFromStringInput(sc);
       String filterYesOrNo = file.Input
           .getStringInput("Do you wish to filter the report by date?: (y/n) ", sc).toLowerCase();
       // prompt for format
       Format formatSelection = enums.Format.getFormatFromStringInput(sc);
       if (filterYesOrNo == "y") {
+    	DateFilter filterSelection = enums.DateFilter.getDateFilterFromStringInput(sc);
         // generate report with filters base on format selection
         switch (filterSelection) {
           case ON: {

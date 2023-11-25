@@ -72,5 +72,11 @@ public class Suggestion {
   public void incrementPoint() {
     this.createdBy.incrementPoint();
   }
-
+  
+  @Override
+  public String toString()
+  {
+	  String delimiter = " | ";
+	  return this.suggestionID + delimiter + this.dateCreated + delimiter + this.createdBy + delimiter + this.content + delimiter + this.isProcessed + delimiter;
+  }
 }

@@ -230,7 +230,7 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
 	@Override
     public void withdraw(Scanner scanner) {
 
-        System.out.println("Enter the CampID to withdraw from:");
+        System.out.print("Enter the CampID to withdraw from: ");
         String campID = scanner.nextLine();
 
         // Find the camp with the specified CampID in the registeredFor list
@@ -318,9 +318,6 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         System.out.println("------------------------------------------------------------");
         System.out.println("| Enquiry ID | Date Created | Messages          | Replies  |");
         System.out.println("------------------------------------------------------------");
-        
-        int sizeEnquiry;
-        
         
         for (Enquiry enquiry : enquiries) {
         	if (enquiry.getReplies() != null)
