@@ -110,7 +110,7 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         System.out.println("---------------------------------------------------------------------------");
 
         for (Camp camp : allCamps) {
-            if (camp.getisVisible() && !camp.getPreviouslyWithdrawn().contains(this) && camp.getDetails().getFaculty().equals(this.getFaculty())) {
+            if (camp.getisVisible() && !camp.getPreviouslyWithdrawn().contains(this) && (camp.getDetails().getFaculty().equals(this.getFaculty()) || camp.getDetails().getFaculty().equals(Faculty.NTU))) {
                 
 		int remainingSlots = camp.calculateRemainingSlots();
 
