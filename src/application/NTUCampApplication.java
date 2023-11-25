@@ -162,12 +162,12 @@ public class NTUCampApplication
 			}
 		}
 		
-		for (Camp camp : campList)
+		/*for (Camp camp : campList)
 		{
 			System.out.println(camp.getDetails().getName() + " created");
 			System.out.println(camp.getDetails().getStaffInChargeName());
 			System.out.println(camp.getParticipants());
-		}
+		}*/
 	}
 	
 	// Application Menus

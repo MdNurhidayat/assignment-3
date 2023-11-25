@@ -323,25 +323,27 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         
         
         for (Enquiry enquiry : enquiries) {
-        	
-        	if (!enquiry.getReplies().isEmpty())
-            	sizeEnquiry = enquiry.getReplies().size();
-    		else	
-    			sizeEnquiry = 0;
-        	
+        	if (enquiry.getReplies() != null)
+        	{
             System.out.printf("| %-11s | %-13s | %-17s | %-8s |\n",
                     enquiry.getEnquiryID(),
                     enquiry.getDateCreated(),
                     enquiry.getContents(),
-                    sizeEnquiry);
+                    enquiry.getReplies().size());
             // Iterate over replies and print each one
-            if (enquiry.getReplies().size() > 0)
-            {
 	            for (Reply reply : enquiry.getReplies()) {
 	                System.out.println("|   Reply: " + reply.getContents());
 	            }
             }	
-            System.out.println("------------------------------------------------------------");
+            else
+            {
+            	System.out.printf("| %-11s | %-13s | %-17s | %-8s |\n",
+                        enquiry.getEnquiryID(),
+                        enquiry.getDateCreated(),
+                        enquiry.getContents(),
+                        0);
+            }
+        	System.out.println("------------------------------------------------------------");
         }
     }
 

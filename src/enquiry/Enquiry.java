@@ -17,8 +17,8 @@ import student.Student;
 public class Enquiry {
   private String enquiryID;
   private String campID;
-  private String enquirerName;
   private LocalDate dateCreated;
+  private String enquirerName;
   private String enquiryMessage;
   private ArrayList<Reply> replies;
   private boolean isProcessed = false;
@@ -29,9 +29,10 @@ public class Enquiry {
     this.enquiryID = std.getUserID() + (std.getEnquiryCounter() + 1);
     std.setEnquiryCounter(std.getEnquiryCounter() + 1);
     this.dateCreated = LocalDate.now();
+    this.enquirerName = std.getName();
     this.campID = aCamp.getCampID();
     this.enquiryMessage = file.Input.getStringInput("Enter the contents of your enquiry: ", sc);
-    this.replies = new ArrayList<>();
+    this.replies = new ArrayList<Reply>();
     this.isProcessed = false;
   }
 
@@ -47,6 +48,16 @@ public class Enquiry {
     return dateCreated;
   }
 
+  public void setEnquirerName(String enquirerName)
+  {
+	  this.enquirerName = enquirerName;
+  }
+  
+  public String getEnquirerName()
+  {
+	  return enquirerName;
+  }
+  
   public String getContents() {
     return enquiryMessage;
   }

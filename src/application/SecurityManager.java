@@ -64,7 +64,10 @@ public class SecurityManager
 		System.out.println("Password Sucessfully Changed");
 		System.out.println("Kindly re enter your username with new password");
 		System.out.println();
-		user = logInAuthentication(scan, userManager);
+		
+		do {
+			user = logInAuthentication(scan, userManager);
+		} while(user == null);
 		
 		System.out.println();
 	}

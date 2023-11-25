@@ -99,6 +99,7 @@ public class Camp {
 	  idCount++;
 	  this.campID = staff.getUserID() + idCount;
 	  this.details = new Detail(staff);
+	  this.isVisible = true;
   }
   
   /**
@@ -151,7 +152,7 @@ public class Camp {
 	        .setDescription(file.Input.getStringInput("Enter the description of the camp: ", sc));
 	    this.details.setFaculty(Faculty.getFacultyFromStringInput(sc));
 
-	    LocalDate startDate = file.Input.getDateFromIntInputs("starting date", sc);
+	    LocalDate startDate = file.Input.getDateFromIntInputs("starting date: ", sc);
 	    this.details.setStartDate(startDate);
 
 	    LocalDate registrationclosingdate;
