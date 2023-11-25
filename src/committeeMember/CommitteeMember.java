@@ -303,7 +303,7 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
       RoleFilter filterSelection = enums.RoleFilter.getRoleFilterFromStringInput(sc);
       // prompt for format
       Format formatSelection = enums.Format.getFormatFromStringInput(sc);
-      if (filterYesOrNo == "y") {
+      if (filterYesOrNo .equals("y")) {
         // generate report with filters base on format selection
         switch (filterSelection) {
           case STUDENT: {
@@ -348,8 +348,8 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
         // prompt if user wishes to save the report
         String saveYesOrNo = file.Input
             .getStringInput("Do you wish to save the report as a file?: (y/n) ", sc).toLowerCase();
-        if (saveYesOrNo == "y") {
-          if (filterYesOrNo == "y") {
+        if (saveYesOrNo.equals("y")) {
+          if (filterYesOrNo.equals("y")) {
             switch (filterSelection) {
               case STUDENT: {
                 if (formatSelection == Format.CSV) { // save as .csv
@@ -456,7 +456,7 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
           .getStringInput("Do you wish to filter the report by date?: (y/n) ", sc).toLowerCase();
       // prompt for format
       Format formatSelection = enums.Format.getFormatFromStringInput(sc);
-      if (filterYesOrNo == "y") {
+      if (filterYesOrNo.equals("y")) {
         // generate report with filters base on format selection
         switch (filterSelection) {
           case ON: {
@@ -511,8 +511,8 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
       // prompt if user wishes to save the report
       String saveYesOrNo = file.Input
           .getStringInput("Do you wish to save the report as a file?: (y/n) ", sc).toLowerCase();
-      if (saveYesOrNo == "y") {
-        if (filterYesOrNo == "y") {
+      if (saveYesOrNo.equals("y")) {
+        if (filterYesOrNo.equals("y")) {
           if (formatSelection == Format.CSV) { // save as .csv
             String fileName = file.Input.getStringInput(
                 "Please enter the name of the output file (do not include file extension): ", sc);
@@ -557,5 +557,39 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
         }
       }
     }
+  }
+
+  @Override
+  /**
+   * Converts the Student object to a TXT format string.
+   *
+   * @return A string containing TXT-formatted student information.
+   */
+  public String toString() {
+      String delimiter = " | ";
+      return super.getUserID() + delimiter + super.getRole() + delimiter + super.getName() + delimiter
+              + super.getEmail() + delimiter + super.getFaculty() + this.points;
+  }
+
+  /**
+   * Generates CSV headers for the Student class.
+   *
+   * @return A string containing CSV headers.
+   */
+  public static String generateCSVHeaders() {
+      String delimiter = ", ";
+      return "UserID" + delimiter + "Role" + delimiter + "Name" + delimiter
+              + "Email" + delimiter + "Faculty" + delimiter + "Points";
+  }
+
+  /**
+   * Converts the Student object to a CSV format string.
+   *
+   * @return A string containing CSV-formatted student information.
+   */
+  public String toCSV() {
+      String delimiter = ", ";
+      return super.getUserID() + delimiter + super.getRole() + delimiter + super.getName() + delimiter
+              + super.getEmail() + delimiter + super.getFaculty() + delimiter + this.points;
   }
 }

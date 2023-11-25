@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import camp.Camp;
 import committeeMember.CommitteeMember;
+import enquiry.Enquiry;
 import enums.Role;
 import user.User;
 import file.FileIO;
@@ -139,7 +140,7 @@ public class NTUCampApplication
 		
 		for (Map.Entry<String, Staff> map : staffList.entrySet())
 		{
-			if (!map.getValue().getPassword().equals("password"));
+			if (!map.getValue().getPassword().equals("password") == false);
 			{
 				Camp camp = new Camp(map.getValue());
 				map.getValue().setCreatedCamp(camp);
@@ -149,7 +150,7 @@ public class NTUCampApplication
 		
 		for (Map.Entry<String, User> map : studentList.entrySet())
 		{
-			if (!map.getValue().getPassword().equals("password"))
+			if (map.getValue().getPassword().equals("password") == false)
 			{
 				for (Camp camp : campList)
 				{
@@ -294,7 +295,7 @@ public class NTUCampApplication
         	if (user.getRole() == Role.STUDENT || user.getRole() == Role.COMMITTEE_MEMBER)
         	{
         		System.out.println("| 1. Join Camp                        |");
-        		System.out.println("| 2. See Joined Camps                 |");
+        		System.out.println("| 2. See Registered Camps             |");
         		System.out.println("| 3. Withdraw Camp                    |");
         		if (user.getRole() == Role.STUDENT)
         		{
@@ -311,13 +312,12 @@ public class NTUCampApplication
         		choice = scan.nextInt();
         		scan.nextLine();
         		
-        		((Student)user).viewAvailableCampsToJoin(campList);
-        		
         		if (user.getRole() == Role.STUDENT) {
         			switch (choice)
             		{
             		case 1:
             		{
+            			((Student)user).viewAvailableCampsToJoin(campList);
             			((Student)user).register(scan, campList);
             			setMenuState(prevMenu);
             			break;
@@ -326,6 +326,7 @@ public class NTUCampApplication
             		{
             			((Student)user).viewRegisteredCamps();
             			setMenuState(prevMenu);
+            			break;
             		}
             		case 3:
             		{
@@ -513,6 +514,11 @@ public class NTUCampApplication
 			System.out.println("| 4. Back                             |");
 			System.out.println("---------------------------------------");
 			((CommitteeMember)user).viewEnquiries();
+			ArrayList<Enquiry> list = ((CommitteeMember)user).getOverseeingCamp().getEnquiries();
+			for (Enquiry enquiry : list)
+			{
+				System.out.println(enquiry.getCampID() + ", " + enquiry.getContents());
+			}
 			
 			choice = scan.nextInt();
 			scan.nextLine();
@@ -540,6 +546,11 @@ public class NTUCampApplication
 			System.out.println("---------------------------------------");
 			
 			((Staff)user).viewEnquiries();
+			ArrayList<Enquiry> list = ((CommitteeMember)user).getOverseeingCamp().getEnquiries();
+			for (Enquiry enquiry : list)
+			{
+				System.out.println(enquiry.getCampID() + ", " + enquiry.getContents());
+			}
 			
         	System.out.print("Pick a Menu : ");
         	choice = scan.nextInt();
