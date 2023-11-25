@@ -242,14 +242,35 @@ public class NTUCampApplication
 		System.out.println("---------------------------------------");
         System.out.println("|           YOUR PROFILE              |");
         System.out.println("---------------------------------------");
+        System.out.println("|1. Change Password                   |");
+        System.out.println("|2. Back                              |");
+        System.out.println("---------------------------------------");
+        
         System.out.println("Name : " + user.getName());
         System.out.println("UserID : " + user.getUserID());
         System.out.println("Email : " + user.getEmail());
         System.out.println("Faculty : " + user.getFaculty().toString());
         System.out.println("Role : " + user.getRole().toString());
         System.out.println();
-        System.out.print("Enter 1 to return back to Menu : ");
-        while(scan.nextInt() != 1) {scan.nextLine();}
+        
+        System.out.print("Please pick a choice: ");
+        int choice = scan.nextInt();
+        scan.nextLine();
+        
+        if (choice == 1 || choice == 2)
+        {
+        	if (choice == 1)
+        	{
+        		System.out.print("Type in your new password: ");
+        		user.setPassword(scan.nextLine());
+        	}
+        }
+        else
+        {
+        	errorChoice();
+        }
+        	
+        
         setMenuState(prevMenu);
 	}
 	
@@ -299,12 +320,14 @@ public class NTUCampApplication
         		}
         		case 3:
         		{
-        			if (user.getRole() == Role.COMMITTEE_MEMBER)
-        				System.out.println("Already a Committee Member of Camp " + ((CommitteeMember)user).getOverseeingCamp().getDetails().getName());
+        			CommitteeMember cm = ((Student)user).registerAsCM(scan, campList, (Student)user); 
+        			if (cm == null)
+        			{
+        				System.out.println("Returning to previous Menu");
+        				setMenuState(prevMenu);
+        			}
         			else
         			{
-        				CommitteeMember cm = ((Student)user).registerAsCM(scan, campList, (Student)user);
-        				
         				userManager.removeUser(user);
         				
         				// Change current student to become CM
