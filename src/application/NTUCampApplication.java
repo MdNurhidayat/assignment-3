@@ -268,6 +268,7 @@ public class NTUCampApplication
         else
         {
         	errorChoice();
+        	System.out.println("Returning to prev menu..");
         }
         	
         
@@ -601,7 +602,9 @@ public class NTUCampApplication
         System.out.println("| 3. Submit Suggestion                |");
         System.out.println("| 4. View Suggestions                 |");
         System.out.println("| 5. View Profile                     |");
-        System.out.println("| 6. Log Out                          |");
+        System.out.println("| 6. Generate Participant (R)         |");
+        System.out.println("| 7. Generate Equiry (R)              |");
+        System.out.println("| 8. Log Out                          |");
         System.out.println("---------------------------------------");
         System.out.print("Welcome " + user.getRole().toString() + " " + user.getName() + ". Please pick a menu : ");
         
@@ -626,6 +629,12 @@ public class NTUCampApplication
         	setMenuState(MenuStates.PROFILE);
         	break;
         case 6:
+        	setMenuState(MenuStates.REPORT_PARTICIPANT);
+        	break;
+        case 7:
+        	setMenuState(MenuStates.REPORT_ENQUIRY);
+        	break;
+        case 8:
         	setMenuState(MenuStates.PRELOG_OUT);
         	break;
         default:
@@ -829,6 +838,9 @@ public class NTUCampApplication
         		break;
         	case 2:
         		((CommitteeMember)user).editOwnSuggestion(scan);
+        		setMenuState(prevMenu);
+        		break;
+        	case 3:
         		setMenuState(prevMenu);
         		break;
         	default:

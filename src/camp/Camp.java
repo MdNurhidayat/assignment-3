@@ -31,7 +31,7 @@ public class Camp {
   /**
    * Represents if this camp is currently visible.
    */
-  private boolean isVisible = false;
+  private boolean isVisible;
   /**
    * Represents the details of this camp.
    * 
@@ -115,6 +115,7 @@ public class Camp {
     idCount++;
     this.campID = aStaff.getUserID() + idCount;
     this.details = new Detail(sc, aStaff);
+    this.isVisible = false;
   }
 
   /**

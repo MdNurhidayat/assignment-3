@@ -276,39 +276,39 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
           case STUDENT: {
             if (formatSelection == Format.CSV) {
               for (Student s : students) {
-                s.toCSV();
+                System.out.println(s.toCSV());
               }
             } else {
               for (Student s : students) {
-                s.toString();
+            	  System.out.println(s.toString());
               }
             }
           }
           case COMMITTEE_MEMBER: {
             if (formatSelection == Format.CSV) {
               for (CommitteeMember cm : committee) {
-                cm.toCSV();
+            	  System.out.println(cm.toCSV());
               }
             } else {
               for (CommitteeMember cm : committee) {
-                cm.toString();
+            	  System.out.println(cm.toString());
               }
             }
           }
           default:
             if (formatSelection == Format.CSV) {
               for (Student s : students) {
-                s.toCSV();
+            	  System.out.println(s.toCSV());
               }
               for (CommitteeMember cm : committee) {
-                cm.toCSV();
+            	  System.out.println(cm.toCSV());
               }
             } else {
               for (Student s : students) {
-                s.toString();
+            	  System.out.println(s.toString());
               }
               for (CommitteeMember cm : committee) {
-                cm.toString();
+            	  System.out.println(cm.toString());
               }
             }
         }
@@ -511,12 +511,12 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
         if (formatSelection == Format.CSV) {
           enquiry.Enquiry.generateCSVHeaders();
           for (Enquiry e : filteredResult) {
-            e.toCSV();
+        	  System.out.println(e.toCSV());
           }
 
         } else {
           for (Enquiry e : filteredResult) {
-            e.toString();
+        	  System.out.println(e.toString());
           }
         }
       } else {
@@ -524,11 +524,11 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
         if (formatSelection == Format.CSV) {
           committeeMember.CommitteeMember.generateCSVHeaders();
           for (Enquiry e : unfilteredResult) {
-            e.toCSV();
+        	  System.out.println(e.toCSV());
           }
         } else {
           for (Enquiry e : unfilteredResult) {
-            e.toString();
+        	  System.out.println(e.toString());
           }
         }
       }
