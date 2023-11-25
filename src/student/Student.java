@@ -153,6 +153,11 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         System.out.println("------------------------------------------------------------------------------------------------------------------");
     }
     
+    public void register(Camp camp)
+    {
+    	this.addCampToRegisteredFor(camp);
+    }
+    
     /**
      * Method to register a camp as participant.
      * Student would choose a camp and the method would check if the camp is available for registration.
@@ -174,7 +179,7 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
 
     // Check if the camp is found and can be registered
     if (selectedCamp != null && selectedCamp.getisVisible() && !selectedCamp.getPreviouslyWithdrawn().contains(this)
-            && selectedCamp.getDetails().getFaculty().equals(this.getFaculty())) {
+            && (selectedCamp.getDetails().getFaculty().equals(this.getFaculty()) || selectedCamp.getDetails().getFaculty().equals(Faculty.NTU))) {
         int remainingSlots = selectedCamp.getDetails().getTotalSlots() - selectedCamp.getParticipants().size();
 
         // Check if there are available slots and the current date is before the registration closing date
@@ -313,19 +318,29 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         System.out.println("------------------------------------------------------------");
         System.out.println("| Enquiry ID | Date Created | Messages          | Replies  |");
         System.out.println("------------------------------------------------------------");
-
+        
+        int sizeEnquiry;
+        
+        
         for (Enquiry enquiry : enquiries) {
+        	
+        	if (!enquiry.getReplies().isEmpty())
+            	sizeEnquiry = enquiry.getReplies().size();
+    		else	
+    			sizeEnquiry = 0;
+        	
             System.out.printf("| %-11s | %-13s | %-17s | %-8s |\n",
                     enquiry.getEnquiryID(),
                     enquiry.getDateCreated(),
                     enquiry.getContents(),
-                    enquiry.getReplies().size());
-
+                    sizeEnquiry);
             // Iterate over replies and print each one
-            for (Reply reply : enquiry.getReplies()) {
-                System.out.println("|   Reply: " + reply.getContents());
-            }
-
+            if (enquiry.getReplies().size() > 0)
+            {
+	            for (Reply reply : enquiry.getReplies()) {
+	                System.out.println("|   Reply: " + reply.getContents());
+	            }
+            }	
             System.out.println("------------------------------------------------------------");
         }
     }
@@ -435,7 +450,7 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
 	
 	    // Check if the camp is found and can be registered as Committee Member
 	    if (selectedCamp != null && selectedCamp.getisVisible() && !selectedCamp.getPreviouslyWithdrawn().contains(this)
-	            && selectedCamp.getDetails().getFaculty().equals(this.getFaculty())) {
+	            && (selectedCamp.getDetails().getFaculty().equals(this.getFaculty()) || selectedCamp.getDetails().getFaculty().equals(Faculty.NTU))) {
 	    	
 	        // Check if there are available committee slots and the current date is before the registration closing date
 	        int remainingSlots = selectedCamp.getDetails().getCommitteeSlots() - selectedCamp.getCommittee().size();

@@ -1,5 +1,6 @@
 package camp;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 import committeeMember.CommitteeMember;
@@ -15,7 +16,7 @@ import file.Input;
  * be created by a <code>Staff</code>.
  * 
  * @author Nah Wei Jie
- * @version 1.04
+ * @version 1.1
  * @see <code>Staff</code>
  */
 public class Camp {
@@ -93,6 +94,13 @@ public class Camp {
 
   // non-default methods, to be reflected in UML
 
+  public Camp(Staff staff)
+  {
+	  idCount++;
+	  this.campID = staff.getUserID() + idCount;
+	  this.details = new Detail(staff);
+  }
+  
   /**
    * Custom constructor method. Uses multiple set methods from this camp's <code>detail</code>
    * object, various get input methods from the <code>Input</code> class are injected to provide
@@ -137,17 +145,48 @@ public class Camp {
    * @param sc Scanner object to be injected
    */
   public void setDetails(Scanner sc) {
-    this.details.setName(Input.getStringInput("Enter the name of the camp: ", sc));
-    this.details.setLocation(Input.getStringInput("Enter the location of the camp: ", sc));
-    this.details
-        .setDescription(Input.getStringInput("Enter the description of the camp: ", sc));
-    this.details.setFaculty(Faculty.getFacultyFromStringInput(sc));
-    this.details.setStartDate(Input.getDateFromIntInputs("starting date", sc));
-    this.details.setEndDate(Input.getDateFromIntInputs("ending date", sc));
-    this.details
-        .setRegistrationClosingDate(Input.getDateFromIntInputs("registration deadline", sc));
-    this.details
-        .setTotalSlots(Input.getIntInput("Enter the total slots for this camp: ", sc));
+	  this.details.setName(file.Input.getStringInput("Enter the name of the camp: ", sc));
+	    this.details.setLocation(file.Input.getStringInput("Enter the location of the camp: ", sc));
+	    this.details
+	        .setDescription(file.Input.getStringInput("Enter the description of the camp: ", sc));
+	    this.details.setFaculty(Faculty.getFacultyFromStringInput(sc));
+
+	    LocalDate startDate = file.Input.getDateFromIntInputs("starting date", sc);
+	    this.details.setStartDate(startDate);
+
+	    LocalDate registrationclosingdate;
+	    do {
+	      registrationclosingdate = file.Input.getDateFromIntInputs("registration deadline: ", sc);
+	      if (registrationclosingdate.isAfter(startDate))
+	        System.out
+	            .println("Registration closing date cannot be later than start date. Please re-enter.");
+	      else
+	        this.details.setRegistrationClosingDate(registrationclosingdate);
+	    } while (registrationclosingdate.isAfter(startDate));
+
+	    LocalDate endDate;
+	    do {
+	      endDate = file.Input.getDateFromIntInputs("end date: ", sc);
+	      if (endDate.isBefore(startDate))
+	        System.out.println("End date cannot be earlier than start date. Please re-enter.");
+	      else
+	        this.details.setEndDate(endDate);
+	    } while (endDate.isBefore(startDate));
+
+	    this.details.setTotalSlots(
+	        file.Input.getIntInput("Enter the combined total slots for this camp: ", sc));
+
+	    int committeeSlots;
+	    int COMMITTEE_SLOTS_CAPACITY = this.details.getCOMMITTEE_SLOTS_CAPACITY();
+	    do {
+	      committeeSlots =
+	          file.Input.getIntInput("Enter the total committee slots for this camp: ", sc);
+	      if (committeeSlots > COMMITTEE_SLOTS_CAPACITY)
+	        System.out.println("Committee member slots cannot be higher than the maximum capacity of "
+	            + COMMITTEE_SLOTS_CAPACITY + ". Please re-enter.");
+	      else
+	        this.details.setCommitteeSlots(committeeSlots);
+	    } while (committeeSlots > COMMITTEE_SLOTS_CAPACITY);
   }
 
   /**
@@ -221,53 +260,100 @@ public class Camp {
     return this.details.getCommitteeSlots() - this.committee.size();
   }
 
-  public void addEnquiry(Enquiry enquiry)
-  {
-	  if (this.enquiries.contains(enquiry))
-		  System.out.println("Enquiry already present in this camp. Please double check and try again");
-	  else
-		  this.enquiries.add(enquiry);
+  /**
+   * Adds an enquiry into this camp's <code>enquiries</code> list.
+   * 
+   * @param enquiry <code>Enquiry</code> object
+   */
+  public void addEnquiry(Enquiry enquiry) {
+    if (this.enquiries.contains(enquiry))
+      System.out
+          .println("Enquiry already present in this camp. Please double-check and try again.");
+    else
+      this.enquiries.add(enquiry);
+  }
+
+  /**
+   * Removes an enquiry from this camp's <code>enquiries</code> list.
+   * 
+   * @param enquiry <code>Enquiry</code> object
+   */
+  public void removeEnquiry(Enquiry enquiry) {
+    if (this.enquiries.contains(enquiry))
+      this.enquiries.remove(enquiry);
+    else
+      System.out.println("Enquiry is not found. Please double-check and try again.");
+  }
+
+  /**
+   * Adds a suggestion into this camp's <code>suggestions</code> list.
+   * 
+   * @param suggestion <code>Suggestion</code> object
+   */
+  public void addSuggestion(Suggestion suggestion) {
+    if (this.suggestions.contains(suggestion))
+      System.out
+          .println("Suggestion already present in this camp. Please double-check and try again.");
+    else
+      this.suggestions.add(suggestion);
+  }
+
+  /**
+   * Removes a suggestion from this camp's <code>suggestions</code> list.
+   * 
+   * @param suggestion <code>Suggestion</code> object
+   */
+  public void removeSuggestion(Suggestion suggestion) {
+    if (this.suggestions.contains(suggestion))
+      this.suggestions.remove(suggestion);
+    else
+      System.out.println("Suggestion is not found. Please double-check and try again.");
   }
   
-  public void removeEnquiry(Enquiry enquiry)
-  {
-	  if (this.enquiries.contains(enquiry))
-		  this.enquiries.remove(enquiry);
-	  else
-		  System.out.println("Enquiry is not found. Please double check and try again.");
-  }
-  
-  public void addSuggestions(Suggestion suggestion)
-  {
-	  if (this.suggestions.contains(suggestion))
-		  System.out.println("Suggestion already present in this camp. Please double check and try again");
-	  else
-		  this.suggestions.add(suggestion);
-  }
-  
-  public void removeSuggestion(Suggestion suggestion)
-  {
-	  if (this.suggestions.contains(suggestion))
-		  this.suggestions.remove(suggestion);
-	  else
-		  System.out.println("Suggestion is not found. Please double check and try again.");
-  }
-  
+  /**
+   * Overriden toString method for <code>Camp</code> class. Generates and returns the attribute
+   * values as a string with the " | " character as a delimiter.
+   * 
+   * @return string result of all of this camp's attribute values with the exception of ArrayList
+   *         attributes.
+   */
+  @Override
   public String toString() {
     String delimiter = " | ";
     return this.campID + delimiter + this.isVisible + delimiter + this.details.toString();
   }
+
+  /**
+   * Generates and returns the attribute names for use as CSV headers as a string with the ","
+   * character as a delimiter.
+   * 
+   * @return string result of all of this camp's attribute names with the exception of ArrayList
+   *         attributes.
+   */
 
   public static String generateCSVHeaders() {
     String delimiter = ", ";
     return "campID" + delimiter + "isVisible" + delimiter + Detail.generateCSVHeaders();
   }
 
+  /**
+   * Generates and returns the attribute values in CSV format as a string with the "," character as
+   * a delimiter.
+   * 
+   * @return string result of all of this camp's attribute values with the exception of ArrayList
+   *         attributes.
+   */
+
   public String toCSV() {
     generateCSVHeaders();
     String delimiter = ", ";
     return this.campID + delimiter + this.isVisible + delimiter + this.details.toCSV();
   }
+
+  /**
+   * Prints a <code>Camp</code> object in a format suitable for CLI. Only displays
+   * non-<code>ArrayList</code> attributes. Used for <code>Student</code> class view methods.
+   */
 
   public void print() {
     String delimiter = "-";
@@ -294,6 +380,12 @@ public class Camp {
     System.out.println();
   }
 
+  /**
+   * Prints a detailed <code>Camp</code> object in a format suitable for CLI. Only displays
+   * non-<code>ArrayList</code> attributes with the exception of participants and committee. Used
+   * for <code>CommitteeMember</code> and <code>Staff</code> class view methods.
+   */
+
   public void detailedPrint() {
     String delimiter = "-";
     String paddingParameters = "| %-10s | %-10s | %-15s | %-30s | %-10s | \n";
@@ -303,14 +395,14 @@ public class Camp {
     System.out.printf(paddingParameters, "UserID", "Role", "Name", "Email", "Faculty");
     System.out.println(delimiter.repeat(91));
     for (Student stu : this.getParticipants()) {
-      stu.toString();
+      System.out.println(stu.toString());
     }
     System.out.println(delimiter.repeat(91));
     System.out.println();
     System.out.println("Committee");
     System.out.printf(paddingParameters, "UserID", "Role", "Name", "Email", "Faculty");
     for (CommitteeMember cm : this.getCommittee()) {
-      cm.toString();
+      System.out.println(cm.toString());
     }
     System.out.println(delimiter.repeat(91));
     System.out.println();

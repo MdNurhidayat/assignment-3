@@ -45,6 +45,11 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
 
   // non-default methods, to be reflected in UML
 
+  public void setCreatedCamp(Camp camp)
+  {
+	  createdCamp = camp;
+  }
+  
   /**
    * Returns a created <code>Camp</code> created by this staff.
    * 

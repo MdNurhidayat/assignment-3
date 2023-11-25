@@ -1,6 +1,8 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import camp.Camp;
@@ -124,6 +126,48 @@ public class NTUCampApplication
 		userManager = new UserManager();
 		campList = new ArrayList<Camp>();
 		prevMenu = menu = MenuStates.PRELOG_IN;
+
+		// Uncomment / comment to show demo/hide
+		demo();
+	}
+	
+	// For Demo
+	static void demo()
+	{
+		HashMap<String, User> studentList = userManager.getStudentList();
+		HashMap<String, Staff> staffList = userManager.getStaffList();
+		
+		for (Map.Entry<String, Staff> map : staffList.entrySet())
+		{
+			if (!map.getValue().getPassword().equals("password"));
+			{
+				Camp camp = new Camp(map.getValue());
+				map.getValue().setCreatedCamp(camp);
+				campList.add(camp);
+			}
+		}
+		
+		for (Map.Entry<String, User> map : studentList.entrySet())
+		{
+			if (!map.getValue().getPassword().equals("password"))
+			{
+				for (Camp camp : campList)
+				{
+					if (camp.getDetails().getFaculty().equals(map.getValue().getFaculty()))
+					{
+						camp.addParticipant((Student)map.getValue());
+						((Student)map.getValue()).register(camp);
+					}
+				}
+			}
+		}
+		
+		for (Camp camp : campList)
+		{
+			System.out.println(camp.getDetails().getName() + " created");
+			System.out.println(camp.getDetails().getStaffInChargeName());
+			System.out.println(camp.getParticipants());
+		}
 	}
 	
 	// Application Menus
@@ -426,8 +470,9 @@ public class NTUCampApplication
 			
 			((Staff)user).viewEnquiries();
 			
-			choice = scan.nextInt();
-			scan.nextLine();
+        	System.out.print("Pick a Menu : ");
+        	choice = scan.nextInt();
+        	scan.nextLine();
 			
 			switch (choice)
 			{
@@ -671,7 +716,8 @@ public class NTUCampApplication
         System.out.println("---------------------------------------");
         ((Staff)user).editCamp(scan);
         
-        System.out.print("Set camp to visible? Enter 1 to set visible, otherwise camp will be invisible");
+        System.out.println("Set camp to visible? Enter 1 to set visible, otherwise camp will be invisible.");
+        System.out.print("Choice : ");
         int choice = scan.nextInt();
         scan.nextLine();
         
@@ -681,7 +727,7 @@ public class NTUCampApplication
         	((Staff)user).getCreatedCamp().setVisibleOff();
         
         System.out.println();
-    	setMenuState(prevMenu);
+    	setMenuState(MenuStates.STAFF_MAIN_MENU);
     }
     
     static void createCampMenu()
@@ -693,7 +739,7 @@ public class NTUCampApplication
         ((Staff)user).createCamp(scan);
         campList.add(((Staff)user).getCreatedCamp());
         
-        System.out.println("Set Camp to Visible? Press 1 to set visbile, otherwise, camp will be unvisible");
+        System.out.println("Set Camp to Visible? Press 1 to set visbile, otherwise, camp will be unvisible.");
         System.out.print("Choice : ");
         
         int choice = scan.nextInt();
@@ -720,7 +766,10 @@ public class NTUCampApplication
         scan.nextLine();
         
         if (choice == 1)
+        {
+        	campList.remove(((Staff)user).getCreatedCamp());
         	((Staff)user).deleteCamp();
+        }
         else if (choice < 1 && choice > 2)
         {
         	errorChoice();

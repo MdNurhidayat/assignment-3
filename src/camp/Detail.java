@@ -169,6 +169,22 @@ public class Detail {
 
   // non-default methods, to be reflected in UML
 
+  public Detail(Staff staff)
+  {
+	  staffInCharge = staff;
+	  staffInChargeName = staff.getName();
+	  name = staff.getFaculty().toString() + " Camp";
+	  location = staff.getFaculty().toString() + " Building";
+	  description = "Post Examination Camp for " + staff.getFaculty().toString();
+	  faculty = staff.getFaculty();
+	  startDate = LocalDate.now();
+	  registrationClosingDate = LocalDate.now().minusDays(10);
+	  endDate = LocalDate.now().plusDays(10);
+	  
+	  totalSlots = 20;
+	  committeeSlots = 10;
+  }
+  
   /**
    * Custom constructor for a Detail object.
    * 
