@@ -282,71 +282,71 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
         	System.out.println("Suggestion " + suggestionID + " do not exist. Try Again.");
     }
 
-    /**
-    /**
+   
+   /**
    * Generates a report of participants with filters based on role belonging to the camp created by this staff. Option to save given after report generation.
    * 
    * @param sc Scanner object to be injected.
    */
-  @Override
-  public void generateParticipantReport(Scanner sc) {
-    // early exit if no camp created
-    if (overseeing == null)
-      System.out.println(
+   @Override
+   public void generateParticipantReport(Scanner sc) {
+     // early exit if no camp created
+     if (overseeing == null)
+       System.out.println(
           "You have not created a camp yet. Please create a camp before generating report.");
-    else {
-      ArrayList<Student> students = this.overseeing.getParticipants();
-      ArrayList<CommitteeMember> committee = this.overseeing.getCommittee();
-      // prompt for filter
-      String filterYesOrNo = file.Input
-          .getStringInput("Do you wish to filter the report by role?: (y/n) ", sc).toLowerCase();
-      RoleFilter filterSelection = enums.RoleFilter.getRoleFilterFromStringInput(sc);
-      // prompt for format
-      Format formatSelection = enums.Format.getFormatFromStringInput(sc);
-      if (filterYesOrNo .equals("y")) {
-        // generate report with filters base on format selection
-        switch (filterSelection) {
-          case STUDENT: {
-            if (formatSelection == Format.CSV) {
-              for (Student s : students) {
-                System.out.println(s.toCSV());
-              }
-            } else {
-              for (Student s : students) {
+     else {
+       ArrayList<Student> students = this.overseeing.getParticipants();
+       ArrayList<CommitteeMember> committee = this.overseeing.getCommittee();
+       // prompt for filter
+       String filterYesOrNo = file.Input
+           .getStringInput("Do you wish to filter the report by role?: (y/n) ", sc).toLowerCase();
+       RoleFilter filterSelection = enums.RoleFilter.getRoleFilterFromStringInput(sc);
+       // prompt for format
+       Format formatSelection = enums.Format.getFormatFromStringInput(sc);
+       if (filterYesOrNo .equals("y")) {
+         // generate report with filters base on format selection
+         switch (filterSelection) {
+           case STUDENT: {
+             if (formatSelection == Format.CSV) {
+               for (Student s : students) {
+                 System.out.println(s.toCSV());
+               }
+             } else {
+               for (Student s : students) {
             	  System.out.println(s.toString());
-              }
-            }
-          }
-          case COMMITTEE_MEMBER: {
-            if (formatSelection == Format.CSV) {
-              for (CommitteeMember cm : committee) {
-            	  System.out.println(cm.toCSV());
-              }
-            } else {
-              for (CommitteeMember cm : committee) {
+               }
+             }
+           }
+           case COMMITTEE_MEMBER: {
+             if (formatSelection == Format.CSV) {
+               for (CommitteeMember cm : committee) {
+            	   System.out.println(cm.toCSV());
+               }
+             } else {
+               for (CommitteeMember cm : committee) {
             	  System.out.println(cm.toString());
-              }
-            }
-          }
-          default:
-            if (formatSelection == Format.CSV) {
-              for (Student s : students) {
+               }
+             }
+           }
+           default:
+             if (formatSelection == Format.CSV) {
+               for (Student s : students) {
             	  System.out.println(s.toCSV());
-              }
-              for (CommitteeMember cm : committee) {
-            	  System.out.println(cm.toCSV());
-              }
-            } else {
-              for (Student s : students) {
-            	  System.out.println(s.toString());
-              }
-              for (CommitteeMember cm : committee) {
-            	  System.out.println(cm.toString());
-              }
-            }
-        }
-        // prompt if user wishes to save the report
-        String saveYesOrNo = file.Input
+               }
+               for (CommitteeMember cm : committee) {
+             	   System.out.println(cm.toCSV());
+               }
+             } else {
+               for (Student s : students) {
+            	   System.out.println(s.toString());
+               }
+               for (CommitteeMember cm : committee) {
+             	   System.out.println(cm.toString());
+               }
+             }
+         }
+         // prompt if user wishes to save the report
+         String saveYesOrNo = file.Input
             .getStringInput("Do you wish to save the report as a file?: (y/n) ", sc).toLowerCase();
         if (saveYesOrNo.equals("y")) {
           if (filterYesOrNo.equals("y")) {
@@ -559,12 +559,12 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
     }
   }
 
-  @Override
   /**
    * Converts the Student object to a TXT format string.
    *
    * @return A string containing TXT-formatted student information.
    */
+  @Override
   public String toString() {
       String delimiter = " | ";
       return super.getUserID() + delimiter + super.getRole() + delimiter + super.getName() + delimiter

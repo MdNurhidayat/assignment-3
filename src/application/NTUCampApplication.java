@@ -14,20 +14,50 @@ import file.FileIO;
 import staff.Staff;
 import student.Student;
 
+/**
+ * Main application to run the NTU Camp Management. 
+ * 
+ * @author Nurhidayat
+ */
 public class NTUCampApplication 
 {	
-	// Application Managers
+	/**
+	 * Scanner variable "scan" to receive user input.
+	 */
 	static Scanner scan;
+	/**
+	 * SecurityManager variable "authenticator" to handle user logins and change password methods
+	 */
 	static SecurityManager authenticator;
+	/**
+	 * UserManager variable "userManager" to handle users within the school 
+	 */
 	static UserManager userManager;
+	/**
+	 * FileIO variable "fileEditor" to handle any read/write into file
+	 */
 	static FileIO fileEditor;
+	/**
+	 * MenuStates variable "menu" to tell the programme which state of the menu it is in
+	 */
 	static MenuStates menu;
+	/**
+	 * MenuStates variable "prevMenu" to store last visited menu so there is a way to go back to previous menu
+	 */
 	static MenuStates prevMenu;
+	/**
+	 * User variable "user" to indicate the current logged in user
+	 */
 	static User user;
-	
-	// Camp List
+	/**
+	 * ArrayList variable storing camps of NTU
+	 */
 	static ArrayList<Camp> campList;
 	
+	/**
+	 * Main Function for NTU Camp Application
+	 * @param args
+	 */
 	public static void main(String[] args) 
 	{
 		// Initialise variables through this method
@@ -103,22 +133,31 @@ public class NTUCampApplication
 				break;
 			}
 		}
-		
 		System.out.println("END PROGRAMME");
 	}
 	
-	// Application Methods
+	/**
+	 * This method changes the current menu state to the desired menu state according to user choice.
+	 * Also, it will store the previous menu state in variable "prevMenu"
+	 * @param newState; Next menu the programme will display
+	 */
 	static void setMenuState(MenuStates newState)
 	{
 		prevMenu = menu;
 		menu = newState;
 	}
 	
+	/**
+	 * This method is called whenever user chooses an integer outside of the scope of menu number
+	 */
 	static void errorChoice()
 	{
 		System.out.println("Invalid Choice! Choose Again");
 	}
 	
+	/**
+	 * This method activates all the variable required to run the programme
+	 */
 	static void initialise()
 	{
 		scan = new Scanner(System.in);
@@ -132,7 +171,10 @@ public class NTUCampApplication
 		demo();
 	}
 	
-	// For Demo
+	/**
+	 * This function was created for the sole purpose of creating camps and have students join ahead of time for demo.
+	 * Just like a script! Kinda..
+	 */
 	static void demo()
 	{
 		HashMap<String, User> studentList = userManager.getStudentList();
@@ -171,7 +213,11 @@ public class NTUCampApplication
 		}*/
 	}
 	
-	// Application Menus
+	// Application Menus ///////////////////////
+	
+	/**
+	 * The first menu that user is greeted by to choose to log in or exit programme
+	 */
 	static void preLogInMenu()
 	{
 		System.out.println("---------------------------------------");
@@ -193,6 +239,9 @@ public class NTUCampApplication
         	errorChoice();
 	}
 	
+	/**
+	 * This is the log in menu that will require User to log in. "authenticator" variable will be called to verify if user exists in the "userManager" variable.
+	 */
 	static void logInMenu()
 	{
 		System.out.println("---------------------------------------");
@@ -213,6 +262,9 @@ public class NTUCampApplication
 			setMenuState(MenuStates.STAFF_MAIN_MENU);
 	}
 	
+	/**
+	 * This menu requires user to confirm his choice to log out
+	 */
 	static void preLogOutMenu()
 	{
 		System.out.println("---------------------------------------");
@@ -232,12 +284,18 @@ public class NTUCampApplication
         	errorChoice();
     }
 	
+	/**
+	 * This method just prints out log out confirmation and sets menu to PRELOG_IN
+	 */
 	static void logOutMenu()
 	{
 		System.out.println("Sucessfully Logged Out! Thank you " + user.getName());
 		setMenuState(MenuStates.PRELOG_IN);
 	}
 	
+	/**
+	 * This menu prints out the main details of the user and has an option to change password
+	 */
 	static void viewProfileMenu()
 	{
 		System.out.println("---------------------------------------");
@@ -258,25 +316,33 @@ public class NTUCampApplication
         int choice = scan.nextInt();
         scan.nextLine();
         
-        if (choice == 1 || choice == 2)
+        switch(choice)
         {
-        	if (choice == 1)
-        	{
-        		System.out.print("Type in your new password: ");
-        		user.setPassword(scan.nextLine());
-        	}
-        }
-        else
-        {
+        case 1:
+        	System.out.print("Type in your new password: ");
+    		user.setPassword(scan.nextLine());
+    		break;
+        case 2:
+        	break;
+        default:
         	errorChoice();
         	System.out.println("Returning to prev menu..");
+        	break;
         }
-        	
-        
         setMenuState(prevMenu);
 	}
 	
-	// Shared Menu Throughout All Roles
+	// Shared Menu Throughout All Roles ///////////////////////
+	
+	/**
+	 * This menu is a camp menu that is shared throughout the 3 roles
+	 * 
+	 * STUDENT & COMMITTEE MEMBER are rather similar, the difference would be the option to sign up as Committee Member
+	 * STAFF will print detailed information of all camps in the NTU Application
+	 * 
+	 * @see <code>Student</code> for methods implemented here
+	 * @see <code>CommitteeMember</code> for methods implemented here
+	 */
 	static void viewCampsMenu()
 	{
 		System.out.println("---------------------------------------");
@@ -408,6 +474,14 @@ public class NTUCampApplication
 		
 	}
 	
+	/**
+	 * This menu prints every detail in a camp that Committee Member or Staff is in
+	 * 
+	 * For Student, it will print the camps they have joined
+	 * 
+	 * @see <code>Student</code> for <code>getRegisteredFor()</code> method
+	 * @see <code>Details</code> for <code>detailedPrint()</code> method
+	 */
 	static void viewCampDetailsMenu()//Camp camp)
 	{
 		System.out.println("---------------------------------------");
@@ -469,7 +543,13 @@ public class NTUCampApplication
         System.out.println();
 	}
 	
-	// Shared Menu Between CM & STAFF
+	/**
+	 * This menu handles all kind of enquiry options for all 3 classes
+	 * 
+	 * @see <code>Student</code> to refer implementation, <role>Student</role> can create and edit enquiry  
+	 * @see <code>CommitteeMember</code> to refer implementation, <role>Committee Member</role> can create, edit and reply enquiry
+	 * @see <code>Staff</code> to refer implementation, <role>Staff</role> can reply enquiry
+	 */
 	static void viewEnquiriesMenu()
 	{
 		System.out.println("---------------------------------------");
@@ -546,7 +626,7 @@ public class NTUCampApplication
 			System.out.println("---------------------------------------");
 			
 			((Staff)user).viewEnquiries();
-			ArrayList<Enquiry> list = ((CommitteeMember)user).getOverseeingCamp().getEnquiries();
+			ArrayList<Enquiry> list = ((Staff)user).getCreatedCamp().getEnquiries();
 			for (Enquiry enquiry : list)
 			{
 				System.out.println(enquiry.getCampID() + ", " + enquiry.getContents());
@@ -579,24 +659,29 @@ public class NTUCampApplication
 		}
 	}
 	
+	/**
+	 * This method calls the menu to generate report for Participants
+	 * @see <code>CommitteeMember</code> for <code>generateParticipantReport()</code> for Committee Member's method implementation
+	 * @see <code>Staff</code> for <code>generateParticipantReport()</code> for Staff's method implementation
+	 */
 	static void generateReportParticipantsMenu()
 	{
 		System.out.println("---------------------------------------");
         System.out.println("|          GENERATING REPORT          |");
         System.out.println("---------------------------------------");
 		if (user.getRole() == Role.COMMITTEE_MEMBER)
-		{
 			((CommitteeMember)user).generateParticipantReport(scan);
-		}
 		else
-		{
 			((Staff)user).generateParticipantReport(scan);
-		}
 		
 		setMenuState(prevMenu);
 	}
 	
 	// STUDENT METHODS
+	
+	/**
+	 * Method to printing STUDENT main menu and choices
+	 */
 	static void studentMainMenu()
 	{
 		System.out.println("---------------------------------------");
@@ -640,6 +725,10 @@ public class NTUCampApplication
         } 
 	}
 	
+	/**
+	 * Method to submitting Enquiry as STUDENT / COMMITTEE MEMBER by calling Student's submitEnquiry() method
+	 * @see student.Student for <code>submitEnquiry()</code> implementation
+	 */
 	static void submitEnquiryMenu()
 	{
 		System.out.println("---------------------------------------");
@@ -650,6 +739,10 @@ public class NTUCampApplication
 	}
 
 	// COMMITTEE METHODS
+	
+	/**
+	 * Method to printing COMMITTEE MEMBER main menu and choices
+	 */
 	static void committeeMainMenu()
 	{
 		System.out.println("---------------------------------------");
@@ -701,6 +794,10 @@ public class NTUCampApplication
         }
 	}
 	
+	/**
+	 * Method to print Submit Suggestion menu and call submitSuggestion(Scanner) from CommitteeMember class
+	 * @see <code>CommitteeMember</code> for <code>submitSuggestion(Scanner)</code> implementation
+	 */
 	static void submitSuggestionMenu()
 	{
     	System.out.println("---------------------------------------");
@@ -713,6 +810,9 @@ public class NTUCampApplication
 	}
 	
 	// STAFF METHODS
+	/**
+	 * Method to printing STAFF main menu and choices
+	 */
     static void staffMainMenu()
 	{
     	System.out.println("---------------------------------------");
@@ -799,6 +899,12 @@ public class NTUCampApplication
 		}
 	}
 	
+    /**
+     * Method to printing Edit Camp menu 
+     * 
+     * @see <code>Staff</code> for <code>editCamp()</code> method implementation 
+     * @see <code>Camp</code> for <code>setVisibleOn/setVisibileOff</code> method implementation
+     */
     static void editCampMenu()
     {
     	System.out.println("---------------------------------------");
@@ -820,6 +926,13 @@ public class NTUCampApplication
     	setMenuState(MenuStates.STAFF_MAIN_MENU);
     }
     
+    /**
+     * Method to printing create camp menu
+     * Also, Staff create camp implementation here
+     * 
+     * @see <code>Staff</code> for <code>createCamp</code> implementation
+     * @see <code>Camp</code> for <code>setVisibility</code> implementation
+     */
     static void createCampMenu()
     {
 		System.out.println("---------------------------------------");
@@ -843,6 +956,10 @@ public class NTUCampApplication
     	setMenuState(prevMenu);
     }
     
+    /**
+     * Method to printing delete camp menu
+     * @see <code>Staff</code> for <code>deleteCamp</code> implementation
+     */
     static void deleteCampMenu()
     {
 		System.out.println("---------------------------------------");
@@ -868,6 +985,12 @@ public class NTUCampApplication
     	setMenuState(prevMenu);
     }
 
+    /**
+     * Method to printing Suggestion Menu for <role>Committee Member & Staff</role>
+     * 
+     * @see <code>CommitteeMember</code> for suggestion method implementation
+     * @see <code>Staff</code> for approve suggetion method implementation
+     */
     static void viewSuggestionsMenu()
     {
     	System.out.println("---------------------------------------");
@@ -920,7 +1043,7 @@ public class NTUCampApplication
         	switch (choice)
         	{
         	case 1:
-        		if (!((Staff)user).getCreatedCamp().getEnquiries().isEmpty())
+        		if (((Staff)user).getCreatedCamp().getSuggestions() != null)
         			((Staff)user).approve(scan);
         		else
         			System.out.println("There is no SUGGESTION! Returning to Menu.");
@@ -936,6 +1059,10 @@ public class NTUCampApplication
         }
     }
 
+    /**
+     * This menu calls the menu to generate report for Performance
+     * @see <code>Staff</code> for <code>generatePerformaceReport</code> method implementation
+     */
     static void generateReportPerformanceMenu()
     {
     	System.out.println("---------------------------------------");
@@ -944,7 +1071,12 @@ public class NTUCampApplication
     	((Staff)user).generatePerformanceReport(scan);
     	setMenuState(prevMenu);
     }
-
+    
+    /**
+     * This menu calls the menu to generate report for Enquiries
+     * @see <code>CommitteeMember</code> for <code>generateEnquiryReport</code> method implementation
+     * @see <code>Staff</code> for <code>generateEnquiryReport</code> method implementation
+     */
 	static void generateReportEnquiryMenu() {
 		System.out.println("---------------------------------------");
         System.out.println("|          GENERATING REPORT          |");
