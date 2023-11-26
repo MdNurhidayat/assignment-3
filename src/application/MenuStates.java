@@ -1,5 +1,11 @@
 package application;
 
+/**
+ * <p> MenuStates enum is used to monitor state of the programme and properly show the correct menu </p>
+ * 
+ * @author Nurhidayat
+ * @version 1.0
+ */
 public enum MenuStates
 {
 	// Application Exclusive Menus

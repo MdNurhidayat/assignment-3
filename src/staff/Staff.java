@@ -40,24 +40,39 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
     super(userID, password, role, name, email, faculty);
   }
 
+  public String getUserID() {
+    return super.getUserID();
+  }
+
+  public String getPassword() {
+    return super.getPassword();
+  }
+
+  public Role getRole() {
+    return super.getRole();
+  }
+
   public String getName() {
     return super.getName();
   }
 
-  // non-default methods, to be reflected in UML
+  public String getEmail() {
+    return super.getEmail();
+  }
 
+  public Faculty getFaculty() {
+    return super.getFaculty();
+  }
+  
+  public Camp getCreatedCamp() {
+    return createdCamp;
+  }
+  
   public void setCreatedCamp(Camp camp) {
     createdCamp = camp;
   }
 
-  /**
-   * Returns a created <code>Camp</code> created by this staff.
-   * 
-   * @return <code>Camp</code> object tied to the <code>createdCamp</code> attribute.
-   */
-  public Camp getCreatedCamp() {
-    return createdCamp;
-  }
+  // non-default methods, to be reflected in UML
 
   /**
    * Returns true or false depending on whether this staff has currently created a camp.
@@ -165,7 +180,7 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
             "EnquiryMessage", "IsProcessed");
         System.out.println(delimiter.repeat(135));
         for (Enquiry e : results) {
-          System.out.println(e.toCSV());
+          System.out.println(e.toString());
         }
         System.out.println(delimiter.repeat(135));
         System.out.println();
@@ -208,14 +223,14 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
         String delimiter = "-";
         String paddingParameters = "| %-10s | %-25s | %-20s | %-10s | %-40s | %-10s | \n";
         System.out.println("Suggestion");
-        System.out.println(delimiter.repeat(135));
-        System.out.printf(paddingParameters, "CampID", "Date Created", "SuggestorName",
-            "SuggestionID", "SuggestionMessage", "IsProcessed");
-        System.out.println(delimiter.repeat(135));
+        System.out.println(delimiter.repeat(137));
+        System.out.printf(paddingParameters, "SuggestionID", "Date Created", "SuggestorName",
+            "CampID", "SuggestionMessage", "IsProcessed");
+        System.out.println(delimiter.repeat(137));
         for (Suggestion s : results) {
           System.out.println(s.toString());
         }
-        System.out.println(delimiter.repeat(135));
+        System.out.println(delimiter.repeat(137));
         System.out.println();
       } else
         System.out.println("Current camp has no suggestions to show. Check back later.");
@@ -264,18 +279,17 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
     else {
       ArrayList<Student> students = this.createdCamp.getParticipants();
       ArrayList<CommitteeMember> committee = this.createdCamp.getCommittee();
+
       Format formatSelection = enums.Format.getFormatFromStringInput(sc);
       String filterYesOrNo = file.Input
           .getStringInput("Do you wish to filter the report by role?: (y/n) ", sc).toLowerCase();
-
-      // prompt for format
       if (filterYesOrNo.equals("y")) {
         RoleFilter filterSelection = enums.RoleFilter.getRoleFilterFromStringInput(sc);
-        // generate report with filters base on format selection
-        // prompt for filter
         switch (filterSelection) {
+
           case STUDENT: {
             if (formatSelection == Format.CSV) {
+              System.out.println(Student.generateCSVHeaders());
               for (Student s : students) {
                 System.out.println(s.toCSV());
               }
@@ -284,9 +298,12 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
                 System.out.println(s.toString());
               }
             }
+            break;
           }
+
           case COMMITTEE_MEMBER: {
             if (formatSelection == Format.CSV) {
+              System.out.println(CommitteeMember.generateCSVHeaders() + ", Points");
               for (CommitteeMember cm : committee) {
                 System.out.println(cm.toCSV());
               }
@@ -295,112 +312,87 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
                 System.out.println(cm.toString());
               }
             }
+            break;
           }
-          default: {
-            if (formatSelection == Format.CSV) {
-              for (Student s : students) {
-                System.out.println(s.toCSV());
-              }
-              for (CommitteeMember cm : committee) {
-                System.out.println(cm.toCSV());
-              }
-            } else {
-              for (Student s : students) {
-                System.out.println(s.toString());
-              }
-              for (CommitteeMember cm : committee) {
-                System.out.println(cm.toString());
-              }
-            }
-          }
-            // prompt if user wishes to save the report
-            String saveYesOrNo =
-                file.Input.getStringInput("Do you wish to save the report as a file?: (y/n) ", sc)
-                    .toLowerCase();
-            if (saveYesOrNo.equals("y")) {
-              if (filterYesOrNo.equals("y")) {
-                switch (filterSelection) {
-                  case STUDENT: {
-                    if (formatSelection == Format.CSV) { // save as .csv
-                      String fileName = file.Input.getStringInput(
-                          "Please enter the name of the output file (do not include file extension): ",
-                          sc);
-                      ArrayList<String> toSave = new ArrayList<>();
-                      toSave.add(student.Student.generateCSVHeaders());
-                      for (Student s : students) {
-                        toSave.add(s.toCSV());
-                      }
-                      FileIO.writeToFile(formatSelection, fileName, toSave);
-                      System.out.println("File saved.");
-                    } else { // save as .txt
-                      String fileName = file.Input.getStringInput(
-                          "Please enter the name of the output file (do not include file extension): ",
-                          sc);
-                      ArrayList<String> toSave = new ArrayList<>();
-                      for (Student s : students) {
-                        toSave.add(s.toString());
-                      }
-                      FileIO.writeToFile(formatSelection, fileName, toSave);
-                      System.out.println("File saved.");
-                    }
-                  }
-                  case COMMITTEE_MEMBER: {
-                    if (formatSelection == Format.CSV) { // save as .csv
-                      String fileName = file.Input.getStringInput(
-                          "Please enter the name of the output file (do not include file extension): ",
-                          sc);
-                      ArrayList<String> toSave = new ArrayList<>();
-                      toSave.add(committeeMember.CommitteeMember.generateCSVHeaders());
-                      for (CommitteeMember cm : committee) {
-                        toSave.add(cm.toCSV());
-                      }
-                      file.FileIO.writeToFile(formatSelection, fileName, toSave);
-                      System.out.println("File saved.");
-                    } else { // save as .txt
-                      String fileName = file.Input.getStringInput(
-                          "Please enter the name of the output file (do not include file extension): ",
-                          sc);
-                      ArrayList<String> toSave = new ArrayList<>();
-                      for (CommitteeMember cm : committee) {
-                        toSave.add(cm.toString());
-                      }
-                      file.FileIO.writeToFile(formatSelection, fileName, toSave);
-                      System.out.println("File saved.");
-                    }
-                  }
-                  default: {
-                    if (formatSelection == Format.CSV) { // save as .csv
-                      String fileName = file.Input.getStringInput(
-                          "Please enter the name of the output file (do not include file extension): ",
-                          sc);
-                      ArrayList<String> toSave = new ArrayList<>();
-                      toSave.add(committeeMember.CommitteeMember.generateCSVHeaders());
-                      for (CommitteeMember cm : committee) {
-                        toSave.add(cm.toCSV());
-                      }
-                      for (Student s : students) {
-                        toSave.add(s.toCSV());
-                      }
-                      file.FileIO.writeToFile(formatSelection, fileName, toSave);
-                      System.out.println("File saved.");
-                    } else {
-                      String fileName = file.Input.getStringInput(
-                          "Please enter the name of the output file (do not include file extension): ",
-                          sc);
-                      ArrayList<String> toSave = new ArrayList<>();
-                      for (CommitteeMember cm : committee) {
-                        toSave.add(cm.toCSV());
-                      }
-                      for (Student s : students) {
-                        toSave.add(s.toCSV());
-                      }
-                      file.FileIO.writeToFile(formatSelection, fileName, toSave);
-                      System.out.println("File saved.");
-                    }
-                  }
+        }
+        String saveYesOrNo = file.Input
+            .getStringInput("Do you wish to save the report as a file?: (y/n) ", sc).toLowerCase();
+        if (saveYesOrNo.equals("y")) {
+          String fileName = file.Input.getStringInput(
+              "Please enter the name of the output file (do not include file extension): ", sc);
+          ArrayList<String> toSave = new ArrayList<>();
+          switch (filterSelection) {
+            case STUDENT: { // filter student
+              if (formatSelection == Format.CSV) {
+                toSave.add(student.Student.generateCSVHeaders());
+                for (Student s : students) {
+                  toSave.add(s.toCSV());
+                }
+              } else {
+                for (Student s : students) {
+                  toSave.add(s.toString());
                 }
               }
+              break;
             }
+            case COMMITTEE_MEMBER: {
+              if (formatSelection == Format.CSV) {
+                toSave.add(committeeMember.CommitteeMember.generateCSVHeaders() + ", Points");
+                for (CommitteeMember cm : committee) {
+                  toSave.add(cm.toCSV());
+                }
+              } else {
+                for (CommitteeMember cm : committee) {
+                  toSave.add(cm.toString());
+                }
+              }
+              break;
+            }
+          }
+          file.FileIO.writeToFile(formatSelection, fileName, toSave);
+          System.out.println("File saved.");
+        }
+      } else {
+        if (formatSelection == Format.CSV) {
+          System.out.println(CommitteeMember.generateCSVHeaders() + ", Points");
+          for (CommitteeMember cm : committee) {
+            System.out.println(cm.toCSV());
+          }
+          for (Student s : students) {
+            System.out.println(s.toCSV() + ",");
+          }
+        } else {
+          for (CommitteeMember cm : committee) {
+            System.out.println(cm.toString());
+          }
+          for (Student s : students) {
+            System.out.println(s.toString());
+          }
+        }
+        String saveYesOrNo = file.Input
+            .getStringInput("Do you wish to save the report as a file?: (y/n) ", sc).toLowerCase();
+        if (saveYesOrNo.equals("y")) {
+          String fileName = file.Input.getStringInput(
+              "Please enter the name of the output file (do not include file extension): ", sc);
+          ArrayList<String> toSave = new ArrayList<>();
+          if (formatSelection == Format.CSV) {
+            toSave.add(CommitteeMember.generateCSVHeaders() + ", Points");
+            for (CommitteeMember cm : committee) {
+              toSave.add(cm.toCSV());
+            }
+            for (Student s : students) {
+              toSave.add(s.toCSV() + ",");
+            }
+          } else {
+            for (CommitteeMember cm : committee) {
+              toSave.add(cm.toString());
+            }
+            for (Student s : students) {
+              toSave.add(s.toString());
+            }
+          }
+          file.FileIO.writeToFile(formatSelection, fileName, toSave);
+          System.out.println("File saved.");
         }
       }
     }
@@ -427,41 +419,31 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
         for (CommitteeMember cm : committee) {
           System.out.println(cm.toCSV());
         }
-
       } else {
         for (CommitteeMember cm : committee) {
           System.out.println(cm.toString());
         }
       }
-
       // prompt if user wishes to save
       String saveYesOrNo = file.Input
           .getStringInput("Do you wish to save the report as a file?: (y/n) ", sc).toLowerCase();
       if (saveYesOrNo.equals("y")) {
-        // save as .csv
+        String fileName = file.Input.getStringInput(
+            "Please enter the name of the output file (do not include file extension): ", sc);
+        ArrayList<String> toSave = new ArrayList<>();
         if (formatSelection == Format.CSV) {
-          String fileName = file.Input.getStringInput(
-              "Please enter the name of the output file (do not include file extension): ", sc);
-          ArrayList<String> toSave = new ArrayList<>();
           toSave.add(committeeMember.CommitteeMember.generateCSVHeaders());
           for (CommitteeMember cm : committee) {
             toSave.add(cm.toCSV());
           }
-          file.FileIO.writeToFile(formatSelection, fileName, toSave);
-          System.out.println("File saved.");
 
-        }
-        // save as .txt
-        else {
-          String fileName = file.Input.getStringInput(
-              "Please enter the name of the output file (do not include file extension): ", sc);
-          ArrayList<String> toSave = new ArrayList<>();
+        } else {
           for (CommitteeMember cm : committee) {
             toSave.add(cm.toString());
           }
-          file.FileIO.writeToFile(formatSelection, fileName, toSave);
-          System.out.println("File saved.");
         }
+        file.FileIO.writeToFile(formatSelection, fileName, toSave);
+        System.out.println("File saved.");
       }
     }
   }
@@ -481,11 +463,9 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
     else {
       ArrayList<Enquiry> unfilteredResult = this.createdCamp.getEnquiries();
       ArrayList<Enquiry> filteredResult = new ArrayList<>();
-      // prompt for filter
+      Format formatSelection = enums.Format.getFormatFromStringInput(sc);
       String filterYesOrNo = file.Input
           .getStringInput("Do you wish to filter the report by date?: (y/n) ", sc).toLowerCase();
-      // prompt for format
-      Format formatSelection = enums.Format.getFormatFromStringInput(sc);
       if (filterYesOrNo.equals("y")) {
         DateFilter filterSelection = enums.DateFilter.getDateFilterFromStringInput(sc);
         // generate report with filters base on format selection
@@ -493,9 +473,10 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
           case ON: {
             LocalDate dateQuery = file.Input.getDateFromIntInputs("your filter: ", sc);
             for (Enquiry e : unfilteredResult) {
-              if (dateQuery == e.getDateCreated())
+              if (e.getDateCreated().equals(dateQuery))
                 filteredResult.add(e);
             }
+            break;
           }
           case BEFORE: {
             LocalDate dateQuery = file.Input.getDateFromIntInputs("your filter: ", sc);
@@ -503,6 +484,7 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
               if (e.getDateCreated().isBefore(dateQuery))
                 filteredResult.add(e);
             }
+            break;
           }
           case AFTER: {
             LocalDate dateQuery = file.Input.getDateFromIntInputs("your filter: ", sc);
@@ -510,121 +492,67 @@ public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnq
               if (e.getDateCreated().isAfter(dateQuery))
                 filteredResult.add(e);
             }
-          }
-          default:
             break;
+          }
         }
         if (formatSelection == Format.CSV) {
-          String delimiter = "-";
-          String paddingParameters = "| %-10s | %-25s | %-20s | %-10s | %-40s | %-10s | \n";
-          System.out.println("Your Camp's Enquiries");
-          System.out.println(delimiter.repeat(135));
-          System.out.printf(paddingParameters, "CampID", "Date Created", "EnquirerName",
-              "EnquiryID", "EnquiryMessage", "IsProcessed");
-          System.out.println(delimiter.repeat(135));
-          enquiry.Enquiry.generateCSVHeaders();
+          System.out.println(Enquiry.generateCSVHeaders());
           for (Enquiry e : filteredResult) {
             System.out.println(e.toCSV());
           }
-          System.out.println(delimiter.repeat(135));
-          System.out.println();
 
         } else {
-          String delimiter = "-";
-          String paddingParameters = "| %-10s | %-25s | %-20s | %-10s | %-40s | %-10s | \n";
-          System.out.println("Your Camp's Enquiries");
-          System.out.println(delimiter.repeat(135));
-          System.out.printf(paddingParameters, "CampID", "Date Created", "EnquirerName",
-              "EnquiryID", "EnquiryMessage", "IsProcessed");
-          System.out.println(delimiter.repeat(135));
           for (Enquiry e : filteredResult) {
             System.out.println(e.toString());
           }
-          System.out.println(delimiter.repeat(135));
-          System.out.println();
         }
+
       } else {
-        // generate report without filters based on format selection
         if (formatSelection == Format.CSV) {
-          String delimiter = "-";
-          String paddingParameters = "| %-10s | %-25s | %-20s | %-10s | %-40s | %-10s | \n";
-          System.out.println("Your Camp's Enquiries");
-          System.out.println(delimiter.repeat(135));
-          System.out.printf(paddingParameters, "CampID", "Date Created", "EnquirerName",
-              "EnquiryID", "EnquiryMessage", "IsProcessed");
-          System.out.println(delimiter.repeat(135));
-          committeeMember.CommitteeMember.generateCSVHeaders();
+          System.out.println(Enquiry.generateCSVHeaders());
           for (Enquiry e : unfilteredResult) {
             System.out.println(e.toCSV());
           }
-          System.out.println(delimiter.repeat(135));
-          System.out.println();
+
         } else {
-          String delimiter = "-";
-          String paddingParameters = "| %-10s | %-25s | %-20s | %-10s | %-40s | %-10s | \n";
-          System.out.println("Your Camp's Enquiries");
-          System.out.println(delimiter.repeat(135));
-          System.out.printf(paddingParameters, "CampID", "Date Created", "EnquirerName",
-              "EnquiryID", "EnquiryMessage", "IsProcessed");
-          System.out.println(delimiter.repeat(135));
           for (Enquiry e : unfilteredResult) {
             System.out.println(e.toString());
           }
-          System.out.println(delimiter.repeat(135));
-          System.out.println();
         }
       }
-
-      // prompt if user wishes to save the report
       String saveYesOrNo = file.Input
           .getStringInput("Do you wish to save the report as a file?: (y/n) ", sc).toLowerCase();
       if (saveYesOrNo.equals("y")) {
+        String fileName = file.Input.getStringInput(
+            "Please enter the name of the output file (do not include file extension): ", sc);
+        ArrayList<String> toSave = new ArrayList<>();
         if (filterYesOrNo.equals("y")) {
-          // TODO missing switch statement based on filter
-          if (formatSelection == Format.CSV) { // save as .csv
-            String fileName = file.Input.getStringInput(
-                "Please enter the name of the output file (do not include file extension): ", sc);
-            ArrayList<String> toSave = new ArrayList<>();
-            toSave.add(enquiry.Enquiry.generateCSVHeaders());
+          if (formatSelection == Format.CSV) {
+            toSave.add(Enquiry.generateCSVHeaders());
             for (Enquiry e : filteredResult) {
               toSave.add(e.toCSV());
             }
-            file.FileIO.writeToFile(formatSelection, fileName, toSave);
-            System.out.println("File saved.");
-          } else { // save as .txt
-            String fileName = file.Input.getStringInput(
-                "Please enter the name of the output file (do not include file extension): ", sc);
-            ArrayList<String> toSave = new ArrayList<>();
+          } else {
             for (Enquiry e : filteredResult) {
               toSave.add(e.toString());
             }
-            file.FileIO.writeToFile(formatSelection, fileName, toSave);
-            System.out.println("File saved.");
           }
+          file.FileIO.writeToFile(formatSelection, fileName, toSave);
+          System.out.println("File saved.");
         } else {
-          if (formatSelection == Format.CSV) { // save as .csv
-            String fileName = file.Input.getStringInput(
-                "Please enter the name of the output file (do not include file extension): ", sc);
-            ArrayList<String> toSave = new ArrayList<>();
-            toSave.add(enquiry.Enquiry.generateCSVHeaders());
+          if (formatSelection == Format.CSV) {
+            toSave.add(Enquiry.generateCSVHeaders());
             for (Enquiry e : unfilteredResult) {
               toSave.add(e.toCSV());
             }
-            file.FileIO.writeToFile(formatSelection, fileName, toSave);
-            System.out.println("File saved.");
-          } else { // save as .txt
-            String fileName = file.Input.getStringInput(
-                "Please enter the name of the output file (do not include file extension): ", sc);
-            ArrayList<String> toSave = new ArrayList<>();
+          } else {
             for (Enquiry e : unfilteredResult) {
               toSave.add(e.toString());
             }
-            file.FileIO.writeToFile(formatSelection, fileName, toSave);
-            System.out.println("File saved.");
           }
+          file.FileIO.writeToFile(formatSelection, fileName, toSave);
+          System.out.println("File saved.");
         }
-        
-        
       }
     }
   }

@@ -31,7 +31,7 @@ public class Camp {
   /**
    * Represents if this camp is currently visible.
    */
-  private boolean isVisible;
+  private boolean isVisible = false;
   /**
    * Represents the details of this camp.
    * 
@@ -58,6 +58,8 @@ public class Camp {
    * Represents the suggestions submitted for this camp.
    */
   private ArrayList<Suggestion> suggestions = new ArrayList<>();
+  
+  // default methods, Javadoc skipped as methods are self-explanatory
   
   public String getCampID() {
     return campID;
@@ -100,7 +102,7 @@ public class Camp {
 	  this.campID = staff.getUserID() + idCount;
 	  this.details = new Detail(staff);
 	  this.isVisible = true;
-  }
+  } 
   
   /**
    * Custom constructor method. Uses multiple set methods from this camp's <code>detail</code>
@@ -115,7 +117,6 @@ public class Camp {
     idCount++;
     this.campID = aStaff.getUserID() + idCount;
     this.details = new Detail(sc, aStaff);
-    this.isVisible = false;
   }
 
   /**
@@ -153,7 +154,7 @@ public class Camp {
 	        .setDescription(file.Input.getStringInput("Enter the description of the camp: ", sc));
 	    this.details.setFaculty(Faculty.getFacultyFromStringInput(sc));
 
-	    LocalDate startDate = file.Input.getDateFromIntInputs("starting date: ", sc);
+	    LocalDate startDate = file.Input.getDateFromIntInputs("starting date", sc);
 	    this.details.setStartDate(startDate);
 
 	    LocalDate registrationclosingdate;
@@ -332,7 +333,6 @@ public class Camp {
    * @return string result of all of this camp's attribute names with the exception of ArrayList
    *         attributes.
    */
-
   public static String generateCSVHeaders() {
     String delimiter = ", ";
     return "campID" + delimiter + "isVisible" + delimiter + Detail.generateCSVHeaders();
@@ -345,7 +345,6 @@ public class Camp {
    * @return string result of all of this camp's attribute values with the exception of ArrayList
    *         attributes.
    */
-
   public String toCSV() {
     generateCSVHeaders();
     String delimiter = ", ";
@@ -356,7 +355,6 @@ public class Camp {
    * Prints a <code>Camp</code> object in a format suitable for CLI. Only displays
    * non-<code>ArrayList</code> attributes. Used for <code>Student</code> class view methods.
    */
-
   public void print() {
     String delimiter = "-";
     String paddingParameters =
@@ -387,7 +385,6 @@ public class Camp {
    * non-<code>ArrayList</code> attributes with the exception of participants and committee. Used
    * for <code>CommitteeMember</code> and <code>Staff</code> class view methods.
    */
-
   public void detailedPrint() {
     String delimiter = "-";
     String paddingParameters = "| %-10s | %-10s | %-15s | %-30s | %-10s | \n";
@@ -402,7 +399,7 @@ public class Camp {
     System.out.println(delimiter.repeat(91));
     System.out.println();
     System.out.println("Committee");
-    System.out.printf(paddingParameters, "UserID", "Role", "Name", "Email", "Faculty");
+    System.out.printf(paddingParameters, "UserID", "Role", "Name", "Email", "Faculty", "Points");
     for (CommitteeMember cm : this.getCommittee()) {
       System.out.println(cm.toString());
     }

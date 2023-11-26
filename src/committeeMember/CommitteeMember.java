@@ -21,7 +21,7 @@ import reply.Reply;
 import student.Student;
 import suggestion.*;
 
-public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquiry, BaseSuggestion, CommitteeMemberReport {
+public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquiry, CommitteeMemberSuggestion, CommitteeMemberReport {
 	Camp overseeing;
 	int points;
 	HashMap<String, Suggestion> suggestionList;
@@ -592,4 +592,22 @@ public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquir
       return super.getUserID() + delimiter + super.getRole() + delimiter + super.getName() + delimiter
               + super.getEmail() + delimiter + super.getFaculty() + delimiter + this.points;
   }
+
+@Override
+public void submitSuggestion() {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void editSuggestion() {
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void deleteSuggestion() {
+	// TODO Auto-generated method stub
+	
+}
 }

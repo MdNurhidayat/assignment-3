@@ -3,6 +3,22 @@ package application;
 import java.util.Scanner;
 
 import user.User;
+/**@author Chen yan Jin
+ * 
+ */
+
+
+/**
+ * Authenticates a user based on the provided username and password.
+ * If authentication is successful, the corresponding User object is returned.
+ * If the user does not exist or the password is incorrect, it returns null.
+ * If the password is the default, the user is prompted to change it.
+ *
+ * @param scan         Scanner object for user input
+ * @param userManager  UserManager object managing user data
+ * @return             User object if authentication is successful, otherwise null
+ */
+
 
 public class SecurityManager 
 {	
@@ -52,6 +68,19 @@ public class SecurityManager
 		System.out.println();
 		return user;
 	}
+	
+	
+	
+	
+    /**
+     * Changes the password for the specified user.
+     * The user is prompted to enter a new password, and the password is updated.
+     * After changing the password, the user is required to log in again with the new password.
+     *
+     * @param user         User object for which the password needs to be changed
+     * @param scan         Scanner object for user input
+     * @param userManager  UserManager object managing user data
+     */
 	
 	public void changePassword(User user, Scanner scan, UserManager userManager)
 	{

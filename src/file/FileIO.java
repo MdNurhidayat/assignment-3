@@ -15,7 +15,7 @@ import enums.Format;
  * <code>ArrayLists</code> of various classes to facilitate ease of use.
  * 
  * @author Nah Wei Jie
- * @version 1.0
+ * @version 1.1
  */
 public class FileIO {
 

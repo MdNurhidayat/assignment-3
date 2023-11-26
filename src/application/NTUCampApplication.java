@@ -18,6 +18,7 @@ import student.Student;
  * Main application to run the NTU Camp Management. 
  * 
  * @author Nurhidayat
+ * @version 1.0
  */
 public class NTUCampApplication 
 {	

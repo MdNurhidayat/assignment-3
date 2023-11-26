@@ -13,9 +13,26 @@ import enums.Faculty;
 import enums.Role;
 import reply.Reply;
 
+/**
+ *The Student class represents a student user in the system.
+ * It extends the User class and implements various interfaces
+ * related to registration, withdrawal, and camp-related inquiries.
+ * @author Wang Jing
+ * @version 1.4
+ * @since 2023-11-13
+ */
 public class Student extends User implements Withdrawable, StudentEnquiry, BaseEnquiry {
+     /**
+     * A list of camps the student is registered for.
+     */    
     private ArrayList<Camp> registeredFor;
+    /**
+     * A list of inquiries submitted by the student.
+     */
     private ArrayList<Enquiry> enquiries;
+    /**
+     * A counter for generating unique enquiry IDs.
+     */
     private int enquiryCounter;
 
     /**
@@ -152,7 +169,10 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
 
         System.out.println("------------------------------------------------------------------------------------------------------------------");
     }
-    
+     /**
+     * Method to register a camp as participant.
+     * Student would choose a camp and the method would check if the camp is available for registration.
+     */ 
     public void register(Camp camp)
     {
     	this.addCampToRegisteredFor(camp);
@@ -344,7 +364,7 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
         }
     }
 
-	/**
+    /**
      * Method to edit a unprocessed enquiry by EnquiryID. 
      */  
 	@Override
@@ -375,7 +395,7 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
 	    System.out.println("Enquiry not found or already processed. Editing failed.");
 	}
 
-	/**
+    /**
      *Method to delete a student-specific enquiry by EnquiryID
      */  
     public void deleteEnquiry(Scanner scanner, ArrayList<Camp> allCamps) {

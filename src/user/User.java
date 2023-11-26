@@ -1,11 +1,13 @@
 package user;
 import enums.Role;
+/**@author Chen yan Jin**/
+
 import enums.Faculty;
 
 public class User {
 
     private String userID;
-    private String password; // Storing the plain text password (not recommended for production)
+    private String password;
     private Role role;
     private String name;
     private String email;
@@ -19,7 +21,7 @@ public class User {
 
     // Parameterized constructor with dependency injection and default password
     public User(String userID, Role role, String name, String email, Faculty Faculty) {
-        this.userID = userID; // Set the userID here
+        this.userID = userID; 
         this.password = "password";
         this.role = role;
         this.name = name;
@@ -28,8 +30,9 @@ public class User {
         this.firstTime = true;
     }
     
+    // Parameterized constructor with explicit password
     public User(String userID, String password, Role role, String name, String email, Faculty Faculty) {
-        this.userID = userID; // Set the userID here
+        this.userID = userID; 
         this.password = password;
         this.role = role;
         this.name = name;
@@ -88,6 +91,7 @@ public class User {
         this.Faculty = Faculty;
     }
     
+    // Methods for managing first-time login status
     public void setFirstTime(boolean bool)
     {
     	this.firstTime = bool;

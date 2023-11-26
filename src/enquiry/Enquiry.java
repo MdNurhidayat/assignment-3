@@ -15,16 +15,38 @@ import student.Student;
  * @since 2023-11-13
  */
 public class Enquiry {
+
+  /** The unique ID assigned to the enquiry. */
   private String enquiryID;
+
+  /** The ID of the camp associated with the enquiry. */
   private String campID;
+
+  /** The date when the enquiry was created. */
   private LocalDate dateCreated;
+
+  /** The name of the student making the enquiry. */
   private String enquirerName;
+
+  /** The message content of the enquiry. */
   private String enquiryMessage;
+  
+  /** List of replies to the enquiry. */
   private ArrayList<Reply> replies;
+
+  /** Flag indicating whether the enquiry has been processed. */
   private boolean isProcessed = false;
   
-  //TODO override equals method to compare enquiryID only
-
+    //TODO override equals method to compare enquiryID only
+    /**
+     * Constructs a new Enquiry object with the specified parameters.
+     *
+     * @param campID The ID of the camp associated with the enquiry.
+     * @param enquirerName The name of the person making the enquiry.
+     * @param dateCreated The date when the enquiry was created.
+     * @param enquiryID The unique ID assigned to the enquiry.
+     * @param enquiryMessage The message content of the enquiry.
+     */
   public Enquiry(Scanner sc, Camp aCamp, Student std) {
     this.enquiryID = std.getUserID() + (std.getEnquiryCounter() + 1);
     std.setEnquiryCounter(std.getEnquiryCounter() + 1);
@@ -36,6 +58,7 @@ public class Enquiry {
     this.isProcessed = false;
   }
 
+   // Getter methods
   public String getEnquiryID() {
     return enquiryID;
   }
@@ -61,7 +84,7 @@ public class Enquiry {
   public String getContents() {
     return enquiryMessage;
   }
-
+//setter method
   public void setContents(String contents) {
     this.enquiryMessage = contents;
   }
@@ -74,7 +97,11 @@ public class Enquiry {
       return replies;
     }
   }
-
+    /**
+     * Adds a reply to the list of replies for this enquiry.
+     *
+     * @param reply The reply to be added.
+     */
   public void addReply(Reply reply) {
     this.replies.add(reply);
   }

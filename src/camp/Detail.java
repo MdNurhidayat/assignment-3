@@ -178,7 +178,7 @@ public class Detail {
 	  description = "Post Examination Camp for " + staff.getFaculty().toString();
 	  faculty = staff.getFaculty();
 	  startDate = LocalDate.now().plusDays(5);
-	  registrationClosingDate = LocalDate.now().plusDays(3);
+	  registrationClosingDate = LocalDate.now().plusDays(3);;
 	  endDate = LocalDate.now().plusDays(10);
 	  
 	  totalSlots = 20;

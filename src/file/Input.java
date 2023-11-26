@@ -10,7 +10,7 @@ import java.util.Scanner;
  * class methods into custom setters, constructors and initialization of variables.
  * 
  * @author Nah Wei Jie
- * @version 1.0
+ * @version 1.1
  */
 public class Input {
 
@@ -141,10 +141,8 @@ public class Input {
   }
 
   /**
-   * Displays a message and returns a given integer inputs from the client as a valid day of month
+   * Displays a message and returns a given integer input from the client as a valid day of month
    * value.
-   * 
-   * <br>
    * 
    * @param message A string message displayed to the client when requesting for an input.
    * @param sc A scanner object used for methods to request for input (dependency).
@@ -168,10 +166,8 @@ public class Input {
   }
 
   /**
-   * Displays a message and returns a given integer inputs from the client as a valid month of year
+   * Displays a message and returns a given integer input from the client as a valid month of year
    * value.
-   * 
-   * <br>
    * 
    * @param message A string message displayed to the client when requesting for an input.
    * @param sc A scanner object used for methods to request for input (dependency).
@@ -195,7 +191,7 @@ public class Input {
   }
 
   /**
-   * Displays a message and returns a given integer inputs from the client as a valid day of month
+   * Displays a message and returns a given integer input from the client as a valid day of month
    * value. <br>
    * 
    * @param message A string message displayed to the client when requesting for an input.

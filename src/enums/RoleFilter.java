@@ -12,8 +12,7 @@ import java.util.Scanner;
  */
 public enum RoleFilter {
   STUDENT,
-  COMMITTEE_MEMBER,
-  NONE;
+  COMMITTEE_MEMBER;
   
   /**
    * Prints all RoleFilter enumerated values in the console.
