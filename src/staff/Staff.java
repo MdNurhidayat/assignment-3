@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import camp.Camp;
 import committeeMember.CommitteeMember;
-import enquiry.BaseEnquiry;
 import enquiry.Enquiry;
 import enquiry.ReplyEnquiry;
 import enums.DateFilter;
@@ -27,7 +26,7 @@ import reply.Reply;
  * @see <code>Staff</code>
  */
 
-public class Staff extends User implements StaffSuggestion, StaffReport, BaseEnquiry, ReplyEnquiry {
+public class Staff extends User implements ReplyEnquiry, StaffSuggestion, StaffReport {
   private Camp createdCamp = null;
 
   // default methods, Javadoc skipped as methods are self-explanatory

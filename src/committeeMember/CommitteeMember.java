@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Scanner;  // Import the Scanner class
 
 import camp.Camp;
-import enquiry.BaseEnquiry;
 import enquiry.Enquiry;
 import enquiry.ReplyEnquiry;
 import enums.Role;
@@ -18,13 +17,14 @@ import enums.Format;
 import file.FileIO;
 import file.Input;
 import reply.Reply;
+import report.BaseReport;
 import student.Student;
 import suggestion.*;
 
-public class CommitteeMember extends Student implements BaseEnquiry, ReplyEnquiry, CommitteeMemberSuggestion, CommitteeMemberReport {
+public class CommitteeMember extends Student implements ReplyEnquiry, CommitteeMemberSuggestion, BaseReport {
 	Camp overseeing;
-	int points;
 	HashMap<String, Suggestion> suggestionList;
+	int points;
     
      // Constructor to initialize attributes
 	public CommitteeMember(Student student, Camp camp) {

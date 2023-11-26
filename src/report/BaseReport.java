@@ -15,7 +15,15 @@ public interface BaseReport {
   /**
    * Generates the participant report of a camp.
    * 
-   * @see <code>Enquiry</code>
+   * @param sc The scanner object to be injected.
    */
   public void generateParticipantReport(Scanner sc);
+  
+  /**
+   * Generates the enquiry report of a camp.
+   * 
+   * @param sc The scanner object to be injected.
+   * @see <code>Enquiry</code>
+   */
+  public void generateEnquiryReport(Scanner sc);
 }

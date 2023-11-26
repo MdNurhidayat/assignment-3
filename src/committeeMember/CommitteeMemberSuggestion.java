@@ -9,7 +9,7 @@ import suggestion.BaseSuggestion;
  * 
  * @author Nah Wei Jie
  * @version 1.1
-   * @see <code>CommitteeMember</code>, <code>Suggestion</code>
+ * @see <code>CommitteeMember</code>, <code>Suggestion</code>
  */
 public interface CommitteeMemberSuggestion extends BaseSuggestion {
 

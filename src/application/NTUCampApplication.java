@@ -594,11 +594,16 @@ public class NTUCampApplication
 			System.out.println("| 3. Reply Enquiry                    |");
 			System.out.println("| 4. Back                             |");
 			System.out.println("---------------------------------------");
+			
 			((CommitteeMember)user).viewEnquiries();
+			System.out.println();
+			
 			ArrayList<Enquiry> list = ((CommitteeMember)user).getOverseeingCamp().getEnquiries();
+			System.out.println("Your Camp Enquiries");
+			System.out.println("---------------------------------------");
 			for (Enquiry enquiry : list)
 			{
-				System.out.println(enquiry.getCampID() + ", " + enquiry.getContents());
+				System.out.println(enquiry.getEnquirerName() + ", " + enquiry.getContents());
 			}
 			
 			choice = scan.nextInt();
@@ -627,11 +632,6 @@ public class NTUCampApplication
 			System.out.println("---------------------------------------");
 			
 			((Staff)user).viewEnquiries();
-			ArrayList<Enquiry> list = ((Staff)user).getCreatedCamp().getEnquiries();
-			for (Enquiry enquiry : list)
-			{
-				System.out.println(enquiry.getCampID() + ", " + enquiry.getContents());
-			}
 			
         	System.out.print("Pick a Menu : ");
         	choice = scan.nextInt();
