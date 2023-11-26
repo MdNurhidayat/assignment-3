@@ -23,9 +23,9 @@ public class FileIO {
    * Writes the content of an injected <code>ArrayList</code> of strings to a text file of either .csv or .txt
    * format with the provided filename.
    * 
-   * @param format The format of the output file
+   * @param format	 The format of the output file
    * @param fileName The name of the output file
-   * @param anArray An ArrayList<string> of strings which holds the content for writing to the file
+   * @param anArray  An ArrayList<string> of strings which holds the content for writing to the file
    * 
    */
   public static void writeToFile(Format format,String fileName, ArrayList<String> anArray) {

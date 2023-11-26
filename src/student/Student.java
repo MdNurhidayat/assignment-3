@@ -45,8 +45,8 @@ public class Student extends User implements Withdrawable, StudentEnquiry, BaseE
      * @param email    The email of the student.
      * @param faculty  The faculty of the student.
      */
-    public Student(String UserID, String Password, Role role, String name, String email, Faculty faculty) {
-        super(UserID, Password, role, name, email, faculty);
+    public Student(String userID, String password, Role role, String name, String email, Faculty faculty) {
+        super(userID, password, role, name, email, faculty);
         this.registeredFor = new ArrayList<>(); // Initialize with an empty ArrayList
         this.enquiries = new ArrayList<>();
         enquiryCounter = 1;

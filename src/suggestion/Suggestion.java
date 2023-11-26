@@ -31,9 +31,7 @@ public class Suggestion {
   }
 
   /**
-   * Set a new getSuggestionID
-   *
-   * @param getSuggestionID The new value to be assigned
+   * Getter for suggestionID
    */
   public String getSuggestionID() {
     return suggestionID;
@@ -42,42 +40,37 @@ public class Suggestion {
   /**
    * Set a new setSuggestionID
    *
-   * @param setSuggestionID The new value to be assigned
+   * @param suggestionID The new value to be assigned
    */
   public void setSuggestionID(String suggestionID) {
     this.suggestionID = suggestionID;
   }
 
   /**
-   * Set a new getCampID
-   *
-   * @param getCampID tagged to the CommitteeMember
+   * Getter for campID
    */
   public String getCampID() {
     return createdBy.getOverseeingCamp().getCampID();
   }
 
   /**
-   * Create a new LocalDate data
-   *
-   * @param LocalDate to retreive the current date
-   */  public LocalDate getDateCreated() {
+   * Getter for dateCreated
+   */  
+  public LocalDate getDateCreated() {
     return dateCreated;
   }
 
    /**
     * Set a new setDateCreated
     *
-    * @param setDateCreated call the localdate data
+    * @param dateCreated the new LocalDate to replace value of dateCreated
     */
   public void setDateCreated(LocalDate dateCreated) {
     this.dateCreated = dateCreated;
   }
 
   /**
-   * Call the CommitteeMember that created it
-  *
-  * @param record down the Committeemember
+   * Get the CommitteeMember that created it
   */
   public CommitteeMember getCreatedBy() {
     return createdBy;
@@ -86,76 +79,59 @@ public class Suggestion {
   /**
    * Set a new setCreatedBy
    *
-   * @param setCreatedBy call from the createedBy method
+   * @param createdBy Change the suggestion createdBy value
    */
   public void setCreatedBy(CommitteeMember createdBy) {
     this.createdBy = createdBy;
   }
 
   /**
-   * Set a new getCreatorName
-   *
-   * @param getCreatorName call the CommitteeMember name 
+   * Getter for createdBy Enquiry
    */
   public String getCreatorName() {
     return createdBy.getName();
   }
 
   /**
-   * Create a new getContent
-   *
-   * @param getContent create to record down the input
+   * Getter for content of enquiry
    */
   public String getContent() {
     return content;
   }
 
   /**
-   * Set a new setContent
+   * Setter a new setContent
    *
-   * @param setContent call the content function
+   * @param content User's new content
    */
   public void setContent(String content) {
     this.content = content;
   }
 
   /**
-   * Cretae a boolean isProcessed
-   *
-   * @param isProcessed boolean to true or false
+   * Getter to check if Enquiry has been processed
    */
   public boolean isProcessed() {
     return isProcessed;
   }
 
   /**
-   * Set a new setProcessed
+   * Setter for isProcessed
    *
-   * @param setProcessed call for isProcessed
+   * @param isProcessed Updated value for isProcessed
    */
   public void setProcessed(boolean isProcessed) {
     this.isProcessed = isProcessed;
   }
 
   /**
-   * create a new incrementPoint
-   *
-   * @param incrementPoint increase after a new suggestion is created
+   * Call for Committee Member that created this to increase in their point
    */
   public void incrementPoint() {
     this.createdBy.incrementPoint();
   }
   
   @Override
-  /**
-   * Return a new toString
-   *
-   * @param suggestionID 	The suggestion ID of the sugegestion created.
-   * @param dateCreated   	The date created when suggestion is created.
-   * @param content 		The content of the suggestion.
-   * @param createdBy     	The name of the CommitteeMember.
-   * @param isProcessed     The check of the suggestion being processed.
-   */
   public String toString()
   {
 	  String delimiter = " | ";

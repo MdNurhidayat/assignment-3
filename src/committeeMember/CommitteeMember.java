@@ -53,7 +53,6 @@ public class CommitteeMember extends Student
    
    * @param userID   The user ID of the student.
    * @param password The password of the student.
-   * @param role	   The role of the student tagged to CommitteeMember.
    * @param name     The name of the student.
    * @param email    The email of the student.
    * @param faculty  The faculty of the student.

@@ -7,20 +7,19 @@ import user.User;
  * 
  */
 
-
- /**
- * Authenticates a user based on the provided username and password.
- * If authentication is successful, the corresponding User object is returned.
- * If the user does not exist or the password is incorrect, it returns null.
- * If the password is the default, the user is prompted to change it.
- *
- * @param scan Scanner object for user input
- * @param userManager UserManager object managing user data
- * 
- * @return User object if authentication is successful, otherwise null
- */
 public class SecurityManager 
 {	
+	 /**
+	 * Authenticates a user based on the provided username and password.
+	 * If authentication is successful, the corresponding User object is returned.
+	 * If the user does not exist or the password is incorrect, it returns null.
+	 * If the password is the default, the user is prompted to change it.
+	 *
+	 * @param scan	Scanner object for user input
+	 * @param userManager	UserManager object managing user data
+	 * 
+	 * @return User object if authentication is successful, otherwise null
+	 */
 	public User logInAuthentication(Scanner scan, UserManager userManager)
 	{
 		User user;

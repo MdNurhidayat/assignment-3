@@ -37,15 +37,12 @@ public class Enquiry {
   /** Flag indicating whether the enquiry has been processed. */
   private boolean isProcessed = false;
   
-    //TODO override equals method to compare enquiryID only
     /**
      * Constructs a new Enquiry object with the specified parameters.
      *
-     * @param campID The ID of the camp associated with the enquiry.
-     * @param enquirerName The name of the person making the enquiry.
-     * @param dateCreated The date when the enquiry was created.
-     * @param enquiryID The unique ID assigned to the enquiry.
-     * @param enquiryMessage The message content of the enquiry.
+     * @param sc	Scanner will be used to receive enquiry contents
+     * @param aCamp this enquiry will be assigned to the aCamp
+     * @param std	Student class that is assigned to the enquiry created
      */
   public Enquiry(Scanner sc, Camp aCamp, Student std) {
     this.enquiryID = std.getUserID() + (std.getEnquiryCounter() + 1);

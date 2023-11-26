@@ -53,7 +53,7 @@ public class NTUCampApplication
 	
 	/**
 	 * Main Function for NTU Camp Application
-	 * @param args
+	 * @param args Default main method
 	 */
 	public static void main(String[] args) 
 	{
@@ -333,11 +333,11 @@ public class NTUCampApplication
 	/**
 	 * This menu is a camp menu that is shared throughout the 3 roles
 	 * 
-	 * STUDENT & COMMITTEE MEMBER are rather similar, the difference would be the option to sign up as Committee Member
+	 * STUDENT and COMMITTEE MEMBER are rather similar, the difference would be the option to sign up as Committee Member
 	 * STAFF will print detailed information of all camps in the NTU Application
 	 * 
-	 * @see <code>Student</code> for methods implemented here
-	 * @see <code>CommitteeMember</code> for methods implemented here
+	 * @see Student class for methods implemented here
+	 * @see CommitteeMember class for methods implemented here
 	 */
 	static void viewCampsMenu()
 	{
@@ -542,9 +542,9 @@ public class NTUCampApplication
 	/**
 	 * This menu handles all kind of enquiry options for all 3 classes
 	 * 
-	 * @see <code>Student</code> to refer implementation, <role>Student</role> can create and edit enquiry  
-	 * @see <code>CommitteeMember</code> to refer implementation, <role>Committee Member</role> can create, edit and reply enquiry
-	 * @see <code>Staff</code> to refer implementation, <role>Staff</role> can reply enquiry
+	 * @see Student class to refer implementation, Student can create and edit enquiry  
+	 * @see CommitteeMember class to refer implementation, Committee Member can create, edit and reply enquiry
+	 * @see Staff class to refer implementation, Staff can reply enquiry
 	 */
 	static void viewEnquiriesMenu()
 	{
@@ -992,10 +992,10 @@ public class NTUCampApplication
     }
 
     /**
-     * Method to printing Suggestion Menu for <role>Committee Member & Staff</role>
+     * Method to printing Suggestion Menu for Committee Member and Staff
      * 
-     * @see <code>CommitteeMember</code> for suggestion method implementation
-     * @see <code>Staff</code> for approve suggetion method implementation
+     * @see CommitteeMember class for suggestion method implementation
+     * @see Staff class for approve suggetion method implementation
      */
     static void viewSuggestionsMenu()
     {
@@ -1068,7 +1068,7 @@ public class NTUCampApplication
 
     /**
      * This menu calls the menu to generate report for Performance
-     * @see <code>Staff</code> for <code>generatePerformaceReport</code> method implementation
+     * @see Staff class for <code>generatePerformaceReport()</code> method implementation
      */
     static void generateReportPerformanceMenu()
     {
