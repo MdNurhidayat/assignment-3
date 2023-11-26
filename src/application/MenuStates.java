@@ -15,16 +15,13 @@ public enum MenuStates
 	LOG_OUT("LOGOUT"),
 	EXIT("EXIT"),
 	
-	
 	// Shared Menu
 	PROFILE("Profile"),
 	VIEW_CAMPS("ViewCamps"),
-	VIEW_JOINED("ViewJoined"),
 	CAMP_DETAILS("CampDetails"),
 	VIEW_ENQUIRIES("ViewEnquiries"),
 	
 	// Shared Menu (STAFF & COMMITTEE MEMBER)
-	//REPLY_ENQUIRY("ReplyEnquiries"),
 	REPORT_PARTICIPANT("ReportParticipant"),
 	REPORT_ENQUIRY("ReportEnquiry"),
 	
@@ -42,7 +39,6 @@ public enum MenuStates
 	CREATE_CAMP("CreateCamp"),
 	DELETE_CAMP("DeleteCamp"),
 	VIEW_SUGGESTIONS("ViewSuggestions"),
-	//APPROVE_SUGGESTION("ApproveSuggestion"),
 	REPORT_PERFORMANCE("ReportPerformance");
 
 	public String label;

@@ -8,6 +8,14 @@ import enquiry.Enquiry;
 import user.User;
 import file.Input;
 
+/**
+ *The Reply class represents that CommitteeMember reply to enquiry in the system.
+ * It extends the Enquiry class
+ * related to enquiry matters.
+ * @author Derrick 
+ * @version 1.4
+ */
+
 public class Reply {
 	private static int idCount;
 	private String enquiryID;	  
@@ -17,6 +25,11 @@ public class Reply {
 	private User sendor;
 	private String contents;
   
+	/**
+     * Method to take in string inputs.
+     * It prints details of reply,
+     * and process it into the system for fileIO.
+     */
     public Reply(Scanner scanner, Enquiry enquiry, User user) {
 	    idCount++;
 	    this.replyID = "REP" + idCount;
@@ -29,17 +42,17 @@ public class Reply {
 	    enquiry.addReply(this);
     }
  
-    
+ // Getter method for getEnquiryID
     public String getEnquiryID()
     {
   	  return enquiryID;
     }
-	
+ // Getter method for getReplyID
     public String getReplyID()
 	{
     	return replyID;
 	}
-  
+ // Getter method for getContents
     public String getContents()
     {
     	return contents;

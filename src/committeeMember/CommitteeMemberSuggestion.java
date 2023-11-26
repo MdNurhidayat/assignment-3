@@ -1,5 +1,6 @@
 package committeeMember;
 
+import java.util.Scanner;
 import suggestion.BaseSuggestion;
 
 /**
@@ -27,7 +28,7 @@ public interface CommitteeMemberSuggestion extends BaseSuggestion {
    * 
    * @see <code>CommitteeMember</code>, <code>Suggestion</code>
    */
-  public void submitSuggestion();
+  public void submitSuggestion(Scanner sc);
 
   /**
    * Edits a submitted suggestion for the camp overseen by a committee member. Additionally, the suggestion cannot already be processed. Must
@@ -35,12 +36,12 @@ public interface CommitteeMemberSuggestion extends BaseSuggestion {
    * 
    * @see <code>CommitteeMember</code>, <code>Suggestion</code>
    */
-  public void editSuggestion();
+  public void editSuggestion(Scanner sc);
   /**
    * Deletes a submiteed suggestion for the camp overseen by a committee member. Additionally, the suggestion cannot already be processed. Must
    * be implemented by the <code>CommitteeMember</code> class.
    * 
    * @see <code>CommitteeMember</code>, <code>Suggestion</code>
    */
-  public void deleteSuggestion();
+  public void deleteSuggestion(Scanner sc);
 }
