@@ -26,6 +26,7 @@ public interface CommitteeMemberSuggestion extends BaseSuggestion {
    * Submits a suggestion for the camp overseen by a committee member. Must be implemented by the
    * <code>CommitteeMember</code> class.
    * 
+   * @param sc the Scanner object to be injected
    * @see <code>CommitteeMember</code>, <code>Suggestion</code>
    */
   public void submitSuggestion(Scanner sc);
@@ -33,14 +34,14 @@ public interface CommitteeMemberSuggestion extends BaseSuggestion {
   /**
    * Edits a submitted suggestion for the camp overseen by a committee member. Additionally, the suggestion cannot already be processed. Must
    * be implemented by the <code>CommitteeMember</code> class.
-   * 
+   * @param sc the Scanner object to be injected
    * @see <code>CommitteeMember</code>, <code>Suggestion</code>
    */
   public void editSuggestion(Scanner sc);
   /**
    * Deletes a submiteed suggestion for the camp overseen by a committee member. Additionally, the suggestion cannot already be processed. Must
    * be implemented by the <code>CommitteeMember</code> class.
-   * 
+   * @param sc the Scanner object to be injected
    * @see <code>CommitteeMember</code>, <code>Suggestion</code>
    */
   public void deleteSuggestion(Scanner sc);

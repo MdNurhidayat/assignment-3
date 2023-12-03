@@ -96,6 +96,15 @@ public class Camp {
 
   // non-default methods, to be reflected in UML
 
+  /**
+   * Custom constructor method to construct a Camp object without obtaining user input. Only called by a <code>Staff</code> object.
+   * 
+   * @see <code>Staff</code>, <code>Detail</code>
+   * 
+   * @param staff Staff object to be injected
+   * 
+   */
+  
   public Camp(Staff staff)
   {
 	  idCount++;
@@ -202,14 +211,18 @@ public class Camp {
   }
 
   /**
-   * Return true if there are no participants in this camp.
+   * Gets the result whether a camp has participants.
+   * 
+   * @return True if there are no participants in this camp, false it there are.
    */
   public boolean hasNoParticipants() {
     return this.participants.isEmpty();
   }
 
   /**
-   * Return true if there are no committee in this camp.
+   * Gets the result whether a camp has a committee.
+   * 
+   * @return True if there is no committee in this camp, false if there is not.
    */
   public boolean hasNoCommittee() {
     return this.committee.isEmpty();

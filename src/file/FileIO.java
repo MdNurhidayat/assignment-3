@@ -25,7 +25,7 @@ public class FileIO {
    * 
    * @param format	 The format of the output file
    * @param fileName The name of the output file
-   * @param anArray  An ArrayList<string> of strings which holds the content for writing to the file
+   * @param anArray  An ArrayList of strings which holds the content for writing to the file
    * 
    */
   public static void writeToFile(Format format,String fileName, ArrayList<String> anArray) {

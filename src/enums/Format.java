@@ -29,6 +29,8 @@ public enum Format {
    * Searches against all Format enumerated values and returns the <code>Format</code> if
    * there is a match, or null is there is not.
    * 
+   * @param str the string to perform the search on
+   * @return the Format enum value that matches the search str
    */
   public static Format search(String str) {
     Format[] formatList = Format.values();
@@ -44,6 +46,9 @@ public enum Format {
    * Gets a string input from the user, and matches it against all Format enumerated values and
    * returns the Format is there is a match, re-prompts the user to enter the input again if the
    * input is not found.
+   * 
+   * @param sc the scanner object to be passed in
+   * @return the Format enum value that matches user input
    */
   public static Format getFormatFromStringInput(Scanner sc) {
     printAll();

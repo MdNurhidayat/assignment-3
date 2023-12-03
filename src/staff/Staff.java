@@ -191,7 +191,6 @@ public class Staff extends User implements ReplyEnquiry, StaffSuggestion, StaffR
   /**
    * Reply a specific enquiry belonging to the camp created by this staff.
    * 
-   * @param replyMessage Message containing the reply of this staff.
    * @param sc Scanner object to be injected.
    */
   @Override

@@ -13,6 +13,7 @@ public interface ReplyEnquiry {
   /**
    * Reply to an enquiry belonging to a camp.
    * 
+   * @param sc The Scanner object to be injected
    * @see <code>Enquiry</code>
    */
   void replyEnquiry(Scanner sc);

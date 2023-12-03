@@ -28,7 +28,8 @@ public enum DateFilter {
   /**
    * Searches against all DateFilter enumerated values and returns the <code>DateFilter</code> if
    * there is a match, or null is there is not.
-   * 
+   * @param str the string to perform search on
+   * @return a DateFilter enum value that matches the search str
    */
   public static DateFilter search(String str) {
     DateFilter[] dateFilterList = DateFilter.values();
@@ -44,6 +45,9 @@ public enum DateFilter {
    * Gets a string input from the user, and matches it against all DateFilter enumerated values and
    * returns the DateFilter is there is a match, re-prompts the user to enter the input again if the
    * input is not found.
+   * 
+   *  @param sc the scanner object to be injected
+   *  @return a DateFilter enum value that matches the search str obtained from the user
    */
   public static DateFilter getDateFilterFromStringInput(Scanner sc) {
     printAll();

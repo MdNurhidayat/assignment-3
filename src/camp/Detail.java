@@ -188,6 +188,9 @@ public class Detail {
   /**
    * Custom constructor for a Detail object.
    * 
+   * @param sc the scanner object to be injected
+   * @param aStaff the staff object to be injected
+   * 
    * @see <code>Detail</code>
    */
   public Detail(Scanner sc, Staff aStaff) {

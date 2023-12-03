@@ -17,33 +17,6 @@ public class Input {
   /**
    * Displays a message and returns a given integer input from the client.
    * 
-   * <p>
-   * Examples of expected usage<br>
-   * 1) As a way to initialize a variable
-   * <ul>
-   * <code>Scanner sc = new Scanner();</code><br>
-   * <code>int myNumber = getIntInput("Enter a number: ", sc);</code><br>
-   * <code>-> Enter a number: 5 </code><br>
-   * <br>
-   * 
-   * This is the equivalent of<br>
-   * <code>int myNumber = 5;</code>
-   * </ul>
-   * 
-   * <p>
-   * 2) To obtain values from a user to pass in as parameters for constructors during runtime
-   * 
-   * <ul>
-   * <code>Scanner sc = new Scanner();</code><br>
-   * <code>int result = add(getIntInput("Enter the first number: ", sc), getIntInput("Enter the second number: ", sc));</code><br>
-   * <code>-> Enter the first number: 5 </code><br>
-   * <code>-> Enter the second number: 3  </code><br>
-   * <br>
-   * 
-   * This is the equivalent of<br>
-   * <code>int result = add(5, 3);</code><br>
-   * </ul>
-   * 
    * @param message A string message displayed to the client when requesting for an input.
    * @param sc A scanner object used for methods to request for input (dependency).
    * @return The input of the client as an integer.
@@ -58,36 +31,6 @@ public class Input {
 
   /**
    * Displays a message and returns a given string input from the client.
-   * 
-   * <p>
-   * Examples of expected usage<br>
-   * 1) As a way to initialize a variable
-   * <ul>
-   * <code>Scanner sc = new Scanner();</code><br>
-   * <code>String myStr = getStrInput("Enter a string: ", sc);</code><br>
-   * <code>-> Enter a string: abcdefg </code><br>
-   * <br>
-   * 
-   * This is the equivalent of<br>
-   * <code>String myStr = "abcdefg";</code>
-   * </ul>
-   * 
-   * <p>
-   * 2) To obtain values from a user to pass in as parameters for constructors during runtime<br>
-   * Asssume there is a constructor for the Location class which takes two parameters:<br>
-   * <br>
-   * String Country<br>
-   * String Address<br>
-   * <ul>
-   * <code>Scanner sc = new Scanner();</code><br>
-   * <code>Location myLocation = new Location(getStrInput("Enter a country: ", sc), getStrInput("Enter an address: ", sc));</code><br>
-   * <code> -> Enter a country: Singapore </code><br>
-   * <code> -> Enter an address: 76 Nanyang Drive  </code><br>
-   * </ul>
-   * 
-   * This is the equivalent of<br>
-   * <code>Location myLocation = Location("Singapore", "76 Nanyang Drive");</code><br>
-   * <br>
    * 
    * @param message A string message displayed to the client when requesting for an input.
    * @param sc A scanner object used for methods to request for input (dependency).
